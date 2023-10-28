@@ -35,12 +35,28 @@ namespace Escalation
 
     }
 
+    //Enum for Nation Title and type (duchy, etc.)
+    internal enum ETitle
+    {
+        Republic, Kingdom, DemocraticRepublic, Duchy, Barony, County, Empire
+    }
+
+
     internal class Nation
     {
 
         public Ecode Code { get; set; }
 
         public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string Flag { get; set; }
+
+        public ETitle Title { get; set; }
+
+        public Nation() { }
+
 
         
         //Political Statistics
@@ -60,7 +76,7 @@ namespace Escalation
             private ulong commercialCapacity;
 
             
-            private ulong GDP;
+            private ulong  GDP;  
             private double GDPgrowthRate;
 
 
@@ -82,11 +98,22 @@ namespace Escalation
             private ulong population;
             private double populationGrowthRate;
             private float populationDensity;
+            private double lifeExpectancy;
+            private double povertyRate;
+
+
+
 
 
         //Geographic Statistics
             private ulong landArea;
             private string maincity;
+
+
+        //Intelligence Statistics
+            private int espionagePoints;
+            private int counterEspionagePoints;
+
 
     }
 }
