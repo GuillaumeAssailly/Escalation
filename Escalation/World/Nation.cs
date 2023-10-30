@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Escalation
+namespace Escalation.World
 {
 
     //Enum for ideologies
@@ -25,15 +21,21 @@ namespace Escalation
     //Enum for Ecodes
     internal enum Ecode
     {
-        AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
-        BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
-        DJI, EAU, EGY, EQA, ERY, ESP, EST, ESW, ETH, ETU, FGY, FID, FIN, FRA, GAB, GAM, GBI, GEO, GEQ, GHA, 
-        GRE, GRO, GUA, GUI, GUY, HAI, HOD, HON, IDO, IMA, IND, IRA, IRK, IRL, ISA, ISL, ISR, ITA, JAM, JAP, 
-        JOR, KAZ, KEN, KIR, KOS, KOW, LAO, LES, LET, LIA, LIB, LIY, LIT, LUX, MAC, MAD, MAL, MAR, MAS, MAU, 
-        MAW, MEX, MOG, MOL, MON, MOT, MOZ, NAM, NCA, NCO, NEP, NGR, NIC, NIG, NOR, NZE, OGD, OMA, OUZ, PAB, 
-        PAK, PAL, PAN, PAR, PER, PHI, PNG, POL, POR, PRI, QAT, RCE, RDC, RDE, RDO, ROM, ROY, RSA, RUS, RWA, 
-        SAH, SAL, SCO, SDS, SEN, SER, SLE, SLO, SLV, SOM, SOU, SRI, SUE, SUI, SUR, SVA, SYR, TAA, TAD, TAN, 
-        TAW, TCH, TCQ, TET, THA, TOG, TOR, TUM, TUN, TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM
+        /* AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
+         BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
+         DJI, EAU, EGY, EQA, ERY, ESP, EST, ESW, ETH, ETU, FGY, FID, FIN, FRA, GAB, GAM, GBI, GEO, GEQ, GHA, 
+         GRE, GRO, GUA, GUI, GUY, HAI, HOD, HON, IDO, IMA, IND, IRA, IRK, IRL, ISA, ISL, ISR, ITA, JAM, JAP, 
+         JOR, KAZ, KEN, KIR, KOS, KOW, LAO, LES, LET, LIA, LIB, LIY, LIT, LUX, MAC, MAD, MAL, MAR, MAS, MAU, 
+         MAW, MEX, MOG, MOL, MON, MOT, MOZ, NAM, NCA, NCO, NEP, NGR, NIC, NIG, NOR, NZE, OGD, OMA, OUZ, PAB, 
+         PAK, PAL, PAN, PAR, PER, PHI, PNG, POL, POR, PRI, QAT, RCE, RDC, RDE, RDO, ROM, ROY, RSA, RUS, RWA, 
+         SAH, SAL, SCO, SDS, SEN, SER, SLE, SLO, SLV, SOM, SOU, SRI, SUE, SUI, SUR, SVA, SYR, TAA, TAD, TAN, 
+         TAW, TCH, TCQ, TET, THA, TOG, TOR, TUM, TUN, TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM*/
+
+        FRA = 0, 
+        ALL,
+        ITA,
+        ROY,
+        ESP
 
     }
 
@@ -57,9 +59,12 @@ namespace Escalation
 
         public ETitle Title { get; set; }
 
+        //List of Neighbors with qualifiers (M for Marine, L for Land): 
+        private Dictionary<Ecode, char> neighbors;
+
+
         public Nation(Ecode code, 
             double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism) 
-        
         {
             this.Code = code;
             this.stability = stability;
@@ -74,7 +79,7 @@ namespace Escalation
             ideologies = new Dictionary<Ideology, double>
             {
                 { Ideology.Communism, communism },
-                { Ideology.Socialism, socialism },
+                { Ideology.Socialism,socialism },
                 { Ideology.LeftWingDemocracy, leftWingDemocracy },
                 { Ideology.RightWingDemocracy, rightWingDemocracy },
                 { Ideology.Authoritarianism, authoritarianism },
@@ -83,6 +88,15 @@ namespace Escalation
             };
         }
 
+        public void SetNeighbors(Dictionary<Ecode, char> neighbors)
+        {
+            this.neighbors = neighbors;
+        }
+
+        public Dictionary<Ecode, char> GetNeighbors()
+        {
+            return neighbors;
+        }
 
         //Political Statistics
             private int politicalPower;
@@ -99,61 +113,71 @@ namespace Escalation
                 risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
             }
 
+            public Dictionary<Ideology, double>  getIdeologies()
+            {
+                return ideologies;
+            }
+        
+        public void DriftIdeologies()
+        {
 
-            public void DriftIdeologies()
+            //sort ideologies by ascending percentage
+
+
+            //check if rising ideology progression dont go over 1 :
+            if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
             {
 
-                //check if rising ideology progression dont go over 1 :
-                if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
+                ideologies[risingIdeology.Item1] += risingIdeology.Item2;
+
+                int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
+
+                //TODO : check if not equal to zero
+                double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
+
+                ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+
+                for (int i = 0; i < ideologies.Count; i++)
                 {
-
-
-                    int nbIdeoCurrentlyNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 &&  x.Value > 0);
-                    int nbIdeoNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 && x.Value - risingIdeology.Item2/ nbIdeoCurrentlyNotNull > 0);
-
-
-
-                    for (int i = 0; i < ideologies.Count; i++)
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
                     {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                        if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
                         {
-                            if (ideologies.ElementAt(i).Value - risingIdeology.Item2 / nbIdeoNotNull > 0)
-                            {
-                                ideologies[ideologies.ElementAt(i).Key] -= risingIdeology.Item2 / nbIdeoNotNull;
-                            }
-                            else
-                            {
-                                ideologies[ideologies.ElementAt(i).Key] = 0;
-                            }
+                            ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
                         }
                         else
                         {
-                            ideologies[ideologies.ElementAt(i).Key] += risingIdeology.Item2;
-                        }
-
-                        //Print current ideology value : 
-                        //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
-                    }
-                }
-                else
-                {
-                    ideologies[risingIdeology.Item1] = 1;
-                    // all other are at zero
-                    for (int i = 0; i < ideologies.Count; i++)
-                    {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
-                        {
-                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                            // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
+                            double delta = totalToDecrease - ideologies.ElementAt(i).Value;
+                            ideologies[ideologies.ElementAt(i).Key] = 0;
+                            nbIdeoNotNull--;
+                            //TODO : check if not equal to zero
+                            totalToDecrease += delta / nbIdeoNotNull;
                         }
                     }
+                    //Print current ideology value : 
+                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+
                 }
-
-                //print the Sum of all ideologies
-                Console.WriteLine("Diffrence of sum of all ideologies : " + (1.0 - ideologies.Sum(x => x.Value)));
-
-
-
             }
+            else
+            {
+                ideologies[risingIdeology.Item1] = 1;
+                // all other are at zero
+                for (int i = 0; i < ideologies.Count; i++)
+                {
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                    {
+                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                    }
+                }
+            }
+
+            //print the Sum of all ideologies
+            //Console.WriteLine(ideologies.Sum(x => x.Value));
+             
+        }
 
 
 
