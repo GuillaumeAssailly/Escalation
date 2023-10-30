@@ -23,20 +23,25 @@ namespace Escalation
             Earth World = new Earth();
             Random Random = new Random();
 
+            
+            /////////////////////////////
+
+
+            //Creating Managers : 
             IdeologyManager ideologyManager = new IdeologyManager(World, Random);
+    
 
-            //European Countries : 
-            World.Nations.Add(new Nation(Ecode.FRA, 100, 15, 1, 0,0,0,0,0,0));
-            World.Nations.Add(new Nation(Ecode.ALL, 100, 15, 0, 0, 0, 0, 0, 0, 1));
-            World.Nations.Add(new Nation(Ecode.ITA, 100, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
-            World.Nations.Add(new Nation(Ecode.ROY, 100, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
-            World.Nations.Add(new Nation(Ecode.ESP, 100, 15, 0, 0, 0, 0, 0.5, 0.5, 0));
 
-            //TODO: change this order: 
+            //build countries : 
+            World.initCountries();
             World.setCountriesNeighbors();
          
 
             
+
+            /////////////////////////////
+            ///  - TESTS -  /////////////
+            /////////////////////////////  
             for (int i = 0; i < 1000; i++)
             {
                 if (i % 10 == 0)

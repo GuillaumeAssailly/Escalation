@@ -27,7 +27,12 @@ namespace Escalation.World
         private void setAdjacencyMatrixFromFile()
         {
             //TODO : create a specific class to deal with reading files and all of that stuff:
-            string filePath = "E:\\ProjetsPerso\\Escalation\\Escalation\\adjacencyMatrix.txt";
+
+            //print current directory :
+            Console.WriteLine("Current directory : " + Directory.GetCurrentDirectory());
+
+
+            string filePath = "../../adjacencyMatrix.txt";
 
             if (File.Exists(filePath))
             {
@@ -95,6 +100,17 @@ namespace Escalation.World
 
                 currentNation.SetNeighbors(neighbors);
             }
+        }
+
+        public void initCountries()
+        {
+            //European Countries : 
+            Nations.Add(new Nation(Ecode.FRA, 100, 15, 1, 0, 0, 0, 0, 0, 0));
+            Nations.Add(new Nation(Ecode.ALL, 100, 15, 0, 0, 0, 0, 0, 0, 1));
+            Nations.Add(new Nation(Ecode.ITA, 100, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
+            Nations.Add(new Nation(Ecode.ROY, 100, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
+            Nations.Add(new Nation(Ecode.ESP, 100, 15, 0, 0, 0, 0, 0.5, 0.5, 0));
+
         }
 
 
