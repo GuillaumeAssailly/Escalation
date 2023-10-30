@@ -7,14 +7,23 @@ using System.Threading.Tasks;
 
 namespace Escalation.World
 {
-    internal class Earth
+    public class Earth
     {
+        //Parameters :
+        const int nbNations = 5;
+
+
+
+
+        public DateTime CurrentDate;
+
 
         //list of nations : 
         public List<Nation> Nations;
 
-        const int nbNations = 5;
         
+
+
         //ajdacency matrix of the countries : 
         private char[,] adjacencyMatrix;
 
@@ -105,7 +114,7 @@ namespace Escalation.World
         public void initCountries()
         {
             //European Countries : 
-            Nations.Add(new Nation(Ecode.FRA, 100, 15, 1, 0, 0, 0, 0, 0, 0));
+            Nations.Add(new Nation(Ecode.FRA, 100, 15, 0.05, 0.10, 0.25, 0.40, 0.10, 0.05, 0.05));
             Nations.Add(new Nation(Ecode.ALL, 100, 15, 0, 0, 0, 0, 0, 0, 1));
             Nations.Add(new Nation(Ecode.ITA, 100, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
             Nations.Add(new Nation(Ecode.ROY, 100, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
@@ -113,11 +122,17 @@ namespace Escalation.World
 
         }
 
+        public void Day()
+        {
+            CurrentDate = CurrentDate.AddDays(1);
+        }
+
 
         public Earth()
         {
             Nations = new List<Nation>();
             setAdjacencyMatrixFromFile();
+            CurrentDate =  new DateTime(2022, 1, 1);
         }
 
     }

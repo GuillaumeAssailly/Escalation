@@ -7,7 +7,7 @@ using Escalation.World;
 
 namespace Escalation.Manager
 {
-    internal abstract class Manager
+    public abstract class Manager
     {
         public Earth World;
 

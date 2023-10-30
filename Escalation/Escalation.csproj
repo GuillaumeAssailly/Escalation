@@ -62,7 +62,6 @@
     <Folder Include="Economics\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="adjacencies.txt" />
     <Content Include="adjacencyMatrix.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

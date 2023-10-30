@@ -6,7 +6,7 @@ namespace Escalation.World
 {
 
     //Enum for ideologies
-    internal enum Ideology
+    public enum Ideology
     {
        Communism,
        Socialism,
@@ -19,7 +19,7 @@ namespace Escalation.World
 
 
     //Enum for Ecodes
-    internal enum Ecode
+    public enum Ecode
     {
         /* AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
          BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
@@ -40,13 +40,13 @@ namespace Escalation.World
     }
 
     //Enum for Nation Title and type (duchy, etc.)
-    internal enum ETitle
+    public enum ETitle
     {
         Republic, Kingdom, DemocraticRepublic, Duchy, Barony, County, Empire, Commune, SovietRepublic
     }
 
 
-    internal class Nation
+    public class Nation
     {
 
         public Ecode Code { get; set; }

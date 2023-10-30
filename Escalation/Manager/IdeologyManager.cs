@@ -8,7 +8,7 @@ using Random = Escalation.Utils.Random;
 
 namespace Escalation.Manager
 {
-    internal class IdeologyManager : Manager
+    public class IdeologyManager : Manager
     {
 
 

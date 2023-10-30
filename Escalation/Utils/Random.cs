@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace Escalation.Utils
 {
-    internal class Random
+    public class Random
     {
+
+
+
+        public static UInt64 Seed_64 = 1;
+        public static UInt32 Mat1_64 = 0xfa051f40;
+        public static UInt32 Mat2_64 = 0xffd0fff4;
+        public static UInt64 TMat_64 = 0x58d02ffeffbfffbc;
+
 
 
         //Tiny mersenne twister
