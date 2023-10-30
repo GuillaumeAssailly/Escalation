@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Escalation
+namespace Escalation.World
 {
 
     //Enum for ideologies
@@ -74,7 +70,7 @@ namespace Escalation
             ideologies = new Dictionary<Ideology, double>
             {
                 { Ideology.Communism, communism },
-                { Ideology.Socialism, socialism },
+                { Ideology.Socialism,socialism },
                 { Ideology.LeftWingDemocracy, leftWingDemocracy },
                 { Ideology.RightWingDemocracy, rightWingDemocracy },
                 { Ideology.Authoritarianism, authoritarianism },
@@ -98,62 +94,70 @@ namespace Escalation
             {
                 risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
             }
+        
+        public void DriftIdeologies()
+        {
+
+            //sort ideologies by ascending percentage
 
 
-            public void DriftIdeologies()
+            //check if rising ideology progression dont go over 1 :
+            if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
             {
 
-                //check if rising ideology progression dont go over 1 :
-                if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
+                ideologies[risingIdeology.Item1] += risingIdeology.Item2;
+
+                int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
+
+                double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
+
+                ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+
+                for (int i = 0; i < ideologies.Count; i++)
                 {
-
-
-                    int nbIdeoCurrentlyNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 &&  x.Value > 0);
-                    int nbIdeoNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 && x.Value - risingIdeology.Item2/ nbIdeoCurrentlyNotNull > 0);
-
-
-
-                    for (int i = 0; i < ideologies.Count; i++)
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
                     {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                        if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
                         {
-                            if (ideologies.ElementAt(i).Value - risingIdeology.Item2 / nbIdeoNotNull > 0)
-                            {
-                                ideologies[ideologies.ElementAt(i).Key] -= risingIdeology.Item2 / nbIdeoNotNull;
-                            }
-                            else
-                            {
-                                ideologies[ideologies.ElementAt(i).Key] = 0;
-                            }
+                            
+                            
+
+                            ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
+
                         }
                         else
                         {
-                            ideologies[ideologies.ElementAt(i).Key] += risingIdeology.Item2;
-                        }
-
-                        //Print current ideology value : 
-                        //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
-                    }
-                }
-                else
-                {
-                    ideologies[risingIdeology.Item1] = 1;
-                    // all other are at zero
-                    for (int i = 0; i < ideologies.Count; i++)
-                    {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
-                        {
-                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                            // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
+                            double delta = totalToDecrease - ideologies.ElementAt(i).Value;
+                            ideologies[ideologies.ElementAt(i).Key] = 0;
+                            nbIdeoNotNull--;
+                            totalToDecrease += delta / nbIdeoNotNull;
                         }
                     }
+                    //Print current ideology value : 
+                    Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+
                 }
-
-                //print the Sum of all ideologies
-                Console.WriteLine("Diffrence of sum of all ideologies : " + (1.0 - ideologies.Sum(x => x.Value)));
-
-
-
             }
+            else
+            {
+                ideologies[risingIdeology.Item1] = 1;
+                // all other are at zero
+                for (int i = 0; i < ideologies.Count; i++)
+                {
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                    {
+                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                    }
+                }
+            }
+
+            //print the Sum of all ideologies
+            Console.WriteLine("Sum of all ideologies : " + (ideologies.Sum(x => x.Value)));
+
+
+        }
 
 
 
