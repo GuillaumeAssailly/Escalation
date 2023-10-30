@@ -15,6 +15,12 @@ namespace Escalation.Utils
 
 
 
+        public static int Next(int max)
+        {
+            return (int)(TMT64.GetRandInt() % (ulong)max);
+        }
+        
+
         public static ulong Next(ulong min, ulong max)
         {
             return (min + (TMT64.GetRandInt() % (max - min)));

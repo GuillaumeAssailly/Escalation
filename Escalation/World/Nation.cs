@@ -21,15 +21,21 @@ namespace Escalation.World
     //Enum for Ecodes
     internal enum Ecode
     {
-        AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
-        BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
-        DJI, EAU, EGY, EQA, ERY, ESP, EST, ESW, ETH, ETU, FGY, FID, FIN, FRA, GAB, GAM, GBI, GEO, GEQ, GHA, 
-        GRE, GRO, GUA, GUI, GUY, HAI, HOD, HON, IDO, IMA, IND, IRA, IRK, IRL, ISA, ISL, ISR, ITA, JAM, JAP, 
-        JOR, KAZ, KEN, KIR, KOS, KOW, LAO, LES, LET, LIA, LIB, LIY, LIT, LUX, MAC, MAD, MAL, MAR, MAS, MAU, 
-        MAW, MEX, MOG, MOL, MON, MOT, MOZ, NAM, NCA, NCO, NEP, NGR, NIC, NIG, NOR, NZE, OGD, OMA, OUZ, PAB, 
-        PAK, PAL, PAN, PAR, PER, PHI, PNG, POL, POR, PRI, QAT, RCE, RDC, RDE, RDO, ROM, ROY, RSA, RUS, RWA, 
-        SAH, SAL, SCO, SDS, SEN, SER, SLE, SLO, SLV, SOM, SOU, SRI, SUE, SUI, SUR, SVA, SYR, TAA, TAD, TAN, 
-        TAW, TCH, TCQ, TET, THA, TOG, TOR, TUM, TUN, TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM
+        /* AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
+         BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
+         DJI, EAU, EGY, EQA, ERY, ESP, EST, ESW, ETH, ETU, FGY, FID, FIN, FRA, GAB, GAM, GBI, GEO, GEQ, GHA, 
+         GRE, GRO, GUA, GUI, GUY, HAI, HOD, HON, IDO, IMA, IND, IRA, IRK, IRL, ISA, ISL, ISR, ITA, JAM, JAP, 
+         JOR, KAZ, KEN, KIR, KOS, KOW, LAO, LES, LET, LIA, LIB, LIY, LIT, LUX, MAC, MAD, MAL, MAR, MAS, MAU, 
+         MAW, MEX, MOG, MOL, MON, MOT, MOZ, NAM, NCA, NCO, NEP, NGR, NIC, NIG, NOR, NZE, OGD, OMA, OUZ, PAB, 
+         PAK, PAL, PAN, PAR, PER, PHI, PNG, POL, POR, PRI, QAT, RCE, RDC, RDE, RDO, ROM, ROY, RSA, RUS, RWA, 
+         SAH, SAL, SCO, SDS, SEN, SER, SLE, SLO, SLV, SOM, SOU, SRI, SUE, SUI, SUR, SVA, SYR, TAA, TAD, TAN, 
+         TAW, TCH, TCQ, TET, THA, TOG, TOR, TUM, TUN, TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM*/
+
+        FRA = 0, 
+        ALL,
+        ITA,
+        ROY,
+        ESP
 
     }
 
@@ -53,9 +59,12 @@ namespace Escalation.World
 
         public ETitle Title { get; set; }
 
+        //List of Neighbors with qualifiers (M for Marine, L for Land): 
+        private Dictionary<Ecode, char> neighbors;
+
+
         public Nation(Ecode code, 
             double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism) 
-        
         {
             this.Code = code;
             this.stability = stability;
@@ -79,6 +88,15 @@ namespace Escalation.World
             };
         }
 
+        public void SetNeighbors(Dictionary<Ecode, char> neighbors)
+        {
+            this.neighbors = neighbors;
+        }
+
+        public Dictionary<Ecode, char> GetNeighbors()
+        {
+            return neighbors;
+        }
 
         //Political Statistics
             private int politicalPower;
@@ -93,6 +111,11 @@ namespace Escalation.World
             public void SetRisingIdeology(Ideology ideology, double percentage)
             {
                 risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
+            }
+
+            public Dictionary<Ideology, double>  getIdeologies()
+            {
+                return ideologies;
             }
         
         public void DriftIdeologies()
@@ -109,6 +132,7 @@ namespace Escalation.World
 
                 int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
 
+                //TODO : check if not equal to zero
                 double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
 
                 ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
@@ -120,11 +144,7 @@ namespace Escalation.World
                     {
                         if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
                         {
-                            
-                            
-
                             ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
-
                         }
                         else
                         {
@@ -132,11 +152,12 @@ namespace Escalation.World
                             double delta = totalToDecrease - ideologies.ElementAt(i).Value;
                             ideologies[ideologies.ElementAt(i).Key] = 0;
                             nbIdeoNotNull--;
+                            //TODO : check if not equal to zero
                             totalToDecrease += delta / nbIdeoNotNull;
                         }
                     }
                     //Print current ideology value : 
-                    Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
 
                 }
             }
@@ -154,9 +175,8 @@ namespace Escalation.World
             }
 
             //print the Sum of all ideologies
-            Console.WriteLine("Sum of all ideologies : " + (ideologies.Sum(x => x.Value)));
-
-
+            //Console.WriteLine(ideologies.Sum(x => x.Value));
+             
         }
 
 

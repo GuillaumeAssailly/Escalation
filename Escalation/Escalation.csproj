@@ -45,8 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manager\GeographyManager.cs" />
+    <Compile Include="Manager\IdeologyManager.cs" />
+    <Compile Include="Manager\Manager.cs" />
     <Compile Include="Utils\Random.cs" />
     <Compile Include="Utils\TinyMT64.cs" />
+    <Compile Include="World\Earth.cs" />
     <Compile Include="World\Nation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Economics\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="adjacencyMatrix.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
