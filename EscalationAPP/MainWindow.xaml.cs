@@ -51,6 +51,7 @@ namespace EscalationAPP
         private CancellationTokenSource pauseTokenSource = new CancellationTokenSource();
         private CancellationToken pauseToken;
         private bool isPaused = false;
+        private int speed = 2;
 
         /// <summary>
         /// CURRENT NATION FOCUSED :
@@ -132,7 +133,7 @@ namespace EscalationAPP
 
 
                     //Delay of 1 second :
-                    Thread.Sleep(500);
+                    Thread.Sleep(speed * 500+100);
 
                     Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
 
@@ -246,16 +247,30 @@ namespace EscalationAPP
 
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space)
+            switch (e.Key)
             {
-                isPaused = !isPaused; // Toggle the pause flag
+                case Key.Space:
+                    isPaused = !isPaused; // Toggle the pause flag
 
-                if (!isPaused)
-                {
-                    // Unpause the task (if it was paused)
-                    pauseTokenSource = new CancellationTokenSource();
-                    pauseToken = pauseTokenSource.Token;
-                }
+                    if (!isPaused)
+                    {
+                        // Unpause the task (if it was paused)
+                        pauseTokenSource = new CancellationTokenSource();
+                        pauseToken = pauseTokenSource.Token;
+                    }
+                    break;
+                case Key.Escape:
+                    Close();
+                    break;
+                case Key.Subtract:
+                    if (speed < 5) { speed++;}
+                    break;
+                case Key.Add:                   
+                    if (speed > 0) { speed--; }
+                    break;
+            }
+            {
+                
             }
         }
     }
