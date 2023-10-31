@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using Escalation.Manager;
 using Escalation.World;
@@ -18,6 +19,8 @@ namespace EscalationAPP
         public Earth World { get; private set; }
         public Random Random { get; private set; }
         public IdeologyManager ideologyManager { get; private set; }
+
+       
 
 
         public App()
@@ -39,32 +42,7 @@ namespace EscalationAPP
             World.setCountriesNeighbors();
          
 
-            
-            /*
-            /////////////////////////////
-            ///  - TESTS -  /////////////
-            /////////////////////////////  
-            for (int i = 0; i< 1000; i++)
-            {
-                if (i % 10 == 0)
-                {
-                    //browse each nations in the world with a foreach loop : 
-                    foreach (Nation currentNation in World.Nations)
-                    {
-                        ideologyManager.ManageIdeologies(currentNation.Code);
-                    }
-                }
-
-                foreach (Nation currentNation in World.Nations)
-                {
-                    currentNation.DriftIdeologies();
-                    //Print majorIdeology in each nation : 
-                    Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
-                }
-
-                
-
-            }*/
+           
         }
 
     }

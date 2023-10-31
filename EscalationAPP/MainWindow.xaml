@@ -16,8 +16,7 @@
         </Grid.ColumnDefinitions>
         <Canvas>
             <TextBlock x:Name="CountryName"  Text="{Binding FocusedNation, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <lvc:PieChart StartingRotationAngle="0"  LegendLocation="Bottom"  DisableAnimations="True" Height="743" Width="520" Margin="65" Series="{Binding FocusedIdeologies}" >
-                
+            <lvc:PieChart  InnerRadius="0" StartingRotationAngle="0"  LegendLocation="Bottom"  DisableAnimations="False" Height="743" Width="520" Margin="65" Series="{Binding FocusedIdeologies}" >
             </lvc:PieChart>
         </Canvas>
         <zoom:ZoomBorder x:Name="border" ClipToBounds="True" Background="Gray" Grid.Column="1">

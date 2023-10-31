@@ -20,13 +20,13 @@ namespace Escalation.Manager
 
             //How do we choose a rising ideology ?
             //First we need to know the current ideology of the nation (being the most popular one in the dictionary right now :
-            // - Communism :            80% chance of being the rising ideology + what remains of chance of being a random ideology in country
-            // - Socialism :            40% chance of being the rising ideology + what remains of chance of being a random ideology in country
-            // - LeftWingDemocracy :    30% chance of being the rising ideology + what remains of chance of being a random neighbor ideology
-            // - RightWingDemocracy :   30% chance of being the rising ideology + what remains of chance of being a random neighbor ideology
-            // - Authoritarianism :     60% chance of being the rising ideology + what remains of chance of being a random ideology in country
-            // - Despotism :            80% chance of being the rising ideology + what remains of chance of being a random ideology in country
-            // - Fascism :              80% chance of being the rising ideology + what remains of chance of being a random neighbor in country
+            // - Communism :            X% chance of being the rising ideology + what remains of chance of being a random ideology in country
+            // - Socialism :            X% chance of being the rising ideology + what remains of chance of being a random ideology in country
+            // - LeftWingDemocracy :    X% chance of being the rising ideology + what remains of chance of being a random neighbor ideology
+            // - RightWingDemocracy :   X% chance of being the rising ideology + what remains of chance of being a random neighbor ideology
+            // - Authoritarianism :     X% chance of being the rising ideology + what remains of chance of being a random ideology in country
+            // - Despotism :            X% chance of being the rising ideology + what remains of chance of being a random ideology in country
+            // - Fascism :              X% chance of being the rising ideology + what remains of chance of being a random neighbor in country
 
             //Get the  last ideology of the dictionnary (the most popular one) :
             Ideology CurrentIdeology = CurrentNation.getIdeologies().Last().Key;
@@ -36,7 +36,7 @@ namespace Escalation.Manager
             switch (CurrentIdeology)
             {
                 case Ideology.Communism:
-                    if (Random.NextDouble() < 0.8)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.Communism;
                     }
@@ -46,7 +46,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Socialism:
-                    if (Random.NextDouble() < 0.4)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.Socialism;
                     }
@@ -58,7 +58,7 @@ namespace Escalation.Manager
 
                     break;
                 case Ideology.LeftWingDemocracy:
-                    if (Random.NextDouble() < 0.3)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.LeftWingDemocracy;
                     }
@@ -69,7 +69,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.RightWingDemocracy:
-                    if (Random.NextDouble() < 0.3)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.LeftWingDemocracy;
                     }
@@ -80,7 +80,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Authoritarianism:
-                    if (Random.NextDouble() < 0.6)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.Authoritarianism;
                     }
@@ -90,7 +90,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Despotism:
-                    if (Random.NextDouble() < 0.8)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.Despotism;
                     }
@@ -100,7 +100,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Fascism:
-                    if (Random.NextDouble() < 0.8)
+                    if (Random.NextDouble() < 0)
                     {
                         NewRisingIdeology = Ideology.Fascism;
                     }
