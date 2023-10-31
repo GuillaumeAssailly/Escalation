@@ -31,19 +31,30 @@ namespace EscalationAPP
     {
 
         //TODO : Fix the crash when exiting the app as Application could be Null and then World as Well
+
+        /// <summary>
+        /// ATTRIBUTES OBJECTS : 
+        /// </summary>
         public Earth World => (Application.Current as App)?.World;
-
-        //public Random Random => (App.Current as App).Random;
-
+        public DateTime CurrentDate => World.CurrentDate;
+        public Random Random => (App.Current as App).Random;
         public IdeologyManager IdeologyManager => (App.Current as App).ideologyManager;
 
 
+
+
        
-
+        /// <summary>
+        /// EVENTS : 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler EndOfDay;
+        private CancellationTokenSource pauseTokenSource = new CancellationTokenSource();
+        private CancellationToken pauseToken;
+        private bool isPaused = false;
 
-
+        /// <summary>
+        /// CURRENT NATION FOCUSED :
+        /// </summary>
         private Ecode focusedNation;
         public Ecode FocusedNation
         {
@@ -53,59 +64,95 @@ namespace EscalationAPP
 
         public SeriesCollection FocusedIdeologies { get; set; }
 
+
+
+
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+
+            pauseToken = pauseTokenSource.Token;
+
+            //Events:
+            PreviewKeyDown += MainWindow_PreviewKeyDown;
+
+
+            //Initializing the focused nation :
             FocusedNation = Ecode.FRA;
+
 
             //Construction of UI elements : 
             initChart();
 
             //Launch the tests in an other thread :
-            Task.Run(Test);
+            launch();
 
 
 
         }
 
-
-        public void Test()
+        ///////////////////////////////////////THREADS : ///////////////////////////////////////
+        private async void launch()
         {
-
-            /////////////////////////////
-            ///  - TESTS -  /////////////
-            /////////////////////////////  
-            for (int i = 0; i < 100000; i++)
+            await Task.Run(() => 
             {
-                if (i % 10 == 0)
+                /////////////////////////////
+                ///  - TESTS -  /////////////
+                /////////////////////////////  
+                for (int i = 0; i < 100000; i++)
                 {
-                    //browse each nations in the world with a foreach loop : 
+                    if (isPaused)
+                    {
+                        while (isPaused)
+                        {
+                            pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
+                            Thread.Sleep(100);
+                        }
+                    }
+
+                    if (i % 10 == 0)
+                    {
+                        //browse each nations in the world with a foreach loop : 
+                        foreach (Nation currentNation in World.Nations)
+                        {
+                            IdeologyManager.ManageIdeologies(currentNation.Code);
+                        }
+                    }
+
                     foreach (Nation currentNation in World.Nations)
                     {
-                        IdeologyManager.ManageIdeologies(currentNation.Code);
+                        currentNation.DriftIdeologies();
+                        //Print majorIdeology in each nation : 
+                        Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
                     }
-                }
 
-                foreach (Nation currentNation in World.Nations)
-                {
-                    currentNation.DriftIdeologies();
-                    //Print majorIdeology in each nation : 
-                    Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
-                }
+                    World.AddDay();
 
-                
-                    
-                //Delay of 1 second :
-                Thread.Sleep(5);
-               
-                Application.Current?.Dispatcher.Invoke(new Action(UpdateChart));
-              
-           
-              
-            }
+
+                    //Delay of 1 second :
+                    Thread.Sleep(500);
+
+                    Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
+
+                    pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
+
+
+                }
+            });
+
         }
 
+      
+
+        ///////////////////////////////////////UI : ///////////////////////////////////////
+
+        private void UpdateUI()
+        {
+            UpdateChart();
+            DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
+        }
       
 
         private void UpdateChart()
@@ -182,6 +229,10 @@ namespace EscalationAPP
         }
 
 
+
+
+
+        ///////////////////////////////////////EVENTS : ///////////////////////////////////////
         private void Country_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Path clickedPath = (Path)sender;
@@ -191,6 +242,21 @@ namespace EscalationAPP
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FocusedNation)));
             UpdateChart();
 
+        }
+
+        private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                isPaused = !isPaused; // Toggle the pause flag
+
+                if (!isPaused)
+                {
+                    // Unpause the task (if it was paused)
+                    pauseTokenSource = new CancellationTokenSource();
+                    pauseToken = pauseTokenSource.Token;
+                }
+            }
         }
     }
 }

@@ -15,7 +15,10 @@
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Canvas>
-            <TextBlock x:Name="CountryName"  Text="{Binding FocusedNation, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Canvas >
+                <TextBlock Canvas.Left="0" x:Name="CountryName"  Text="{Binding FocusedNation, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <TextBlock Canvas.Left="100" x:Name="DateBlock" ></TextBlock>
+            </Canvas>
             <lvc:PieChart  InnerRadius="0" StartingRotationAngle="0"  LegendLocation="Bottom"  DisableAnimations="False" Height="743" Width="520" Margin="65" Series="{Binding FocusedIdeologies}" >
             </lvc:PieChart>
         </Canvas>

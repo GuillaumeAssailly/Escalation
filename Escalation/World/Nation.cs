@@ -66,27 +66,15 @@ namespace Escalation.World
         public Nation(Ecode code, 
             double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism) 
         {
-            this.Code = code;
-            this.stability = stability;
+            Code = code;
+            Stability = stability;
             this.politicalPower = politicalPower;
             SetIdeologies(Communism, Socialism, LeftWingDemocracy, RightWingDemocracy, Authoritarianism, Despotism, Fascism);
             
             
         }
 
-        public void SetIdeologies(double communism, double socialism, double leftWingDemocracy, double rightWingDemocracy, double authoritarianism, double despotism, double fascism)
-        {
-            ideologies = new Dictionary<Ideology, double>
-            {
-                { Ideology.Communism, communism },
-                { Ideology.Socialism,socialism },
-                { Ideology.LeftWingDemocracy, leftWingDemocracy },
-                { Ideology.RightWingDemocracy, rightWingDemocracy },
-                { Ideology.Authoritarianism, authoritarianism },
-                { Ideology.Despotism, despotism },
-                { Ideology.Fascism, fascism }
-            };
-        }
+   
 
         public void SetNeighbors(Dictionary<Ecode, char> neighbors)
         {
@@ -100,7 +88,7 @@ namespace Escalation.World
 
         //Political Statistics
             private int politicalPower;
-            private double stability;
+            public double Stability { get; set; }
 
              
             
@@ -117,7 +105,21 @@ namespace Escalation.World
             {
                 return ideologies;
             }
-        
+
+            public void SetIdeologies(double communism, double socialism, double leftWingDemocracy, double rightWingDemocracy, double authoritarianism, double despotism, double fascism)
+            {
+                ideologies = new Dictionary<Ideology, double>
+                {
+                    { Ideology.Communism, communism },
+                    { Ideology.Socialism,socialism },
+                    { Ideology.LeftWingDemocracy, leftWingDemocracy },
+                    { Ideology.RightWingDemocracy, rightWingDemocracy },
+                    { Ideology.Authoritarianism, authoritarianism },
+                    { Ideology.Despotism, despotism },
+                    { Ideology.Fascism, fascism }
+                };
+            }
+
         public void DriftIdeologies()
         {
 

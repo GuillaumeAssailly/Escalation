@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Escalation.Manager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -114,15 +115,15 @@ namespace Escalation.World
         public void initCountries()
         {
             //European Countries : 
-            Nations.Add(new Nation(Ecode.FRA, 100, 15, 0.05, 0.10, 0.25, 0.40, 0.10, 0.05, 0.05));
-            Nations.Add(new Nation(Ecode.ALL, 100, 15, 0.5, 0, 0, 0, 0, 0, 0.5));
-            Nations.Add(new Nation(Ecode.ITA, 100, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
-            Nations.Add(new Nation(Ecode.ROY, 100, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
-            Nations.Add(new Nation(Ecode.ESP, 100, 15, 0, 0, 0, 0, 0.5, 0.5, 0));
+            Nations.Add(new Nation(Ecode.FRA, 0.2, 15, 0.05, 0.10, 0.25, 0.40, 0.10, 0.05, 0.05));
+            Nations.Add(new Nation(Ecode.ALL, 0.5, 15, 0.5, 0, 0, 0, 0, 0, 0.5));
+            Nations.Add(new Nation(Ecode.ITA, 0.3, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
+            Nations.Add(new Nation(Ecode.ROY, 0.2, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
+            Nations.Add(new Nation(Ecode.ESP, 0.1, 15, 0, 0, 0, 0, 0.5, 0.5, 0));
 
         }
 
-        public void Day()
+        public void AddDay()
         {
             CurrentDate = CurrentDate.AddDays(1);
         }

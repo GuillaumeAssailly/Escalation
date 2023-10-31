@@ -36,7 +36,7 @@ namespace Escalation.Manager
             switch (CurrentIdeology)
             {
                 case Ideology.Communism:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.Communism;
                     }
@@ -46,7 +46,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Socialism:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.Socialism;
                     }
@@ -58,7 +58,7 @@ namespace Escalation.Manager
 
                     break;
                 case Ideology.LeftWingDemocracy:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.LeftWingDemocracy;
                     }
@@ -69,7 +69,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.RightWingDemocracy:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.LeftWingDemocracy;
                     }
@@ -80,7 +80,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Authoritarianism:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.Authoritarianism;
                     }
@@ -90,7 +90,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Despotism:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.Despotism;
                     }
@@ -100,7 +100,7 @@ namespace Escalation.Manager
                     }
                     break;
                 case Ideology.Fascism:
-                    if (Random.NextDouble() < 0)
+                    if (Random.NextDouble() < CurrentNation.Stability)
                     {
                         NewRisingIdeology = Ideology.Fascism;
                     }
