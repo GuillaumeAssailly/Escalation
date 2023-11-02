@@ -64,14 +64,19 @@ namespace Escalation.World
 
 
         public Nation(Ecode code, 
-            double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism) 
+            double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism,
+            decimal population, double populationGrowthRate, double populationDeathRate, double populationDensity) 
         {
             Code = code;
             Stability = stability;
             this.politicalPower = politicalPower;
             SetIdeologies(Communism, Socialism, LeftWingDemocracy, RightWingDemocracy, Authoritarianism, Despotism, Fascism);
-            
-            
+
+            Population = population;
+            PopulationGrowthRate = populationGrowthRate;
+            PopulationDeathRate = populationDeathRate;
+            PopulationDensity = populationDensity;
+            PopulationHistory = new List<decimal>();
         }
 
    
@@ -120,66 +125,66 @@ namespace Escalation.World
                 };
             }
 
-        public void DriftIdeologies()
-        {
-
-            //sort ideologies by ascending percentage
-
-
-            //check if rising ideology progression dont go over 1 :
-            if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
+            public void DriftIdeologies()
             {
 
-                ideologies[risingIdeology.Item1] += risingIdeology.Item2;
-
-                int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
-
-                //TODO : check if not equal to zero
-                double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
-
-                ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                //sort ideologies by ascending percentage
 
 
-                for (int i = 0; i < ideologies.Count; i++)
+                //check if rising ideology progression dont go over 1 :
+                if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
                 {
-                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
+
+                    ideologies[risingIdeology.Item1] += risingIdeology.Item2;
+
+                    int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
+
+                    //TODO : check if not equal to zero
+                    double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
+
+                    ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+
+                    for (int i = 0; i < ideologies.Count; i++)
                     {
-                        if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
+                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
                         {
-                            ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
+                            if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
+                            {
+                                ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
+                            }
+                            else
+                            {
+                                // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
+                                double delta = totalToDecrease - ideologies.ElementAt(i).Value;
+                                ideologies[ideologies.ElementAt(i).Key] = 0;
+                                nbIdeoNotNull--;
+                                //TODO : check if not equal to zero
+                                totalToDecrease += delta / nbIdeoNotNull;
+                            }
                         }
-                        else
+                        //Print current ideology value : 
+                        //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+
+                    }
+                }
+                else
+                {
+                    ideologies[risingIdeology.Item1] = 1;
+                    // all other are at zero
+                    for (int i = 0; i < ideologies.Count; i++)
+                    {
+                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
                         {
-                            // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
-                            double delta = totalToDecrease - ideologies.ElementAt(i).Value;
                             ideologies[ideologies.ElementAt(i).Key] = 0;
-                            nbIdeoNotNull--;
-                            //TODO : check if not equal to zero
-                            totalToDecrease += delta / nbIdeoNotNull;
                         }
                     }
-                    //Print current ideology value : 
-                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
-
                 }
-            }
-            else
-            {
-                ideologies[risingIdeology.Item1] = 1;
-                // all other are at zero
-                for (int i = 0; i < ideologies.Count; i++)
-                {
-                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
-                    {
-                        ideologies[ideologies.ElementAt(i).Key] = 0;
-                    }
-                }
-            }
 
-            //print the Sum of all ideologies
-            //Console.WriteLine(ideologies.Sum(x => x.Value));
-             
-        }
+                //print the Sum of all ideologies
+                //Console.WriteLine(ideologies.Sum(x => x.Value));
+                 
+            }
 
 
 
@@ -209,11 +214,30 @@ namespace Escalation.World
 
 
         //Demographic Statistics
-            private ulong population;
-            private double populationGrowthRate;
-            private double populationDensity;
-            private double lifeExpectancy;
-            private double povertyRate;
+        private decimal _population;
+        public decimal Population
+        {
+            get => _population;
+            set
+            {
+                if (Population+value >= 0)
+                {
+                    _population = value;
+                }
+                else
+                {
+                    _population = 0;
+                }
+                
+
+            }
+        }
+
+        public double PopulationGrowthRate { get; set; }
+            public double PopulationDeathRate { get; set; }
+            public double PopulationDensity { get; set; }
+            
+            public List<decimal> PopulationHistory { get; set; }
 
 
 

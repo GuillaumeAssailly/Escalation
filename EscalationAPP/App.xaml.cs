@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using Escalation.Manager;
+using Escalation.Utils;
 using Escalation.World;
 using Random = Escalation.Utils.Random;
 
@@ -19,7 +20,7 @@ namespace EscalationAPP
         public Earth World { get; private set; }
         public Random Random { get; private set; }
         public IdeologyManager ideologyManager { get; private set; }
-
+        public PopulationManager populationManager { get; private set; }
        
 
 
@@ -27,19 +28,19 @@ namespace EscalationAPP
         {
             World = new Earth();
             Random = new Random();
-            ideologyManager = new IdeologyManager(World, Random);
 
             /////////////////////////////
 
        
             //Creating Managers : 
             ideologyManager = new IdeologyManager(World, Random);
-
+            populationManager = new PopulationManager(World, Random);
 
 
             //build countries : 
             World.initCountries();
             World.setCountriesNeighbors();
+            
          
 
            

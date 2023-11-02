@@ -14,6 +14,9 @@ namespace Escalation.Manager
         //Attribute of random generator
         public Utils.Random Random;
 
+     
+
+
         //Constructor : 
         protected Manager(Earth World, Utils.Random Random)
         {

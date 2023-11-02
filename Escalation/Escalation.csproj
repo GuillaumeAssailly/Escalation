@@ -48,6 +48,9 @@
     <Compile Include="Manager\GeographyManager.cs" />
     <Compile Include="Manager\IdeologyManager.cs" />
     <Compile Include="Manager\Manager.cs" />
+    <Compile Include="Manager\PopulationManager.cs" />
+    <Compile Include="Utils\FileReader.cs" />
+    <Compile Include="Utils\FileWriter.cs" />
     <Compile Include="Utils\Random.cs" />
     <Compile Include="Utils\TinyMT64.cs" />
     <Compile Include="World\Earth.cs" />

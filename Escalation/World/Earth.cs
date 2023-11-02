@@ -115,11 +115,16 @@ namespace Escalation.World
         public void initCountries()
         {
             //European Countries : 
-            Nations.Add(new Nation(Ecode.FRA, 0.2, 15, 0.05, 0.10, 0.25, 0.40, 0.10, 0.05, 0.05));
-            Nations.Add(new Nation(Ecode.ALL, 0.5, 15, 0.5, 0, 0, 0, 0, 0, 0.5));
-            Nations.Add(new Nation(Ecode.ITA, 0.3, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0));
-            Nations.Add(new Nation(Ecode.ROY, 0.2, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0));
-            Nations.Add(new Nation(Ecode.ESP, 0.1, 15, 0, 0, 0, 0, 0.5, 0.5, 0));
+            Nations.Add(new Nation(Ecode.FRA, 0.2, 15, 0.05, 0.10, 0.25, 0.40, 0.10, 0.05, 0.05,
+                67935660,1.3,0.951, 119.1));
+            Nations.Add(new Nation(Ecode.ALL, 0.5, 15, 0.5, 0, 0, 0, 0, 0, 0.5,
+                84079811,0.950, 1.197, 164.2 ));
+            Nations.Add(new Nation(Ecode.ITA, 0.3, 15, 0, 0, 0.50, 0.45, 0.05, 0, 0,
+                58856847,0.730, 1.127, 201.6));
+            Nations.Add(new Nation(Ecode.ROY, 0.2, 15, 0.05, 0, 0, 0, 0.5, 0.45, 0,
+                66971411,1.1,9.12,275.2 ));
+            Nations.Add(new Nation(Ecode.ESP, 0.1, 15, 0, 0, 0, 0, 0.5, 0.5, 0,
+                47615034,0.79,1.011, 93.9));
 
         }
 

@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Escalation.Manager;
+using Escalation.Utils;
 using Escalation.World;
 using LiveCharts;
 using LiveCharts.Defaults;
@@ -36,14 +37,45 @@ namespace EscalationAPP
         /// ATTRIBUTES OBJECTS : 
         /// </summary>
         public Earth World => (Application.Current as App)?.World;
+
         public DateTime CurrentDate => World.CurrentDate;
         public Random Random => (App.Current as App).Random;
         public IdeologyManager IdeologyManager => (App.Current as App).ideologyManager;
+        public PopulationManager PopulationManager => (App.Current as App).populationManager;
 
+        private double _axisMax;
+        private double _axisMin;
+        private double _axisMaxY;
+        public double AxisMin
+        {
+            get { return _axisMin; }
+            set
+            {
+                _axisMin = value;
+                OnPropertyChanged("AxisMin");
+            }
+        }
+        public double AxisMax
+        {
+            get { return _axisMax; }
+            set
+            {
+                _axisMax = value;
+                OnPropertyChanged("AxisMax");
+            }
+        }
 
+        public double AxisMaxY
+        {
+            get { return _axisMaxY; }
+            set
+            {
+                _axisMaxY = value;
+                OnPropertyChanged("AxisMaxY");
+            }
+        }
+        public double AxisStep { get; set; }
 
-
-       
         /// <summary>
         /// EVENTS : 
         /// </summary>
@@ -64,10 +96,12 @@ namespace EscalationAPP
         }
 
         public SeriesCollection FocusedIdeologies { get; set; }
+        public SeriesCollection FocusedPopulation { get; set; }
 
+      
 
-
-
+        public ChartValues<decimal> HistoPopulation { get; set; }
+       
 
         public MainWindow()
         {
@@ -78,17 +112,23 @@ namespace EscalationAPP
 
             //Events:
             PreviewKeyDown += MainWindow_PreviewKeyDown;
-
+            AxisStep = 10;
+            AxisMax = 50;
+            AxisMin = 0;
+            AxisMaxY = 100;
 
             //Initializing the focused nation :
             FocusedNation = Ecode.FRA;
-
-
-            //Construction of UI elements : 
-            initChart();
+            HistoPopulation = new ChartValues<decimal>();
 
             //Launch the tests in an other thread :
             launch();
+
+            //Construction of UI elements : 
+            initChart();
+            initPopGraph();
+
+           
 
 
 
@@ -100,10 +140,19 @@ namespace EscalationAPP
             await Task.Run(() => 
             {
                 /////////////////////////////
+                /// - FILES CREATION -  /////
+                /////////////////////////////
+                foreach (Nation n in World.Nations)
+                {
+                    FileWriter.CreateFiles("", n.Code);
+                }
+
+                /////////////////////////////
                 ///  - TESTS -  /////////////
                 /////////////////////////////  
                 for (int i = 0; i < 100000; i++)
                 {
+
                     if (isPaused)
                     {
                         while (isPaused)
@@ -120,10 +169,13 @@ namespace EscalationAPP
                         {
                             IdeologyManager.ManageIdeologies(currentNation.Code);
                         }
+
                     }
+
 
                     foreach (Nation currentNation in World.Nations)
                     {
+                        PopulationManager.ManagePopulation(currentNation.Code);
                         currentNation.DriftIdeologies();
                         //Print majorIdeology in each nation : 
                         Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
@@ -133,7 +185,7 @@ namespace EscalationAPP
 
 
                     //Delay of 1 second :
-                    Thread.Sleep(speed * 500+100);
+                    Thread.Sleep(speed * 500+5);
 
                     Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
 
@@ -151,10 +203,12 @@ namespace EscalationAPP
 
         private void UpdateUI()
         {
-            UpdateChart();
             DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
+            UpdateChart();
+            UpdatePopGraph();
+
         }
-      
+
 
         private void UpdateChart()
         {
@@ -168,6 +222,17 @@ namespace EscalationAPP
             FocusedIdeologies.ElementAt(5).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Despotism] * 100;
             FocusedIdeologies.ElementAt(6).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Fascism] * 100;
 
+        }
+       
+        private void UpdatePopGraph()
+        {
+            AxisMaxY = (double)World.Nations[(int)FocusedNation].Population*1.8;
+            if (HistoPopulation.Count > 50)
+            {
+                HistoPopulation.RemoveAt(0);
+            }
+            HistoPopulation.Add(World.Nations[(int)FocusedNation].Population);
+         
         }
 
         private void initChart()
@@ -229,11 +294,40 @@ namespace EscalationAPP
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FocusedIdeologies)));
         }
 
+        void initPopGraph()
+        {
+            //HistoPopulation = FileReader.ReadPopulation(FocusedNation.ToString() + "/population.txt").AsChartValues();
+
+            HistoPopulation = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
+
+            FocusedPopulation = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Population",
+                    Values = HistoPopulation,
+                    PointGeometry = null,
+                    Fill = Brushes.Transparent
+                }
+            };
+           
+        }
 
 
+        private void initPopGraphOnCountryChange()
+        {
 
+            HistoPopulation = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
+            FocusedPopulation.ElementAt(0).Values = HistoPopulation;
+        }
 
         ///////////////////////////////////////EVENTS : ///////////////////////////////////////
+        protected virtual void OnPropertyChanged(string propertyName = null)
+        {
+            if (PropertyChanged != null) 
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void Country_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Path clickedPath = (Path)sender;
@@ -241,7 +335,12 @@ namespace EscalationAPP
             FocusedNation = focusedNation;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FocusedNation)));
-            UpdateChart();
+
+
+
+
+            initPopGraphOnCountryChange();
+            UpdateUI();
 
         }
 
@@ -267,6 +366,12 @@ namespace EscalationAPP
                     break;
                 case Key.Add:                   
                     if (speed > 0) { speed--; }
+                    break;
+                case Key.X:
+                    World.Nations[(int)FocusedNation].Population -= Random.Next(0, 10000000);
+                    break;
+                case Key.C:
+                    World.Nations[(int)FocusedNation].Population += Random.Next(0, 10000000);
                     break;
             }
             {

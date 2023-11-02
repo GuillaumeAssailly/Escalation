@@ -38,5 +38,14 @@ namespace Escalation.Utils
         {
             return TMT64.GetRandDouble();
         }
+
+        public static double Gaussian(double mean, double deviation)
+        {
+            double u1 = NextDouble();
+            double u2 = NextDouble();
+            double z = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+            return mean + deviation * z;
+        }
     }
 }
