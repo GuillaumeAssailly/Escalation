@@ -52,10 +52,8 @@ namespace Escalation.Manager
                     }
                     else
                     {
-                        Nation randomNeighbor = World.Nations[(int)CurrentNation.GetNeighbors().Keys.ElementAt(Random.Next(CurrentNation.GetNeighbors().Count))];
-                        NewRisingIdeology = randomNeighbor.getIdeologies().Last().Key;
+                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
                     }
-
                     break;
                 case Ideology.LeftWingDemocracy:
                     if (Random.NextDouble() < CurrentNation.Stability)
@@ -64,19 +62,17 @@ namespace Escalation.Manager
                     }
                     else
                     {
-                        Nation randomNeighbor = World.Nations[(int)CurrentNation.GetNeighbors().Keys.ElementAt(Random.Next(CurrentNation.GetNeighbors().Count))];
-                        NewRisingIdeology = randomNeighbor.getIdeologies().Last().Key;
+                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
                     }
                     break;
                 case Ideology.RightWingDemocracy:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.LeftWingDemocracy;
+                        NewRisingIdeology = Ideology.RightWingDemocracy;
                     }
                     else
                     {
-                        Nation randomNeighbor = World.Nations[(int)CurrentNation.GetNeighbors().Keys.ElementAt(Random.Next(CurrentNation.GetNeighbors().Count))];
-                        NewRisingIdeology = randomNeighbor.getIdeologies().Last().Key;
+                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
                     }
                     break;
                 case Ideology.Authoritarianism:

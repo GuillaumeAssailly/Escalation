@@ -33,5 +33,7 @@ namespace Escalation.Utils
             File.AppendAllText(path,line+Environment.NewLine);
         }
         
+
+
     }
 }

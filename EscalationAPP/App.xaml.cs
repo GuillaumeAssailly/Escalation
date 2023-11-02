@@ -38,7 +38,10 @@ namespace EscalationAPP
 
 
             //build countries : 
-            World.initCountries();
+            //World.initCountries();
+
+            World.Nations.AddRange(FileReader.ReadNationsFromCsv("../../ESCALATION.csv"));
+
             World.setCountriesNeighbors();
             
          

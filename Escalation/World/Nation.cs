@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Escalation.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Random = Escalation.Utils.Random;
+
 
 namespace Escalation.World
 {
@@ -8,34 +11,46 @@ namespace Escalation.World
     //Enum for ideologies
     public enum Ideology
     {
-       Communism,
-       Socialism,
-       LeftWingDemocracy,
-       RightWingDemocracy,
-       Authoritarianism,
-       Despotism,
-       Fascism,
+        Communism,
+        Socialism,
+        LeftWingDemocracy,
+        RightWingDemocracy,
+        Authoritarianism,
+        Despotism,
+        Fascism,
     }
 
 
     //Enum for Ecodes
     public enum Ecode
     {
-        /* AFG, ALB, ALG, ALL, AND, ANG, ARG, ARM, ASA, AUS, AUT, AZE, BAH, BAN, BEI, BEL, BEN, BHO, BIE, BIR,
-         BOL, BOS, BOT, BRA, BRU, BUD, BUL, BUR, CAM, CAN, CAO, CHI, CHL, CHY, CIV, COL, COS, CRO, CUB, DAN, 
-         DJI, EAU, EGY, EQA, ERY, ESP, EST, ESW, ETH, ETU, FGY, FID, FIN, FRA, GAB, GAM, GBI, GEO, GEQ, GHA, 
-         GRE, GRO, GUA, GUI, GUY, HAI, HOD, HON, IDO, IMA, IND, IRA, IRK, IRL, ISA, ISL, ISR, ITA, JAM, JAP, 
-         JOR, KAZ, KEN, KIR, KOS, KOW, LAO, LES, LET, LIA, LIB, LIY, LIT, LUX, MAC, MAD, MAL, MAR, MAS, MAU, 
-         MAW, MEX, MOG, MOL, MON, MOT, MOZ, NAM, NCA, NCO, NEP, NGR, NIC, NIG, NOR, NZE, OGD, OMA, OUZ, PAB, 
-         PAK, PAL, PAN, PAR, PER, PHI, PNG, POL, POR, PRI, QAT, RCE, RDC, RDE, RDO, ROM, ROY, RSA, RUS, RWA, 
-         SAH, SAL, SCO, SDS, SEN, SER, SLE, SLO, SLV, SOM, SOU, SRI, SUE, SUI, SUR, SVA, SYR, TAA, TAD, TAN, 
-         TAW, TCH, TCQ, TET, THA, TOG, TOR, TUM, TUN, TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM*/
+        AFG, SAH, RSA, ALB, ALG, ALL, AND, ANG, ASA, ARG, ARM, AUS, PAL,
+        AUT, AZE, BAH, BAN, BEL, BEI, BEN, BHO, BIE, BIR, BOL, BOS, BOT,
+        BRA, BRU, BUL, BUR, BUD, CAM, CAO, CAN, CHL, CHI, CHY, COL, NCO,
+        SCO, COS, CIV, CRO, CUB, DAN, DJI, EGY, EAU, EQA, ERY, ESP, EST,
+        ESW, ETU, ETH, FID, FIN, FRA, GAB, GAM, GEO, GHA, GRE, GRO, GUA,
+        GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND, IDO, IRK,
+        IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR, KAZ, KEN, KIR, KOS, KOW,
+        LAO, LES, LET, LIB, LIA, LIY, LIT, LUX, MAC, MAD, MAS, MAW, MAL,
+        MAR, MAU, MEX, MOL, MON, MOG, MOT, MOZ, NAM, NEP, NIC, NGR, NIG,
+        NOR, NCA, NZE, OMA, OGD, OUZ, PAK, PAN, PNG, PAR, PAB, PER, PHI,
+        POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RWA, SAL,
+        SEN, SER, SLE, SLV, SLO, SOM, SOU, SDS, SRI, SUE, SUI, SUR, SVA,
+        SYR, TAD, TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN, TUM,
+        TUR, UKR, URU, VAN, VAT, VEN, VIE, YEM, ZAM, ZIM,
+        /*
+                FRA = 0, 
+                ALL,
+                ITA,
+                ROY,
+                ESP,
+                IRL,
+                POR,
+                BEL,
+                PAB,
+                SUI,
+                LUX,*/
 
-        FRA = 0, 
-        ALL,
-        ITA,
-        ROY,
-        ESP
 
     }
 
@@ -63,9 +78,9 @@ namespace Escalation.World
         private Dictionary<Ecode, char> neighbors;
 
 
-        public Nation(Ecode code, 
+        public Nation(Ecode code,
             double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism,
-            decimal population, double populationGrowthRate, double populationDeathRate, double populationDensity) 
+            decimal population, double populationGrowthRate, double populationDeathRate, double populationDensity)
         {
             Code = code;
             Stability = stability;
@@ -79,7 +94,7 @@ namespace Escalation.World
             PopulationHistory = new List<decimal>();
         }
 
-   
+
 
         public void SetNeighbors(Dictionary<Ecode, char> neighbors)
         {
@@ -92,28 +107,28 @@ namespace Escalation.World
         }
 
         //Political Statistics
-            private int politicalPower;
-            public double Stability { get; set; }
+        private int politicalPower;
+        public double Stability { get; set; }
 
-             
-            
-            private Dictionary<Ideology, double> ideologies;       //Dictionnary of ideologies to their respective percentages
-            private Tuple<Ideology, double> risingIdeology;        //Tuple of the ideology that is rising and the percentage gained every day
 
-            
-            public void SetRisingIdeology(Ideology ideology, double percentage)
-            {
-                risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
-            }
 
-            public Dictionary<Ideology, double>  getIdeologies()
-            {
-                return ideologies;
-            }
+        private Dictionary<Ideology, double> ideologies;       //Dictionnary of ideologies to their respective percentages
+        private Tuple<Ideology, double> risingIdeology;        //Tuple of the ideology that is rising and the percentage gained every day
 
-            public void SetIdeologies(double communism, double socialism, double leftWingDemocracy, double rightWingDemocracy, double authoritarianism, double despotism, double fascism)
-            {
-                ideologies = new Dictionary<Ideology, double>
+
+        public void SetRisingIdeology(Ideology ideology, double percentage)
+        {
+            risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
+        }
+
+        public Dictionary<Ideology, double> getIdeologies()
+        {
+            return ideologies;
+        }
+
+        public void SetIdeologies(double communism, double socialism, double leftWingDemocracy, double rightWingDemocracy, double authoritarianism, double despotism, double fascism)
+        {
+            ideologies = new Dictionary<Ideology, double>
                 {
                     { Ideology.Communism, communism },
                     { Ideology.Socialism,socialism },
@@ -123,92 +138,120 @@ namespace Escalation.World
                     { Ideology.Despotism, despotism },
                     { Ideology.Fascism, fascism }
                 };
+            //TODO : REPLACE RANDOM IDEOLOGIES GENERATOR : 
+            
+            double sum = 0;
+            double[] numbers = new double[7];
+
+            for (int i = 0; i < 6; i++)
+            {
+                double randomNumber = Random.NextDouble() *(1 - sum);
+                numbers[i] = randomNumber;
+                sum += randomNumber;
             }
 
-            public void DriftIdeologies()
+            numbers[6] = 1 - sum;
+
+            for (int i = numbers.Length - 1; i > 0; i--)
+            {
+                int j = Random.Next(i + 1);
+                (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
+            }
+
+            ideologies[Ideology.Communism] = numbers[0];
+            ideologies[Ideology.Socialism] = numbers[1];
+            ideologies[Ideology.LeftWingDemocracy] = numbers[2];
+            ideologies[Ideology.RightWingDemocracy] = numbers[3];
+            ideologies[Ideology.Authoritarianism] = numbers[4];
+            ideologies[Ideology.Despotism] = numbers[5];
+            ideologies[Ideology.Fascism] = numbers[6];
+
+        }
+
+        public void DriftIdeologies()
+        {
+
+            //sort ideologies by ascending percentage
+
+
+            //check if rising ideology progression dont go over 1 :
+            if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
             {
 
-                //sort ideologies by ascending percentage
+                ideologies[risingIdeology.Item1] += risingIdeology.Item2;
+
+                int nbIdeoNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 && x.Value > 0);
+
+                //TODO : check if not equal to zero
+                double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
+
+                ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
 
-                //check if rising ideology progression dont go over 1 :
-                if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
+                for (int i = 0; i < ideologies.Count; i++)
                 {
-
-                    ideologies[risingIdeology.Item1] += risingIdeology.Item2;
-
-                    int nbIdeoNotNull = ideologies.Count(x =>x.Key!= risingIdeology.Item1 && x.Value > 0);
-
-                    //TODO : check if not equal to zero
-                    double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
-
-                    ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-
-
-                    for (int i = 0; i < ideologies.Count; i++)
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
                     {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
+                        if (ideologies.ElementAt(i).Value - totalToDecrease > 0)
                         {
-                            if (ideologies.ElementAt(i).Value - totalToDecrease > 0 )
-                            {
-                                ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease; 
-                            }
-                            else
-                            {
-                                // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
-                                double delta = totalToDecrease - ideologies.ElementAt(i).Value;
-                                ideologies[ideologies.ElementAt(i).Key] = 0;
-                                nbIdeoNotNull--;
-                                //TODO : check if not equal to zero
-                                totalToDecrease += delta / nbIdeoNotNull;
-                            }
+                            ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease;
                         }
-                        //Print current ideology value : 
-                        //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
-
-                    }
-                }
-                else
-                {
-                    ideologies[risingIdeology.Item1] = 1;
-                    // all other are at zero
-                    for (int i = 0; i < ideologies.Count; i++)
-                    {
-                        if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                        else
                         {
+                            // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
+                            double delta = totalToDecrease - ideologies.ElementAt(i).Value;
                             ideologies[ideologies.ElementAt(i).Key] = 0;
+                            nbIdeoNotNull--;
+                            //TODO : check if not equal to zero
+                            totalToDecrease += delta / nbIdeoNotNull;
                         }
                     }
-                }
+                    //Print current ideology value : 
+                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
 
-                //print the Sum of all ideologies
-                //Console.WriteLine(ideologies.Sum(x => x.Value));
-                 
+                }
             }
+            else
+            {
+                ideologies[risingIdeology.Item1] = 1;
+                // all other are at zero
+                for (int i = 0; i < ideologies.Count; i++)
+                {
+                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                    {
+                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                    }
+                }
+            }
+
+            //print the Sum of all ideologies
+            //Console.WriteLine(ideologies.Sum(x => x.Value));
+
+        }
 
 
 
 
         //Economic Statistics
         private ulong industrialCapacity;
-            private ulong agriculturalCapacity;
-            private ulong commercialCapacity;
+        private ulong agriculturalCapacity;
+        private ulong commercialCapacity;
 
-            
-            private ulong  GDP;  
-            private double GDPgrowthRate;
+
+        private ulong GDP;
+        private double GDPgrowthRate;
 
 
 
         //Military Statistics
-            private double manpower;                            //Percentage of population currently in the military
+        private double manpower;                            //Percentage of population currently in the military
 
-            private int victoryPoints;
+        private int victoryPoints;
 
-            private ulong landForces; 
-            private ulong airForces;
-            private ulong navalForces;  
-            private ulong nuclearForces;
+        private ulong landForces;
+        private ulong airForces;
+        private ulong navalForces;
+        private ulong nuclearForces;
 
 
 
@@ -220,7 +263,7 @@ namespace Escalation.World
             get => _population;
             set
             {
-                if (Population+value >= 0)
+                if (Population + value >= 0)
                 {
                     _population = value;
                 }
@@ -228,29 +271,29 @@ namespace Escalation.World
                 {
                     _population = 0;
                 }
-                
+
 
             }
         }
 
         public double PopulationGrowthRate { get; set; }
-            public double PopulationDeathRate { get; set; }
-            public double PopulationDensity { get; set; }
-            
-            public List<decimal> PopulationHistory { get; set; }
+        public double PopulationDeathRate { get; set; }
+        public double PopulationDensity { get; set; }
+
+        public List<decimal> PopulationHistory { get; set; }
 
 
 
 
 
         //Geographic Statistics
-            private ulong landArea;
-            private string maincity;
+        private ulong landArea;
+        private string maincity;
 
 
         //Intelligence Statistics
-            private int espionagePoints;
-            private int counterEspionagePoints;
+        private int espionagePoints;
+        private int counterEspionagePoints;
 
 
 
