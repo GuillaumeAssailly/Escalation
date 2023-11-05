@@ -1,11 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escalation", "Escalation\Escalation.csproj", "{4B6BB8CA-1422-481F-A0A6-E892C33707EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Escalation", "Escalation\Escalation.csproj", "{4B6BB8CA-1422-481F-A0A6-E892C33707EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EscalationAPP", "EscalationAPP\EscalationAPP.csproj", "{0E8A073A-6C06-418C-B257-2346E56BC6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EscalationAPP", "EscalationAPP\EscalationAPP.csproj", "{0E8A073A-6C06-418C-B257-2346E56BC6A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

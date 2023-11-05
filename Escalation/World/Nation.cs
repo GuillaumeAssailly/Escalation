@@ -1,6 +1,7 @@
 ﻿using Escalation.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Random = Escalation.Utils.Random;
 
@@ -92,6 +93,12 @@ namespace Escalation.World
             PopulationDeathRate = populationDeathRate;
             PopulationDensity = populationDensity;
             PopulationHistory = new List<decimal>();
+
+            TreasuryHistory = new List<decimal>();
+            IncomesHistory = new List<decimal>();
+            ExpensesHistory = new List<decimal>();
+            DebtHistory = new List<decimal>();
+
         }
 
 
@@ -207,7 +214,7 @@ namespace Escalation.World
                         }
                     }
                     //Print current ideology value : 
-                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+                    Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
 
                 }
             }
@@ -233,13 +240,62 @@ namespace Escalation.World
 
 
         //Economic Statistics
-        private ulong industrialCapacity;
-        private ulong agriculturalCapacity;
-        private ulong commercialCapacity;
+        private decimal expenses;
+        private decimal incomes;
+        private decimal debt;
+        private decimal debtInterest;
+        private decimal treasury;
 
+        private decimal GDP;
+        private decimal GDPGrowthRate;
 
-        private ulong GDP;
-        private double GDPgrowthRate;
+        public decimal Expenses { get => expenses; set => expenses = value < 0 ? 0 : value; }
+        public decimal Incomes { get => incomes; set => incomes = value < 0 ? 0 : value; }
+        public decimal Debt { get => debt; set => debt = value < 0 ? 0 : value; }
+        public decimal DebtInterest { get => debtInterest; set => debtInterest = value < 0 ? 0 : value; }
+        public decimal Treasury { get => treasury; set => treasury = value < 0 ? 0 : value; }
+
+        public void  initEconomicStats(decimal expenses, decimal incomes, decimal debt, decimal debtInterest, decimal treasury)
+        {
+            this.expenses = expenses;
+            this.incomes = incomes;
+            this.debt = debt;
+            this.debtInterest = debtInterest;
+            this.treasury = treasury;
+        }
+
+        public void UpdateTreasury()
+        {
+            
+            decimal netBalance = incomes - expenses - debtInterest;
+
+            treasury += netBalance;
+
+            if (treasury <= 0)
+            {
+                debt += (decimal)Math.Abs(treasury); 
+                debtInterest+= debt * 0.00001m;
+                treasury = 0; 
+            }
+            else
+            { 
+                if (treasury >= debt)
+                {
+                    treasury -= debt;
+                    debt = 0;
+                }
+                else
+                {
+                    debt += (decimal)Math.Abs(debt - treasury);
+                    debtInterest += debt * 0.00001m;
+                    treasury = 0;
+                }
+            }
+            
+            // Display all the values :
+            Trace.WriteLine("Treasury : " + treasury + " Debt : " + debt + " Debt Interest : " + debtInterest + " Net Balance : " + netBalance);
+        }
+
 
 
 
@@ -281,10 +337,10 @@ namespace Escalation.World
         public double PopulationDensity { get; set; }
 
         public List<decimal> PopulationHistory { get; set; }
-
-
-
-
+        public List<decimal> TreasuryHistory { get; set; }
+        public List<decimal> IncomesHistory { get; set; }
+        public List<decimal> ExpensesHistory { get; set; }
+        public List<decimal> DebtHistory { get; set; }
 
         //Geographic Statistics
         private ulong landArea;

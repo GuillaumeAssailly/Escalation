@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Escalation.Manager;
 using Escalation.Utils;
 using Escalation.World;
@@ -21,6 +21,8 @@ using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
+using Wpf.Ui.Controls;
+using Path = System.Windows.Shapes.Path;
 using Random = Escalation.Utils.Random;
 
 namespace EscalationAPP
@@ -28,7 +30,7 @@ namespace EscalationAPP
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : FluentWindow, INotifyPropertyChanged
     {
 
         //TODO : Fix the crash when exiting the app as Application could be Null and then World as Well
@@ -42,32 +44,14 @@ namespace EscalationAPP
         public Random Random => (App.Current as App).Random;
         public IdeologyManager IdeologyManager => (App.Current as App).ideologyManager;
         public PopulationManager PopulationManager => (App.Current as App).populationManager;
+        public EconomyManager EconomyManager => (App.Current as App).economyManager;
 
-        private double _axisMax;
-        private double _axisMin;
+
+    
         private double _axisMaxY;
-        public double AxisMin
-        {
-            get { return _axisMin; }
-            set
-            {
-                _axisMin = value;
-                OnPropertyChanged("AxisMin");
-            }
-        }
-        public double AxisMax
-        {
-            get { return _axisMax; }
-            set
-            {
-                _axisMax = value;
-                OnPropertyChanged("AxisMax");
-            }
-        }
-
         public double AxisMaxY
         {
-            get { return _axisMaxY; }
+            get => _axisMaxY;
             set
             {
                 _axisMaxY = value;
@@ -98,23 +82,30 @@ namespace EscalationAPP
         public SeriesCollection FocusedIdeologies { get; set; }
         public SeriesCollection FocusedPopulation { get; set; }
 
+        public SeriesCollection FocusedEconomy { get; set; }
       
 
         public ChartValues<decimal> HistoPopulation { get; set; }
-       
+        public ChartValues<decimal> HistoTreasury { get; set; }
+        public ChartValues<decimal> HistoExpenses {get; set; }
+        public ChartValues<decimal> HistoIncomes { get; set; }
+        public ChartValues<decimal> HistoDebts { get; set; }
+
+    
+
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
+
             pauseToken = pauseTokenSource.Token;
 
             //Events:
             PreviewKeyDown += MainWindow_PreviewKeyDown;
             AxisStep = 10;
-            AxisMax = 50;
-            AxisMin = 0;
+          
             AxisMaxY = 100;
 
             //Initializing the focused nation :
@@ -127,12 +118,14 @@ namespace EscalationAPP
             //Construction of UI elements : 
             initChart();
             initPopGraph();
+            initEconomyGraph();
 
            
 
 
 
         }
+
 
         ///////////////////////////////////////THREADS : ///////////////////////////////////////
         private async void launch()
@@ -176,10 +169,16 @@ namespace EscalationAPP
                     foreach (Nation currentNation in World.Nations)
                     {
                         PopulationManager.ManagePopulation(currentNation.Code);
+                        if (World.CurrentDate.Day == 1)
+                        {
+                            EconomyManager.ManageEconomy(currentNation.Code);
+
+                        }
                         currentNation.DriftIdeologies();
                         //Print majorIdeology in each nation : 
                         Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
                     }
+
 
                     World.AddDay();
 
@@ -190,7 +189,6 @@ namespace EscalationAPP
                     Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
 
                     pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
-
 
                 }
             });
@@ -206,7 +204,7 @@ namespace EscalationAPP
             DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
             UpdateChart();
             UpdatePopGraph();
-
+            UpdateEconomyGraph();
         }
 
 
@@ -235,6 +233,26 @@ namespace EscalationAPP
          
         }
 
+        private void UpdateEconomyGraph()
+        {
+            if (World.CurrentDate.Day == 1)
+            {
+                if (HistoTreasury.Count > 12)
+                {
+                    HistoTreasury.RemoveAt(0);
+                    HistoExpenses.RemoveAt(0);
+                    HistoIncomes.RemoveAt(0);
+                    HistoDebts.RemoveAt(0);
+                }
+                HistoTreasury.Add(World.Nations[(int)FocusedNation].Treasury);
+                HistoExpenses.Add(World.Nations[(int)FocusedNation].Expenses);
+                HistoIncomes.Add(World.Nations[(int)FocusedNation].Incomes);
+                HistoDebts.Add(World.Nations[(int)FocusedNation].Debt);
+            }
+           
+        }
+        
+
         private void initChart()
         {
             Dictionary<Ideology, double> ideologies = World.Nations[(int)focusedNation].getIdeologies();
@@ -246,47 +264,58 @@ namespace EscalationAPP
                 {
                     Title = "Communism",
                     Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Communism] * 100) },
-                    Fill = Brushes.DarkRed
+                    Fill = Brushes.DarkRed,
+                    Stroke = Brushes.Transparent 
                 },
                 new PieSeries
                 {
                     Title = "Socialism",
                     Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Socialism] * 100) },
-                    Fill = Brushes.Red
+                    Fill = Brushes.Red,
+                    Stroke = Brushes.Transparent
+
                 },
                 new PieSeries
                 {
                     Title = "LeftWingDemocracy",
                     Values = new ChartValues<ObservableValue>
                         { new ObservableValue(ideologies[Ideology.LeftWingDemocracy] * 100) },
-                    Fill = Brushes.Pink
+                    Fill = Brushes.Pink,
+                    Stroke = Brushes.Transparent
+
                 },
                 new PieSeries
                 {
                     Title = "RightWingDemocracy",
                     Values = new ChartValues<ObservableValue>
                         { new ObservableValue(ideologies[Ideology.RightWingDemocracy]*100) },
-                    Fill = Brushes.LightBlue
+                    Fill = Brushes.LightBlue,
+                    Stroke = Brushes.Transparent
+
                 },
                 new PieSeries
                 {
                     Title = "Authoritarianism",
                     Values = new ChartValues<ObservableValue>
                         { new ObservableValue(ideologies[Ideology.Authoritarianism] * 100) },
-                    Fill = Brushes.Gray
+                    Fill = Brushes.Gray,
+                    Stroke = Brushes.Transparent
+
                 },
                 new PieSeries
                 {
                     Title = "Despotism",
                     Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Despotism] * 100) },
-                    Fill = Brushes.Black
+                    Fill = Brushes.Black,
+                    Stroke = Brushes.Transparent 
                 },
                 new PieSeries
                 {
                     Title = "Fascism",
                     Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Fascism]*100) },
 
-                    Fill = Brushes.SaddleBrown
+                    Fill = Brushes.SaddleBrown,
+                    Stroke = Brushes.Transparent
 
                 }
 
@@ -298,7 +327,7 @@ namespace EscalationAPP
         {
             //HistoPopulation = FileReader.ReadPopulation(FocusedNation.ToString() + "/population.txt").AsChartValues();
 
-            HistoPopulation = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
+            HistoTreasury = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
 
             FocusedPopulation = new SeriesCollection
             {
@@ -316,9 +345,66 @@ namespace EscalationAPP
 
         private void initPopGraphOnCountryChange()
         {
-
-            HistoPopulation = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
+            HistoPopulation  = World.Nations[(int)FocusedNation].PopulationHistory.AsChartValues();
             FocusedPopulation.ElementAt(0).Values = HistoPopulation;
+        }
+
+        private void initEconomyGraphOnCountryChange()
+        {
+            HistoTreasury = World.Nations[(int)FocusedNation].TreasuryHistory.AsChartValues();
+            HistoExpenses = World.Nations[(int)FocusedNation].ExpensesHistory.AsChartValues();
+            HistoIncomes = World.Nations[(int)FocusedNation].IncomesHistory.AsChartValues();
+            HistoDebts = World.Nations[(int)FocusedNation].DebtHistory.AsChartValues();
+
+            FocusedEconomy.ElementAt(0).Values = HistoTreasury;
+            FocusedEconomy.ElementAt(1).Values = HistoExpenses;
+            FocusedEconomy.ElementAt(2).Values = HistoIncomes;
+            FocusedEconomy.ElementAt(3).Values = HistoDebts;
+        }
+
+        public void initEconomyGraph()
+        {
+            HistoTreasury = World.Nations[(int)FocusedNation].TreasuryHistory.AsChartValues();
+            HistoExpenses = World.Nations[(int)FocusedNation].ExpensesHistory.AsChartValues();
+            HistoIncomes = World.Nations[(int)FocusedNation].IncomesHistory.AsChartValues();
+            HistoDebts = World.Nations[(int)FocusedNation].DebtHistory.AsChartValues();
+
+            FocusedEconomy = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Treasury",
+                    Values = HistoTreasury,
+                    Stroke = Brushes.Red,
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 4
+                },
+                new LineSeries
+                {
+                    Title = "Expenses",
+                    Values = HistoExpenses,
+                    Stroke = Brushes.Blue,
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 4
+                },
+                new LineSeries
+                {
+                    Title = "Incomes",
+                    Values = HistoIncomes,
+                    Stroke = Brushes.Green,
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 4
+                },
+                new LineSeries
+                {
+                    Title = "Debts",
+                    Values = HistoDebts,
+                    Stroke = Brushes.Black,
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 4
+                }
+
+            };
         }
 
         ///////////////////////////////////////EVENTS : ///////////////////////////////////////
@@ -327,6 +413,9 @@ namespace EscalationAPP
             if (PropertyChanged != null) 
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+        
 
         private void Country_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -340,6 +429,7 @@ namespace EscalationAPP
 
 
             initPopGraphOnCountryChange();
+            initEconomyGraphOnCountryChange();
             UpdateUI();
 
         }

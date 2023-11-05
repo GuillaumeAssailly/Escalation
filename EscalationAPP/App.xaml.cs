@@ -22,7 +22,7 @@ namespace EscalationAPP
         public IdeologyManager ideologyManager { get; private set; }
         public PopulationManager populationManager { get; private set; }
        
-
+        public EconomyManager economyManager { get; private set; }
 
         public App()
         {
@@ -35,18 +35,23 @@ namespace EscalationAPP
             //Creating Managers : 
             ideologyManager = new IdeologyManager(World, Random);
             populationManager = new PopulationManager(World, Random);
-
+            economyManager = new EconomyManager(World, Random);
 
             //build countries : 
             //World.initCountries();
 
-            World.Nations.AddRange(FileReader.ReadNationsFromCsv("../../ESCALATION.csv"));
+            World.Nations.AddRange(FileReader.ReadNationsFromCsv("../../../ESCALATION.csv"));
 
-            World.setCountriesNeighbors();
-            
-         
+            foreach (Nation nation in World.Nations)
+            {
+                nation.initEconomicStats(Random.Next(0,100000), Random.Next(0, 100000), Random.Next(0, 100000), Random.Next(0,2),Random.Next(0, 100000));
+            }
 
-           
+            //World.setCountriesNeighbors();
+
+
+
+
         }
 
     }
