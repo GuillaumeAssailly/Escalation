@@ -26,11 +26,13 @@
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="6*"/>
         </Grid.ColumnDefinitions>
+       
         <Grid Grid.Column="1">
-
+         
             <StackPanel >
-                <zoom:ZoomBorder x:Name="border" ClipToBounds="True" Background="#454545" Grid.Column="1" Height="4000" >
+                <zoom:ZoomBorder x:Name="border"  Background="#454545" Grid.Column="1" Height="4000" >
                     <Canvas >
+                     
                         <Canvas.Resources>
                             <Style TargetType="Path">
                                 <Setter Property="Stroke" Value="#454545" />
@@ -270,55 +272,68 @@
             </ui:TitleBar>
 
         </Grid>
-
-        <TextBlock Canvas.Left="100" x:Name="DateBlock" ></TextBlock>
-        <TextBlock x:Name="CountryName"  Text="{Binding FocusedNation, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Canvas Margin="1820,976,0,0" Height="60" Width="200" Background="#202020" Canvas.Left="936" Canvas.Top="1009" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <TextBlock Canvas.Left="66" x:Name="DateBlock" Grid.Column="1" Grid.Row="0"></TextBlock>
+            <Slider  Ticks="6" TickFrequency="1" Canvas.Left="50" Canvas.Top="25" Value="{Binding Speed, Mode=OneWayToSource}" Minimum="0" Maximum="5" TickPlacement="BottomRight" />
+        </Canvas>
 
         <TreeView Background="#202020" >
+            <Grid Height="30" Width="600">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="CountryName" Grid.Column="0" Grid.Row="0"  Text="{Binding FocusedNation }" />
+
+            </Grid>
             <ui:TreeViewItem IsExpanded="True"  Header="Demographic Stats">
-   
+
                 <Grid Grid.Column="0" Width="703" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
 
-                <RowDefinition Height="300" />
-            </Grid.RowDefinitions>
-         
+                        <RowDefinition Height="300" />
+                    </Grid.RowDefinitions>
 
-            <lvc:PieChart  Height="200" Width="200" Grid.Column="0"  Grid.Row="1" InnerRadius="0" StartingRotationAngle="0"    DisableAnimations="False"  Series="{Binding FocusedIdeologies}" >
 
-            </lvc:PieChart>
-            <lvc:CartesianChart Grid.Row="1"   DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}"  Series="{Binding FocusedPopulation}" Grid.Column="1" Height="200" Width="300" >
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis MaxValue="50" MinValue="0" Foreground="#ffb1b1b1">
-                        <lvc:Axis.Separator>
-                            <lvc:Separator Step="{Binding AxisStep}" />
-                        </lvc:Axis.Separator>
-                    </lvc:Axis>
-                </lvc:CartesianChart.AxisX>
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis MaxValue="{Binding AxisMaxY}" MinValue="0"></lvc:Axis>
-                </lvc:CartesianChart.AxisY>
-            </lvc:CartesianChart>
-            
-          
-            
-        </Grid>
+                    <lvc:PieChart  Height="200" Width="200" Grid.Column="0"  Grid.Row="1" InnerRadius="0" StartingRotationAngle="0"    DisableAnimations="False"  Series="{Binding FocusedIdeologies}" >
+
+                    </lvc:PieChart>
+                    <lvc:CartesianChart Grid.Row="1"   DisableAnimations="True"  Hoverable="False" DataTooltip="{x:Null}"  Series="{Binding FocusedPopulation}" Grid.Column="1" Height="200" Width="300" >
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis MaxValue="50" MinValue="0" Foreground="#ffb1b1b1">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="{Binding AxisStep}" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis MaxValue="{Binding AxisMaxY}" MinValue="0"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+
+
+                </Grid>
             </ui:TreeViewItem>
-        <ui:TreeViewItem IsExpanded="True" Header="Economic Stats">
-        <lvc:CartesianChart  Series="{Binding FocusedEconomy}"   DisableAnimations="False"    Margin="30,10,30,0"  Height="400" Width="600" >
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis MaxValue="12" MinValue="0" Foreground="#ffb1b1b1">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator Step="1" />
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-        </lvc:CartesianChart>
-        </ui:TreeViewItem>
+            <ui:TreeViewItem IsExpanded="True" Header="Economic Stats">
+                <lvc:CartesianChart  Series="{Binding FocusedEconomy}"   DisableAnimations="False"    Margin="30,10,30,0"  Height="400" Width="600" >
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis MaxValue="12" MinValue="0" Foreground="#ffb1b1b1">
+                            <lvc:Axis.Separator>
+                                <lvc:Separator Step="1" />
+                            </lvc:Axis.Separator>
+                        </lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
+            </ui:TreeViewItem>
             <ui:TreeViewItem Header="Console" IsExpanded="True">
                 <TextBlock x:Name="outputTextBox"/>
 

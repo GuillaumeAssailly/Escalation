@@ -68,6 +68,15 @@ namespace EscalationAPP
         private CancellationToken pauseToken;
         private bool isPaused = false;
         private int speed = 2;
+        public int Speed
+        {
+            get => speed;
+            set
+            {
+                speed = value;
+                OnPropertyChanged("Speed");
+            }
+        }
 
         /// <summary>
         /// CURRENT NATION FOCUSED :

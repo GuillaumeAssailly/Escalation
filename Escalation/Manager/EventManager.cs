@@ -26,7 +26,7 @@ namespace Escalation.Manager
                 new Event(0.1, EventType.Demographic, "Population Growth", "The population of the nation has grown."),
             };
         }
-
+        /*
         public void ManageEvents(Ecode code)
         {
             Nation CurrentNation = World.Nations[(int)code];
@@ -40,7 +40,7 @@ namespace Escalation.Manager
             }
         }
 
-
+        
         private Event SelectRandomEvent()
         {
             double totalProba = 1;
@@ -53,9 +53,9 @@ namespace Escalation.Manager
                 {
                     return e;
                 }
-            }
+           
 
             return null;
-        }
+        }*/
     }
 }
