@@ -15,9 +15,13 @@ namespace Escalation.Manager
         {
         }
 
+       
         public void ManageEconomy(Ecode code)
         {
             Nation CurrentNation = World.Nations[(int)code];
+
+           
+
             if (CurrentNation != null)
             {
                 CurrentNation.UpdateTreasury();
@@ -39,5 +43,7 @@ namespace Escalation.Manager
 
 
         }
+
+
     }
 }

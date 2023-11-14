@@ -164,15 +164,10 @@ namespace EscalationAPP
                         }
                     }
 
-                    if (i % 10 == 0)
-                    {
-                        //browse each nations in the world with a foreach loop : 
-                        foreach (Nation currentNation in World.Nations)
-                        {
-                            IdeologyManager.ManageIdeologies(currentNation.Code);
-                        }
+                    
+                     
 
-                    }
+                  
 
 
                     foreach (Nation currentNation in World.Nations)
@@ -183,9 +178,16 @@ namespace EscalationAPP
                             EconomyManager.ManageEconomy(currentNation.Code);
 
                         }
+
+                        if (i % 10 == 0)
+                        {
+                            IdeologyManager.ManageIdeologies(currentNation.Code);
+                        }
+
                         currentNation.DriftIdeologies();
                         //Print majorIdeology in each nation : 
                         Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
+                        currentNation.takeAction();
                     }
 
 
@@ -211,6 +213,7 @@ namespace EscalationAPP
         private void UpdateUI()
         {
             DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
+            UpdateInternalDetails();
             UpdateChart();
             UpdatePopGraph();
             UpdateEconomyGraph();
@@ -260,7 +263,26 @@ namespace EscalationAPP
             }
            
         }
-        
+
+        private void UpdateInternalDetails()
+        {
+            CountryAgriculturalPower.Text = World.Nations[(int)FocusedNation].AgriculturalPower.ToString();
+            CountryIndustrialPower.Text = World.Nations[(int)FocusedNation].IndustrialPower.ToString();
+            CountryTertiaryPower.Text = World.Nations[(int)FocusedNation].TertiaryPower.ToString();
+            CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
+            CountryGDPGROWTH.Text = World.Nations[(int)FocusedNation].GDPGrowthRate.ToString();
+            CountryGDP.Text = World.Nations[(int)FocusedNation].GDP.ToString();
+            CountryEducationRate.Text = World.Nations[(int)FocusedNation].EducationRate.ToString();
+            CountryHealthCare.Text = World.Nations[(int)FocusedNation].HealthRate.ToString();
+            CountryProductivity.Text = World.Nations[(int)FocusedNation].Productivity.ToString();
+            CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
+            CountryFoodRate.Text = World.Nations[(int)FocusedNation].FoodRate.ToString();
+            CountryHappiness.Text = World.Nations[(int)FocusedNation].HappinessRate.ToString();
+            CountryCorruptionRate.Text = World.Nations[(int)FocusedNation].CorruptionRate.ToString();
+
+            CurrentPlan.Text = World.Nations[(int)FocusedNation].CurrentPlan.GetDescription().ToString();
+            CurrentPlanProgress.Value = World.Nations[(int)FocusedNation].CurrentPlan.GetProgress() * 100;
+        }
 
         private void initChart()
         {

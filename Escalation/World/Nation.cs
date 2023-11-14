@@ -99,6 +99,13 @@ namespace Escalation.World
             ExpensesHistory = new List<decimal>();
             DebtHistory = new List<decimal>();
 
+            politicalPlans = new List<PoliticalPlan>
+            {
+                new IndustrialPlan(),
+                new AgriculturalPlan(),
+                new TertiaryPlan()
+            };
+            currentPlan = politicalPlans[Random.Next(politicalPlans.Count)];
         }
 
 
@@ -236,7 +243,66 @@ namespace Escalation.World
 
         }
 
+        //Internal Statistics
+        private double productivity;
+        public double Productivity { get => productivity; set => productivity = value < 0 ? 0 : value; }
+        private double educationRate;
+        public double EducationRate { get => educationRate; set => educationRate = value < 0 ? 0 : value; }
+        private double healthRate;
+        public double HealthRate { get => healthRate; set => healthRate = value < 0 ? 0 : value; }
+        private double happinessRate;
+        public double HappinessRate { get => happinessRate; set => happinessRate = value < 0 ? 0 : value; }
+        private double corruptionRate;
+        public double CorruptionRate { get => corruptionRate; set => corruptionRate = value < 0 ? 0 : value; }
+        private double crimeRate;
+        public double CrimeRate { get => crimeRate; set => crimeRate = value < 0 ? 0 : value; }
+        private double foodRate;
+        public double FoodRate { get => foodRate; set => foodRate = value < 0 ? 0 : value; }
 
+        private int industrialPower;
+        public double IndustrialPower { get => industrialPower; set => industrialPower = (int)(value < 0 ? 0 : value); }
+        private int agriculturalPower;
+        public double AgriculturalPower { get => agriculturalPower; set => agriculturalPower = (int)(value < 0 ? 0 : value); }
+        private int tertiaryPower;
+        public double TertiaryPower { get => tertiaryPower; set => tertiaryPower = (int)(value < 0 ? 0 : value); }
+        private int infrastructurePower;
+
+        private List<PoliticalPlan> politicalPlans;
+
+        private PoliticalPlan currentPlan;
+
+        public PoliticalPlan CurrentPlan { get => currentPlan; set => currentPlan = value; }
+
+        public void initInternalStatistics(int industrialPower, int agriculturalPower, int tertiaryPower, int infrastructurePower, 
+            double productivity, double educationRate, double healthRate,
+            double happinessRate, double corruptionRate, double crimeRate, double foodRate)
+        {
+            this.industrialPower = industrialPower;
+            this.agriculturalPower = agriculturalPower;
+            this.tertiaryPower = tertiaryPower;
+
+            this.productivity = productivity;
+            this.educationRate = educationRate;
+            this.healthRate = healthRate;
+            this.happinessRate = happinessRate;
+            this.corruptionRate = corruptionRate;
+            this.crimeRate = crimeRate;
+            this.foodRate = foodRate;
+        }
+
+        public void takeAction()
+        {
+            if (currentPlan.isFinished())
+            {
+                currentPlan.takeEffect(this);
+                currentPlan = politicalPlans[Random.Next(politicalPlans.Count)];
+                currentPlan.init();
+            }
+            else
+            {
+                currentPlan.dayPass();
+            }
+        }
 
 
         //Economic Statistics
@@ -246,8 +312,11 @@ namespace Escalation.World
         private decimal debtInterest;
         private decimal treasury;
 
-        private decimal GDP;
-        private decimal GDPGrowthRate;
+        private decimal _gdp;
+        public decimal GDP { get => _gdp; set => _gdp = value < 0 ? 0 : value; }
+        private decimal _gdpGrowthRate;
+        public decimal GDPGrowthRate { get => _gdpGrowthRate; set => _gdpGrowthRate = value < 0 ? 0 : value; }
+
 
         public decimal Expenses { get => expenses; set => expenses = value < 0 ? 0 : value; }
         public decimal Incomes { get => incomes; set => incomes = value < 0 ? 0 : value; }
@@ -255,18 +324,23 @@ namespace Escalation.World
         public decimal DebtInterest { get => debtInterest; set => debtInterest = value < 0 ? 0 : value; }
         public decimal Treasury { get => treasury; set => treasury = value < 0 ? 0 : value; }
 
-        public void  initEconomicStats(decimal expenses, decimal incomes, decimal debt, decimal debtInterest, decimal treasury)
+        public void  initEconomicStats( decimal debt, decimal debtInterest, decimal treasury)
         {
-            this.expenses = expenses;
-            this.incomes = incomes;
+
             this.debt = debt;
             this.debtInterest = debtInterest;
             this.treasury = treasury;
+
+
         }
 
         public void UpdateTreasury()
         {
-            
+
+            incomes = (decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population);
+            expenses = (decimal)healthRate * Population * 500 + (decimal)educationRate * Population * 100 +
+                       (decimal)corruptionRate * Population * 100 + (decimal)foodRate * Population * 100;
+
             decimal netBalance = incomes - expenses - debtInterest;
 
             treasury += netBalance;
@@ -294,9 +368,15 @@ namespace Escalation.World
             
             // Display all the values :
             Trace.WriteLine("Treasury : " + treasury + " Debt : " + debt + " Debt Interest : " + debtInterest + " Net Balance : " + netBalance);
+
+            //Computing the GDP Growth Rate :
+            _gdpGrowthRate = (decimal)((industrialPower + agriculturalPower + tertiaryPower) * ((productivity + educationRate)/2)) /10000;
+
+            _gdp += _gdpGrowthRate * _gdp;
+
         }
 
-
+      
 
 
         //Military Statistics
@@ -352,8 +432,6 @@ namespace Escalation.World
         private int counterEspionagePoints;
 
 
-
-
-
+   
     }
 }

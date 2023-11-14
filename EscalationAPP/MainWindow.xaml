@@ -9,7 +9,8 @@
         xmlns:uc="clr-namespace:EscalationAPP.UC"
         xmlns:zoom="clr-namespace:PanAndZoom"
         xmlns:escalationApp="clr-namespace:EscalationAPP"
-       
+        xmlns:converters="clr-namespace:EscalationAPP.Converters"
+
         mc:Ignorable="d"
         Width="1920" Height="1080"
         d:DataContext="{d:DesignInstance escalationApp:MainWindow,IsDesignTimeCreatable=False}"
@@ -19,9 +20,11 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Default"
         WindowStartupLocation="CenterScreen">
+    <ui:FluentWindow.Resources>
+        <converters:ECode2String x:Key="ECode2String" />
+    </ui:FluentWindow.Resources>
 
-
-    <Grid>
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="6*"/>
@@ -287,7 +290,7 @@
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="CountryName" Grid.Column="0" Grid.Row="0"  Text="{Binding FocusedNation }" />
+                <TextBlock x:Name="CountryName" Grid.Column="0" Grid.Row="0"  Text="{Binding FocusedNation, Converter={StaticResource ECode2String  }}" />
 
             </Grid>
             <ui:TreeViewItem IsExpanded="True"  Header="Demographic Stats">
@@ -323,6 +326,48 @@
 
                 </Grid>
             </ui:TreeViewItem>
+            <ui:TreeViewItem IsExpanded="True" Header="Details">
+                <Grid   Width="703" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+
+                        <RowDefinition Height="30"/>
+
+
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="CountryGDP" Grid.Column="0" Grid.Row="0">GDP : 100M $</TextBlock>
+                    <TextBlock x:Name="CountryGDPGROWTH" Grid.Column="1" Grid.Row="0">+ 5 %</TextBlock>
+                    <TextBlock x:Name="CountryIndustrialPower" Grid.Column="0" Grid.Row="1">+ 5 %</TextBlock>
+                    <TextBlock x:Name="CountryAgriculturalPower" Grid.Column="0" Grid.Row="2">+ 5 %</TextBlock>
+                    <TextBlock x:Name="CountryTertiaryPower" Grid.Column="0" Grid.Row="3">+ 5 %</TextBlock>
+                    <TextBlock Grid.Row="4">Statistiques internes :</TextBlock>
+                    <TextBlock x:Name="CountryProductivity" Grid.Column="0" Grid.Row="5"> Productivity %</TextBlock>
+                    <TextBlock x:Name="CountryEducationRate" Grid.Column="1" Grid.Row="5">Education %</TextBlock>
+
+                    <TextBlock x:Name="CountryHappiness" Grid.Column="1" Grid.Row="6"> Happiness %</TextBlock>
+                    <TextBlock x:Name="CountryHealthCare" Grid.Column="0" Grid.Row="6">HealthCare %</TextBlock>
+                    <TextBlock x:Name="CountryCorruptionRate" Grid.Column="1" Grid.Row="7">CorruptionRate %</TextBlock>
+                    <TextBlock x:Name="CountryCrimeRate" Grid.Column="0" Grid.Row="7">CrimeRate %</TextBlock>
+                    <TextBlock x:Name="CountryFoodRate" Grid.Column="0" Grid.Row="8">FoodRate %</TextBlock>
+
+
+
+                </Grid>
+                <TextBlock x:Name="CurrentPlan"></TextBlock>
+                <ProgressBar x:Name="CurrentPlanProgress" Width =" 650 " ></ProgressBar>
+            </ui:TreeViewItem>
+           
             <ui:TreeViewItem IsExpanded="True" Header="Economic Stats">
                 <lvc:CartesianChart  Series="{Binding FocusedEconomy}"   DisableAnimations="False"    Margin="30,10,30,0"  Height="400" Width="600" >
                     <lvc:CartesianChart.AxisX>
