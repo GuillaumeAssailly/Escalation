@@ -99,12 +99,7 @@ namespace Escalation.World
             ExpensesHistory = new List<decimal>();
             DebtHistory = new List<decimal>();
 
-            politicalPlans = new List<PoliticalPlan>
-            {
-                new IndustrialPlan(),
-                new AgriculturalPlan(),
-                new TertiaryPlan()
-            };
+          
             currentPlan = politicalPlans[Random.Next(politicalPlans.Count)];
         }
 
@@ -245,19 +240,19 @@ namespace Escalation.World
 
         //Internal Statistics
         private double productivity;
-        public double Productivity { get => productivity; set => productivity = value < 0 ? 0 : value; }
+        public double Productivity { get => productivity; set { if (value > 1) { productivity = 1; } else if (value < 0) { productivity = 0; } else { productivity = value; } } }
         private double educationRate;
-        public double EducationRate { get => educationRate; set => educationRate = value < 0 ? 0 : value; }
+        public double EducationRate { get => educationRate; set  {if (value > 1) { educationRate = 1; } else if ( value < 0) { educationRate = 0; } else { educationRate = value; } } }
         private double healthRate;
-        public double HealthRate { get => healthRate; set => healthRate = value < 0 ? 0 : value; }
+        public double HealthRate { get => healthRate; set { if ( value > 1) { healthRate = 1; } else if ( value < 0) { healthRate = 0; } else { healthRate = value; } } }
         private double happinessRate;
-        public double HappinessRate { get => happinessRate; set => happinessRate = value < 0 ? 0 : value; }
+        public double HappinessRate { get => happinessRate; set { if ( value > 1) { happinessRate = 1; } else if ( value < 0) { happinessRate = 0; } else { happinessRate = value; } } }
         private double corruptionRate;
-        public double CorruptionRate { get => corruptionRate; set => corruptionRate = value < 0 ? 0 : value; }
+        public double CorruptionRate { get => corruptionRate; set  {if ( value > 1) { corruptionRate = 1; } else if ( value < 0) { corruptionRate = 0; } else { corruptionRate = value; } } }
         private double crimeRate;
-        public double CrimeRate { get => crimeRate; set => crimeRate = value < 0 ? 0 : value; }
+        public double CrimeRate { get => crimeRate; set { if ( value > 1) { crimeRate = 1; } else if ( value < 0) { crimeRate = 0; } else { crimeRate = value; } } }
         private double foodRate;
-        public double FoodRate { get => foodRate; set => foodRate = value < 0 ? 0 : value; }
+        public double FoodRate { get => foodRate; set { if ( value > 1) { foodRate = 1; } else if ( value < 0) { foodRate = 0; } else { foodRate = value; } } }
 
         private int industrialPower;
         public double IndustrialPower { get => industrialPower; set => industrialPower = (int)(value < 0 ? 0 : value); }
@@ -267,7 +262,20 @@ namespace Escalation.World
         public double TertiaryPower { get => tertiaryPower; set => tertiaryPower = (int)(value < 0 ? 0 : value); }
         private int infrastructurePower;
 
-        private List<PoliticalPlan> politicalPlans;
+        private List<PoliticalPlan> politicalPlans = new List<PoliticalPlan>
+            {
+                new IndustrialPlan(),
+                new AgriculturalPlan(),
+                new TertiaryPlan(),
+                new Stakhanovism(),
+                new PublicHealth(),
+                new EducationPlan(),
+                new IndustrialPrivatisationPlan(),
+                new DismantlingAgriculturalPlan(),
+                new AgriculuturalPrivatisation(),
+                new FoodRatePlan(),
+                new NatalityPlan()
+            };
 
         private PoliticalPlan currentPlan;
 
