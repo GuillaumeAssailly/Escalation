@@ -100,7 +100,7 @@ namespace Escalation.World
             DebtHistory = new List<decimal>();
 
           
-            currentPlan = politicalPlans[Random.Next(politicalPlans.Count)];
+            currentPlan = IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)];
         }
 
 
@@ -262,20 +262,53 @@ namespace Escalation.World
         public double TertiaryPower { get => tertiaryPower; set => tertiaryPower = (int)(value < 0 ? 0 : value); }
         private int infrastructurePower;
 
-        private List<PoliticalPlan> politicalPlans = new List<PoliticalPlan>
-            {
+        private List<PoliticalPlan> IncomepoliticalPlans = new List<PoliticalPlan>
+        {
                 new IndustrialPlan(),
                 new AgriculturalPlan(),
                 new TertiaryPlan(),
-                new Stakhanovism(),
-                new PublicHealth(),
-                new EducationPlan(),
-                new IndustrialPrivatisationPlan(),
                 new DismantlingAgriculturalPlan(),
-                new AgriculuturalPrivatisation(),
-                new FoodRatePlan(),
-                new NatalityPlan()
-            };
+                new DismantlingIndustrialPlan()
+        };
+
+        private List<PoliticalPlan> ExpensesPoliticalPlan = new List<PoliticalPlan>
+        {
+            new PublicHealth(),
+            new EducationPlan(),
+            new FoodRatePlan(),
+            new NatalityPlan()
+        };
+
+        private List<PoliticalPlan> AltRightPoliticalPlan = new List<PoliticalPlan>
+        {
+            new IndustrialPrivatisationPlan(),
+            new AgriculuturalPrivatisation(),
+            new DestroyingPublicService(),
+        };
+
+        private List<PoliticalPlan> CommunistPoliticalPlan = new List<PoliticalPlan>
+        {
+             new Stakhanovism(),
+             new FiveYearPlan(),
+        };
+
+        private List<PoliticalPlan> SocialistPoliticalPlan = new List<PoliticalPlan>
+        {
+            new EcologicalPlan(),
+            new PublicSocialism()
+        };
+
+        private List<PoliticalPlan> DespoticPlan = new List<PoliticalPlan>
+        {
+            new DespoticRule()
+        };
+
+        private List<PoliticalPlan> FascistPoliticalPlan = new List<PoliticalPlan>
+        {
+            new DestroyingSocialRights(),
+            new TotalitarianRepression()
+
+        };
 
         private PoliticalPlan currentPlan;
 
@@ -303,8 +336,50 @@ namespace Escalation.World
             if (currentPlan.isFinished())
             {
                 currentPlan.takeEffect(this);
-                currentPlan = politicalPlans[Random.Next(politicalPlans.Count)];
-                currentPlan.init();
+                //TODO: change the percentage value :
+                if (Random.NextDouble() < 0.5) // We pick a plan depending on the current ideology : 
+                {
+                    switch (ideologies.Last().Key)
+                    {
+                        case Ideology.Communism:
+                            currentPlan = CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)];
+                            currentPlan.init();
+                        break;
+
+                        case Ideology.Socialism: 
+                            currentPlan = SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)];
+                            currentPlan.init();
+                        break;
+
+                        case Ideology.Despotism:
+                            currentPlan = DespoticPlan[Random.Next(DespoticPlan.Count)];
+                            currentPlan.init();
+                            break;
+
+                        case Ideology.Fascism: 
+                            currentPlan  = FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)];
+                            currentPlan.init();
+                        break;
+
+                        default:
+                            currentPlan = AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)];
+                            currentPlan.init();
+                        break;
+                    }
+                } else // We pick a plan depending on the current financial decision  :
+                {
+                    if (incomes > expenses) //We pick a plan expected to decrease the economic balance :
+                    {
+                        currentPlan = ExpensesPoliticalPlan[Random.Next(ExpensesPoliticalPlan.Count)];
+                        currentPlan.init();
+                    } else // We pick a plan to increase the income :
+                    {
+                        currentPlan = IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)];
+                        currentPlan.init();
+                    }
+                }
+                
+             
             }
             else
             {
@@ -334,7 +409,7 @@ namespace Escalation.World
 
         public void  initEconomicStats( decimal debt, decimal debtInterest, decimal treasury)
         {
-
+             
             this.debt = debt;
             this.debtInterest = debtInterest;
             this.treasury = treasury;
@@ -350,13 +425,15 @@ namespace Escalation.World
                        (decimal)corruptionRate * Population * 100 + (decimal)foodRate * Population * 100;
 
             decimal netBalance = incomes - expenses - debtInterest;
-
+           
             treasury += netBalance;
 
+      
             if (treasury <= 0)
             {
-                debt += (decimal)Math.Abs(treasury); 
-                debtInterest+= debt * 0.00001m;
+                debt += (decimal)Math.Abs(treasury);
+                //debtInterest+= debt * 0.0000000001m;
+                debtInterest = 0;
                 treasury = 0; 
             }
             else
@@ -369,10 +446,13 @@ namespace Escalation.World
                 else
                 {
                     debt += (decimal)Math.Abs(debt - treasury);
-                    debtInterest += debt * 0.00001m;
+                    // debtInterest += debt * 0.0000000001m;
+                    debtInterest = 0;
                     treasury = 0;
                 }
             }
+            
+
             
             // Display all the values :
             Trace.WriteLine("Treasury : " + treasury + " Debt : " + debt + " Debt Interest : " + debtInterest + " Net Balance : " + netBalance);

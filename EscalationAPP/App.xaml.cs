@@ -46,7 +46,7 @@ namespace EscalationAPP
             {
                 nation.initInternalStatistics((int)Random.Next(0,300),(int)Random.Next(0,300), (int)Random.Next(0,300),
                     (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),Random.NextDouble());
-                nation.initEconomicStats( Random.Next(0, 100000), Random.Next(0,2),Random.Next(0, 100000));
+                nation.initEconomicStats( 0, 0 ,Random.Next(0, 100000));
             }
 
             //World.setCountriesNeighbors();

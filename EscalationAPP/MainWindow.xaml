@@ -10,16 +10,17 @@
         xmlns:zoom="clr-namespace:PanAndZoom"
         xmlns:escalationApp="clr-namespace:EscalationAPP"
         xmlns:converters="clr-namespace:EscalationAPP.Converters"
-
+        
         mc:Ignorable="d"
-        Width="1920" Height="1080"
+
         d:DataContext="{d:DesignInstance escalationApp:MainWindow,IsDesignTimeCreatable=False}"
         ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
         ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
         WindowCornerPreference="Default"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+                 WindowState="Maximized">
     <ui:FluentWindow.Resources>
         <converters:ECode2String x:Key="ECode2String" />
     </ui:FluentWindow.Resources>
