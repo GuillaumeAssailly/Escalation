@@ -151,7 +151,7 @@ namespace Escalation.World
         {
             Nations = new List<Nation>();
             setAdjacencyMatrixFromFile();
-            CurrentDate =  new DateTime(2022, 1, 1);
+            CurrentDate =  new DateTime(1966, 1, 1);
 
         }
 
