@@ -44,7 +44,7 @@ namespace EscalationAPP
 
             foreach (Nation nation in World.Nations)
             {
-                nation.initInternalStatistics((int)Random.Next(0,300),(int)Random.Next(0,300), (int)Random.Next(0,300),
+                nation.initInternalStatistics(
                     (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),Random.NextDouble());
                 nation.initEconomicStats( 0, 0 ,Random.Next(0, 100000));
             }

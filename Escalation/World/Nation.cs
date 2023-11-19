@@ -25,20 +25,19 @@ namespace Escalation.World
     //Enum for Ecodes
     public enum Ecode
     {
-        AFG, SAH, RSA, ALB, ALG, ALL, AND, ANG, ASA, ARG, AUS, PAL,
-        AUT, BAH, BAN, BEL, BEI, BEN, BHO, BIR, BOL, BOT,
-        BRA, BRU, BUL, BUR, BUD, CAM, CAO, CAN, CHL, CHI, CHY, COL, NCO,
-        SCO, COS, CIV, CUB, DAN, DJI, DDR, EGY, EAU, EQA, ERY, ESP, 
-        ESW, ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR,  GHA, GRE, GRO, GUA,
-        GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND, IDO, IRK,
-        IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR,  KEN,  KOW,
-        LAO, LES,  LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL,
-        MAR, MAU, MEX,  MON, MOG, MOT, MOZ,  NEP, NIC, NGR, NIG,
-        NOR, NCA, NZE, OMA, OGD,  PAK, PAN, PNG, PAR, PAB, PER, PHI,
-        POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RVI, RWA, SAL,
-        SEN, SLE, SLV, SOM, SOU, SDS, SRI, SUE, SUI, SUR, SVA,
-        SYR, TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN, 
-        TUR, URU, VAN, VAT, VEN, VIE, YEA, YEM, YOU, ZAM, ZIM,
+        AFG, SAH, RSA, ALB, ALG, AND, ANG, ASA, ARG, AUS, PAL, AUT, BAH, BAN,
+        BEL, BEI, BEN, BHO, BIR, BOL, BOT, BRA, BRU, BUL, BUR, BUD, CAM, CAO,
+        CAN, CHL, CHI, CHY, COL, NCO, SCO, COS, CIV, CUB, DAN, DDR, DJI, EGY,
+        EAU, EQA, ERY, ESP, ESW,  ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR, GHA,
+        GRE, GRO, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND,
+        IDO, IRK, IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR, KEN, KOW, LAO, LES,
+        LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MON, MOG, MOZ,
+        NEP, NIC, NGR, NIG, NOR, NCA, NZE, OMA, OGD, PAK, PAN, PNG, PAR, PAB,
+        PER, PHI, POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RVI,
+        RWA, SAL, SEN, SLE, SLV, SOM,SOU, SDS, SRI, SUE, SUI, SUR, SVA, SYR,
+        TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN,TUR, URU, VAN, VAT,
+        VEN, VIE, YEA, YEM, YOU, ZAM, ZIM,
+
         /*
                 FRA = 0, 
                 ALL,
@@ -80,13 +79,12 @@ namespace Escalation.World
 
 
         public Nation(Ecode code,
-            double stability, int politicalPower, double Communism, double Socialism, double LeftWingDemocracy, double RightWingDemocracy, double Authoritarianism, double Despotism, double Fascism,
-            decimal population, double populationGrowthRate, double populationDeathRate, double populationDensity)
+            double stability, int politicalPower, int ideology, double minIdeo, double maxIdeo, decimal population, double populationGrowthRate, double populationDeathRate,
+            double populationDensity, int industrialPower, int agriculturalPower, int tertiaryPower, decimal gdp)
         {
             Code = code;
             Stability = stability;
             this.politicalPower = politicalPower;
-            SetIdeologies(Communism, Socialism, LeftWingDemocracy, RightWingDemocracy, Authoritarianism, Despotism, Fascism);
 
             Population = population;
             PopulationGrowthRate = populationGrowthRate;
@@ -99,8 +97,14 @@ namespace Escalation.World
             ExpensesHistory = new List<decimal>();
             DebtHistory = new List<decimal>();
 
+            this.industrialPower = industrialPower;
+            this.agriculturalPower = agriculturalPower;
+            this.tertiaryPower = tertiaryPower;
+
+            this._gdp = gdp;
+            this.SetIdeologies((Ideology)ideology,minIdeo,maxIdeo);
           
-            currentPlan = IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)];
+            currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
         }
 
 
@@ -135,45 +139,88 @@ namespace Escalation.World
             return ideologies;
         }
 
-        public void SetIdeologies(double communism, double socialism, double leftWingDemocracy, double rightWingDemocracy, double authoritarianism, double despotism, double fascism)
+        public void SetIdeologies(Ideology mainIdeology, double min, double max)
         {
             ideologies = new Dictionary<Ideology, double>
                 {
-                    { Ideology.Communism, communism },
-                    { Ideology.Socialism,socialism },
-                    { Ideology.LeftWingDemocracy, leftWingDemocracy },
-                    { Ideology.RightWingDemocracy, rightWingDemocracy },
-                    { Ideology.Authoritarianism, authoritarianism },
-                    { Ideology.Despotism, despotism },
-                    { Ideology.Fascism, fascism }
+                    { Ideology.Communism, 0 },
+                    { Ideology.Socialism,0 },
+                    { Ideology.LeftWingDemocracy, 0 },
+                    { Ideology.RightWingDemocracy, 0 },
+                    { Ideology.Authoritarianism, 0 },
+                    { Ideology.Despotism, 0 },
+                    { Ideology.Fascism, 0 }
                 };
-            //TODO : REPLACE RANDOM IDEOLOGIES GENERATOR : 
-            
+            if (min == 0 && max == 1)
+            {
+                double sum = 0;
+                double[] numbers = new double[7];
+
+                for (int i = 0; i < 6; i++)
+                {
+                    double randomNumber = Random.NextDouble() * (1 - sum);
+                    numbers[i] = randomNumber;
+                    sum += randomNumber;
+                }
+
+                numbers[6] = 1 - sum;
+
+                for (int i = numbers.Length - 1; i > 0; i--)
+                {
+                    int j = Random.Next(i + 1);
+                    (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
+                }
+
+                ideologies[Ideology.Communism] = numbers[0];
+                ideologies[Ideology.Socialism] = numbers[1];
+                ideologies[Ideology.LeftWingDemocracy] = numbers[2];
+                ideologies[Ideology.RightWingDemocracy] = numbers[3];
+                ideologies[Ideology.Authoritarianism] = numbers[4];
+                ideologies[Ideology.Despotism] = numbers[5];
+                ideologies[Ideology.Fascism] = numbers[6];
+            }
+            else
+            {
+                WeightedRandomIdeologiesGenerator(mainIdeology,min,max);
+
+            }
+        }
+
+
+        private void WeightedRandomIdeologiesGenerator(Ideology mainIdeology, double min, double max)
+        {
             double sum = 0;
-            double[] numbers = new double[7];
+            double specificPercentage = (Random.NextDouble() * (max - min)) + min;
 
-            for (int i = 0; i < 6; i++)
+            foreach (Ideology ideology in Enum.GetValues(typeof(Ideology)))
             {
-                double randomNumber = Random.NextDouble() *(1 - sum);
-                numbers[i] = randomNumber;
-                sum += randomNumber;
+                if (ideology == mainIdeology)
+                {
+                    ideologies[ideology] = specificPercentage;
+                    sum+= specificPercentage;
+                }
+                else
+                {
+                    ideologies[ideology] = Random.NextDouble() * (1 - sum);
+                    sum += ideologies[ideology];
+                }
             }
 
-            numbers[6] = 1 - sum;
-
-            for (int i = numbers.Length - 1; i > 0; i--)
+            // shuffle the values excpet for the key containing the main ideology : 
+            for (int i = ideologies.Count-1; i > 0; i--)
             {
-                int j = Random.Next(i + 1);
-                (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
+                if (ideologies.ElementAt(i).Key != mainIdeology)
+                {
+                    int j = Random.Next(i+1);
+                    while (j == (int)mainIdeology)
+                    {
+                        j = Random.Next(i + 1);
+
+                    }
+                    (ideologies[(Ideology)i], ideologies[(Ideology)j]) = (ideologies.ElementAt(j).Value, ideologies.ElementAt(i).Value);
+                }
             }
 
-            ideologies[Ideology.Communism] = numbers[0];
-            ideologies[Ideology.Socialism] = numbers[1];
-            ideologies[Ideology.LeftWingDemocracy] = numbers[2];
-            ideologies[Ideology.RightWingDemocracy] = numbers[3];
-            ideologies[Ideology.Authoritarianism] = numbers[4];
-            ideologies[Ideology.Despotism] = numbers[5];
-            ideologies[Ideology.Fascism] = numbers[6];
 
         }
 
@@ -262,7 +309,7 @@ namespace Escalation.World
         public double TertiaryPower { get => tertiaryPower; set => tertiaryPower = (int)(value < 0 ? 0 : value); }
         private int infrastructurePower;
 
-        private List<PoliticalPlan> IncomepoliticalPlans = new List<PoliticalPlan>
+        private static List<PoliticalPlan> IncomepoliticalPlans = new List<PoliticalPlan>
         {
                 new IndustrialPlan(),
                 new AgriculturalPlan(),
@@ -271,7 +318,7 @@ namespace Escalation.World
                 new DismantlingIndustrialPlan()
         };
 
-        private List<PoliticalPlan> ExpensesPoliticalPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> ExpensesPoliticalPlan = new List<PoliticalPlan>
         {
             new PublicHealth(),
             new EducationPlan(),
@@ -279,31 +326,31 @@ namespace Escalation.World
             new NatalityPlan()
         };
 
-        private List<PoliticalPlan> AltRightPoliticalPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> AltRightPoliticalPlan = new List<PoliticalPlan>
         {
             new IndustrialPrivatisationPlan(),
             new AgriculuturalPrivatisation(),
             new DestroyingPublicService(),
         };
 
-        private List<PoliticalPlan> CommunistPoliticalPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> CommunistPoliticalPlan = new List<PoliticalPlan>
         {
              new Stakhanovism(),
              new FiveYearPlan(),
         };
 
-        private List<PoliticalPlan> SocialistPoliticalPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> SocialistPoliticalPlan = new List<PoliticalPlan>
         {
             new EcologicalPlan(),
             new PublicSocialism()
         };
 
-        private List<PoliticalPlan> DespoticPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> DespoticPlan = new List<PoliticalPlan>
         {
             new DespoticRule()
         };
 
-        private List<PoliticalPlan> FascistPoliticalPlan = new List<PoliticalPlan>
+        private static List<PoliticalPlan> FascistPoliticalPlan = new List<PoliticalPlan>
         {
             new DestroyingSocialRights(),
             new TotalitarianRepression()
@@ -314,13 +361,10 @@ namespace Escalation.World
 
         public PoliticalPlan CurrentPlan { get => currentPlan; set => currentPlan = value; }
 
-        public void initInternalStatistics(int industrialPower, int agriculturalPower, int tertiaryPower, int infrastructurePower, 
+        public void initInternalStatistics( int infrastructurePower, 
             double productivity, double educationRate, double healthRate,
             double happinessRate, double corruptionRate, double crimeRate, double foodRate)
         {
-            this.industrialPower = industrialPower;
-            this.agriculturalPower = agriculturalPower;
-            this.tertiaryPower = tertiaryPower;
 
             this.productivity = productivity;
             this.educationRate = educationRate;
@@ -342,27 +386,27 @@ namespace Escalation.World
                     switch (ideologies.Last().Key)
                     {
                         case Ideology.Communism:
-                            currentPlan = CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)];
+                            currentPlan = (PoliticalPlan)CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)].Clone();
                             currentPlan.init();
                         break;
 
                         case Ideology.Socialism: 
-                            currentPlan = SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)];
+                            currentPlan = (PoliticalPlan)SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)].Clone();
                             currentPlan.init();
                         break;
 
                         case Ideology.Despotism:
-                            currentPlan = DespoticPlan[Random.Next(DespoticPlan.Count)];
+                            currentPlan = (PoliticalPlan)DespoticPlan[Random.Next(DespoticPlan.Count)].Clone();
                             currentPlan.init();
                             break;
 
                         case Ideology.Fascism: 
-                            currentPlan  = FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)];
+                            currentPlan  = (PoliticalPlan)FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)].Clone();
                             currentPlan.init();
                         break;
 
                         default:
-                            currentPlan = AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)];
+                            currentPlan = (PoliticalPlan)AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)].Clone();
                             currentPlan.init();
                         break;
                     }
@@ -370,11 +414,11 @@ namespace Escalation.World
                 {
                     if (incomes > expenses) //We pick a plan expected to decrease the economic balance :
                     {
-                        currentPlan = ExpensesPoliticalPlan[Random.Next(ExpensesPoliticalPlan.Count)];
+                        currentPlan = (PoliticalPlan)ExpensesPoliticalPlan[Random.Next(ExpensesPoliticalPlan.Count)].Clone();
                         currentPlan.init();
                     } else // We pick a plan to increase the income :
                     {
-                        currentPlan = IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)];
+                        currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
                         currentPlan.init();
                     }
                 }
@@ -419,17 +463,20 @@ namespace Escalation.World
 
         public void UpdateTreasury()
         {
-
-            incomes = (decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population);
-            expenses = (decimal)healthRate * Population * 500 + (decimal)educationRate * Population * 100 +
-                       (decimal)corruptionRate * Population * 100 + (decimal)foodRate * Population * 100;
+            //TODO : Update this 
+            incomes = ((decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population))/700000;
+            expenses = ((decimal)healthRate * Population * 5 + (decimal)educationRate * Population * 1 +
+                        (decimal)foodRate * Population * 1)/10000;
 
             decimal netBalance = incomes - expenses - debtInterest;
+
+
+
            
-            treasury += netBalance;
+           treasury += netBalance;
 
       
-            if (treasury <= 0)
+            if (treasury < 0)
             {
                 debt += (decimal)Math.Abs(treasury);
                 //debtInterest+= debt * 0.0000000001m;
@@ -445,7 +492,7 @@ namespace Escalation.World
                 }
                 else
                 {
-                    debt += (decimal)Math.Abs(debt - treasury);
+                    debt -= (decimal)netBalance;
                     // debtInterest += debt * 0.0000000001m;
                     debtInterest = 0;
                     treasury = 0;
@@ -454,13 +501,13 @@ namespace Escalation.World
             
 
             
-            // Display all the values :
-            Trace.WriteLine("Treasury : " + treasury + " Debt : " + debt + " Debt Interest : " + debtInterest + " Net Balance : " + netBalance);
+            
+            
 
             //Computing the GDP Growth Rate :
-            _gdpGrowthRate = (decimal)((industrialPower + agriculturalPower + tertiaryPower) * ((productivity + educationRate)/2)) /10000;
+            _gdpGrowthRate = (decimal)((industrialPower + agriculturalPower + tertiaryPower) * ((productivity*4 + educationRate)/5)) /10000;
 
-            _gdp += _gdpGrowthRate * _gdp;
+            _gdp += _gdpGrowthRate/365 * _gdp;
 
         }
 

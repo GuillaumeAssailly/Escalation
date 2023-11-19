@@ -7,7 +7,7 @@ using Avalonia.Animation;
 
 namespace Escalation.World
 {
-    public abstract class PoliticalPlan
+    public abstract class PoliticalPlan : ICloneable
     {
         protected string description;
 
@@ -18,6 +18,10 @@ namespace Escalation.World
         public PoliticalPlan(string description)
         {
             this.description = description;
+        }
+
+        public object Clone(){
+            return this.MemberwiseClone();
         }
 
         protected internal abstract void init();

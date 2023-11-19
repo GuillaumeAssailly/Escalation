@@ -20,12 +20,8 @@ namespace Escalation.Manager
         {
             Nation CurrentNation = World.Nations[(int)code];
 
-           
 
-            if (CurrentNation != null)
-            {
-                CurrentNation.UpdateTreasury();
-            }
+            CurrentNation?.UpdateTreasury();
 
             //Remove the first element of the list :
             if (CurrentNation.TreasuryHistory.Count > 12)

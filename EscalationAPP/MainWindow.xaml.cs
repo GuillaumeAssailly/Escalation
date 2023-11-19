@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Escalation.Manager;
@@ -47,6 +48,8 @@ namespace EscalationAPP
         public EconomyManager EconomyManager => (App.Current as App).economyManager;
 
 
+        private Ecode? countryMouseEntered = null;
+        private Dictionary<Ecode, SolidColorBrush> CountryLayer;
     
         private double _axisMaxY;
         public double AxisMaxY
@@ -121,6 +124,11 @@ namespace EscalationAPP
             FocusedNation = Ecode.FRA;
             HistoPopulation = new ChartValues<decimal>();
 
+            //Initializing the country Layer :
+            CountryLayer = new Dictionary<Ecode, SolidColorBrush>();
+            CountryLayer.Add(Ecode.FRA, Brushes.Red);
+         
+
             //Launch the tests in an other thread :
             launch();
 
@@ -129,10 +137,22 @@ namespace EscalationAPP
             initPopGraph();
             initEconomyGraph();
 
-           
-
-
-
+            CountryLayer = new Dictionary<Ecode, SolidColorBrush>
+            {
+                { Ecode.RUS, Brushes.DarkRed },{ Ecode.MOG, Brushes.DarkRed },
+                { Ecode.POL, Brushes.DarkRed },{ Ecode.DDR, Brushes.DarkRed },
+                { Ecode.TCQ, Brushes.DarkRed },{ Ecode.HON, Brushes.DarkRed },
+                { Ecode.ROM, Brushes.DarkRed },{ Ecode.BUL, Brushes.DarkRed },
+                { Ecode.YOU, Brushes.DarkRed}, { Ecode.ALB, Brushes.DarkRed},
+                { Ecode.CHI, Brushes.Firebrick},   { Ecode.NCO, Brushes.Firebrick},
+                { Ecode.VIE, Brushes.Firebrick},
+                { Ecode.FRA, Brushes.Navy}, { Ecode.ETU, Brushes.Navy},
+                { Ecode.CAN, Brushes.Navy}, { Ecode.ROY, Brushes.Navy},
+                { Ecode.GDR, Brushes.Navy}, { Ecode.DAN, Brushes.Navy},
+                { Ecode.NOR, Brushes.Navy}, { Ecode.ISL, Brushes.Navy},
+                { Ecode.ITA, Brushes.Navy}, { Ecode.BEL, Brushes.Navy},
+                { Ecode.PAB, Brushes.Navy}, { Ecode.POR, Brushes.Navy},
+            };
         }
 
 
@@ -147,6 +167,7 @@ namespace EscalationAPP
                 foreach (Nation n in World.Nations)
                 {
                     FileWriter.CreateFiles("", n.Code);
+                    FileWriter.SaveIdeologies("idee.txt",n.getIdeologies());
                 }
 
                 /////////////////////////////
@@ -164,26 +185,29 @@ namespace EscalationAPP
                         }
                     }
 
-                    
-                     
+
 
                   
 
-
+                    //DAY LOOP OVER HERE :
                     foreach (Nation currentNation in World.Nations)
                     {
-                        PopulationManager.ManagePopulation(currentNation.Code);
                         if (World.CurrentDate.Day == 1)
                         {
                             EconomyManager.ManageEconomy(currentNation.Code);
 
                         }
 
+                        //print the 20 richest countries : order by treasury :
+                        List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
+                       
+
                         if (i % 10 == 0)
                         {
                             IdeologyManager.ManageIdeologies(currentNation.Code);
                         }
 
+                        PopulationManager.ManagePopulation(currentNation.Code);
                         currentNation.DriftIdeologies();
                         //Print majorIdeology in each nation : 
                         Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
@@ -210,6 +234,22 @@ namespace EscalationAPP
 
         ///////////////////////////////////////UI : ///////////////////////////////////////
 
+        private void UpdateLayer()
+        {
+            //foreach element on dictionnary layer :
+            foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
+            {
+                //get the path with the tag :
+                if ((Ecode)entry.Key != countryMouseEntered)
+                {
+                    Path country = (Path)FindName(entry.Key.ToString());
+                    //set the color :
+                    country.Fill = entry.Value;
+                }
+             
+            }
+        }
+
         private void UpdateUI()
         {
             DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
@@ -217,6 +257,7 @@ namespace EscalationAPP
             UpdateChart();
             UpdatePopGraph();
             UpdateEconomyGraph();
+            UpdateLayer();
         }
 
 
@@ -499,5 +540,40 @@ namespace EscalationAPP
                 
             }
         }
+
+
+        private void OnCountryMouseEnter(object sender, MouseEventArgs e)
+        {
+            Path p = (Path)sender;
+            //parse string to Ecode :
+            countryMouseEntered = (Ecode)Enum.Parse(typeof(Ecode), (string)p.Tag);
+        }
+
+        private void OnCountryMouseLeave(object sender, MouseEventArgs e)
+        {
+            SolidColorBrush targetBrush = null;
+            countryMouseEntered = null;
+            Path p = (Path)sender;
+
+            // If p.name exists in the dictionary
+            if (CountryLayer.ContainsKey((Ecode)Enum.Parse(typeof(Ecode), (string)p.Tag)))
+            {
+                // Use the color from the dictionary
+                targetBrush = CountryLayer[(Ecode)Enum.Parse(typeof(Ecode), (string)p.Tag)];
+
+
+            }
+            else
+            {
+                // Use brush #666666 with a smooth transition
+                targetBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+              
+            }
+
+            ColorAnimation colorAnimation = new ColorAnimation(targetBrush.Color, TimeSpan.FromMilliseconds(200));
+
+            p.Fill.BeginAnimation(SolidColorBrush.ColorProperty, colorAnimation);
+        }
+
     }
 }

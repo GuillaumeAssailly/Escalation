@@ -19,8 +19,6 @@ namespace EscalationAPP.Converters
             {
                 case Ecode.FRA:
                     return "France";
-                case Ecode.ALL:
-                    return "Allemagne";
                 case Ecode.ESP:
                     return "Espagne";
                 case Ecode.ITA:
@@ -30,13 +28,21 @@ namespace EscalationAPP.Converters
                 case Ecode.ETU:
                     return "Etats-Unis";
                 case Ecode.RUS:
-                    return "Russie";
+                    return "Union des Républiques Soviétiques Socialistes";
+                case Ecode.BRA: 
+                    return "Brésil";
+                case Ecode.IND:
+                    return "Inde";
+                case Ecode.CHI:
+                    return "République Populaire de Chine";
+                
+
 
 
 
 
                 default:
-                    return "-- NO NAME --";
+                    return value;
             }
         }
 

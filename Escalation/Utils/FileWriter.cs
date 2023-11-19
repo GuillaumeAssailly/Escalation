@@ -32,8 +32,20 @@ namespace Escalation.Utils
         {
             File.AppendAllText(path,line+Environment.NewLine);
         }
-        
 
+        public static void SaveIdeologies(string path, Dictionary<Ideology, double> ideologies)
+        {
+            int i = 0;
+            foreach (var ideology in ideologies)
+            {
+                File.AppendAllText(path, ideology.Value.ToString() +";");
+                i++;
+                if (i % 7 == 0)
+                {
+                    File.AppendAllText(path, Environment.NewLine);
+                }
+            }
+        }
 
     }
 }
