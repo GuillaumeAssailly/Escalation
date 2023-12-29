@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,7 @@ namespace EscalationAPP
 
         private Ecode? countryMouseEntered = null;
         private Dictionary<Ecode, SolidColorBrush> CountryLayer;
+            
     
         private double _axisMaxY;
         public double AxisMaxY
@@ -125,9 +127,7 @@ namespace EscalationAPP
             HistoPopulation = new ChartValues<decimal>();
 
             //Initializing the country Layer :
-            CountryLayer = new Dictionary<Ecode, SolidColorBrush>();
-            CountryLayer.Add(Ecode.FRA, Brushes.Red);
-         
+            CountryLayer = new Dictionary<Ecode, SolidColorBrush>();         
 
             //Launch the tests in an other thread :
             launch();
@@ -136,6 +136,9 @@ namespace EscalationAPP
             initChart();
             initPopGraph();
             initEconomyGraph();
+
+            
+
 
             CountryLayer = new Dictionary<Ecode, SolidColorBrush>
             {
@@ -153,13 +156,55 @@ namespace EscalationAPP
                 { Ecode.ITA, Brushes.Navy}, { Ecode.BEL, Brushes.Navy},
                 { Ecode.PAB, Brushes.Navy}, { Ecode.POR, Brushes.Navy},
             };
+
+
+            // Matrix of char size of the number of nations in world : 
+            char[,] matrix = new char[World.Nations.Count, World.Nations.Count];
+
+
+            //Iterate on every path in the folder :
+            foreach (Nation n in World.Nations)
+            {
+                Path currentCountry = (Path)FindName(n.Code.ToString());
+                Geometry a = currentCountry.Data;
+                foreach (Nation n2 in World.Nations)
+                {
+                    Path potentialNeighboor = (Path)FindName(n2.Code.ToString());
+                    Geometry b = potentialNeighboor.Data;
+
+                    Rect rectA = a.Bounds;
+                    Rect rectB = b.Bounds;
+
+
+                    //check the intersection of the two rect : 
+                    if (rectA.IntersectsWith(rectB))
+                    {
+                        matrix[(int)n.Code, (int)n2.Code] = 'L';
+                        n.neighbors.Add(n2.Code, 'L');
+                    } else
+                    {
+                        matrix[(int)n.Code, (int)n2.Code] = 'X';
+                    }
+                }
+            }
+
+            //Write the matrix in a file : 
+            for (int i = 0; i < World.Nations.Count; i++)
+            {
+                for (int j = 0; j < World.Nations.Count; j++)
+                {       
+                        File.AppendAllText("neighboors.txt", matrix[i, j].ToString());
+                    
+                }
+                File.AppendAllText("neighboors.txt", Environment.NewLine);
+            }
         }
 
 
         ///////////////////////////////////////THREADS : ///////////////////////////////////////
         private async void launch()
         {
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 /////////////////////////////
                 /// - FILES CREATION -  /////
@@ -167,8 +212,12 @@ namespace EscalationAPP
                 foreach (Nation n in World.Nations)
                 {
                     FileWriter.CreateFiles("", n.Code);
-                    FileWriter.SaveIdeologies("idee.txt",n.getIdeologies());
+                    FileWriter.SaveIdeologies("idee.txt", n.getIdeologies());
                 }
+
+                
+
+              
 
                 /////////////////////////////
                 ///  - TESTS -  /////////////
@@ -199,7 +248,7 @@ namespace EscalationAPP
                         }
 
                         //print the 20 richest countries : order by treasury :
-                        List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
+                       // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
                        
 
                         if (i % 10 == 0)
@@ -236,6 +285,7 @@ namespace EscalationAPP
 
         private void UpdateLayer()
         {
+            
             //foreach element on dictionnary layer :
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
@@ -248,6 +298,7 @@ namespace EscalationAPP
                 }
              
             }
+           
         }
 
         private void UpdateUI()
@@ -257,7 +308,34 @@ namespace EscalationAPP
             UpdateChart();
             UpdatePopGraph();
             UpdateEconomyGraph();
+            UpdateNeighboor();
             UpdateLayer();
+            
+        }
+
+        private void initNeighboorOnCountryChange()
+        {
+            foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
+            {
+                //get the path with the tag :
+                if ((Ecode)entry.Key != countryMouseEntered)
+                {
+                    Path country = (Path)FindName(entry.Key.ToString());
+                    //set the color :
+                    country.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+                }
+
+            }
+        }
+
+        private void UpdateNeighboor()
+        {
+          
+            CountryLayer.Clear();
+            foreach (Ecode e in World.Nations[(int)FocusedNation].neighbors.Keys)
+            {
+               CountryLayer.Add(e, Brushes.Green);
+            }
         }
 
 
@@ -502,6 +580,7 @@ namespace EscalationAPP
 
             initPopGraphOnCountryChange();
             initEconomyGraphOnCountryChange();
+            initNeighboorOnCountryChange();
             UpdateUI();
 
         }
@@ -560,7 +639,7 @@ namespace EscalationAPP
             {
                 // Use the color from the dictionary
                 targetBrush = CountryLayer[(Ecode)Enum.Parse(typeof(Ecode), (string)p.Tag)];
-
+                    
 
             }
             else
@@ -576,4 +655,6 @@ namespace EscalationAPP
         }
 
     }
+
+    
 }

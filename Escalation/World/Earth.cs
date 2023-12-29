@@ -22,6 +22,10 @@ namespace Escalation.World
         //list of nations : 
         public List<Nation> Nations;
 
+
+        //list of alliances (and military pacts) : 
+        public List<Alliance> Alliances;
+
         
 
 
@@ -29,8 +33,7 @@ namespace Escalation.World
         private char[,] adjacencyMatrix;
 
 
-        //list of all Military Pacts : 
-
+        
 
         //list of all Influence Sphere : 
 

@@ -28,13 +28,13 @@ namespace Escalation.World
         AFG, SAH, RSA, ALB, ALG, AND, ANG, ASA, ARG, AUS, PAL, AUT, BAH, BAN,
         BEL, BEI, BEN, BHO, BIR, BOL, BOT, BRA, BRU, BUL, BUR, BUD, CAM, CAO,
         CAN, CHL, CHI, CHY, COL, NCO, SCO, COS, CIV, CUB, DAN, DDR, DJI, EGY,
-        EAU, EQA, ERY, ESP, ESW,  ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR, GHA,
+        EAU, EQA, ESP, ESW,  ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR, GHA,
         GRE, GRO, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND,
         IDO, IRK, IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR, KEN, KOW, LAO, LES,
         LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MON, MOG, MOZ,
         NEP, NIC, NGR, NIG, NOR, NCA, NZE, OMA, OGD, PAK, PAN, PNG, PAR, PAB,
         PER, PHI, POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RVI,
-        RWA, SAL, SEN, SLE, SLV, SOM,SOU, SDS, SRI, SUE, SUI, SUR, SVA, SYR,
+        RWA, SAL, SEN, SLE, SOM,SOU, SDS, SRI, SUE, SUI, SUR, SVA, SYR,
         TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN,TUR, URU, VAN, VAT,
         VEN, VIE, YEA, YEM, YOU, ZAM, ZIM,
 
@@ -75,8 +75,7 @@ namespace Escalation.World
         public ETitle Title { get; set; }
 
         //List of Neighbors with qualifiers (M for Marine, L for Land): 
-        private Dictionary<Ecode, char> neighbors;
-
+        public Dictionary<Ecode, char> neighbors = new Dictionary<Ecode, char>();
 
         public Nation(Ecode code,
             double stability, int politicalPower, int ideology, double minIdeo, double maxIdeo, decimal population, double populationGrowthRate, double populationDeathRate,
