@@ -158,46 +158,6 @@ namespace EscalationAPP
             };
 
 
-            // Matrix of char size of the number of nations in world : 
-            char[,] matrix = new char[World.Nations.Count, World.Nations.Count];
-
-
-            //Iterate on every path in the folder :
-            foreach (Nation n in World.Nations)
-            {
-                Path currentCountry = (Path)FindName(n.Code.ToString());
-                Geometry a = currentCountry.Data;
-                foreach (Nation n2 in World.Nations)
-                {
-                    Path potentialNeighboor = (Path)FindName(n2.Code.ToString());
-                    Geometry b = potentialNeighboor.Data;
-
-                    Rect rectA = a.Bounds;
-                    Rect rectB = b.Bounds;
-
-
-                    //check the intersection of the two rect : 
-                    if (rectA.IntersectsWith(rectB))
-                    {
-                        matrix[(int)n.Code, (int)n2.Code] = 'L';
-                        n.neighbors.Add(n2.Code, 'L');
-                    } else
-                    {
-                        matrix[(int)n.Code, (int)n2.Code] = 'X';
-                    }
-                }
-            }
-
-            //Write the matrix in a file : 
-            for (int i = 0; i < World.Nations.Count; i++)
-            {
-                for (int j = 0; j < World.Nations.Count; j++)
-                {       
-                        File.AppendAllText("neighboors.txt", matrix[i, j].ToString());
-                    
-                }
-                File.AppendAllText("neighboors.txt", Environment.NewLine);
-            }
         }
 
 

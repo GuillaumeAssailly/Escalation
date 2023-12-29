@@ -24,6 +24,35 @@ namespace Escalation.Utils
             return population;
         }
 
+        public static char[,] ReadMatrixFromFile(string filePath)
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines(filePath);
+
+                int rows = lines.Length;
+                int cols = lines[0].Length;
+
+                char[,] matrix = new char[rows, cols];
+
+                for (int i = 0; i < rows; i++)
+                {
+                    for (int j = 0; j < cols; j++)
+                    {
+                        matrix[i, j] = lines[i][j];
+                    }
+                }
+
+                return matrix;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., file not found, format issues)
+                Console.WriteLine($"Error reading matrix from file: {ex.Message}");
+                return null;
+            }
+        }
+
 
         public static List<Nation> ReadNationsFromCsv(string filePath)
         {

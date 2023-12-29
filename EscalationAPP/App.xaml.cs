@@ -24,6 +24,10 @@ namespace EscalationAPP
        
         public EconomyManager economyManager { get; private set; }
 
+        public GeographyManager geographyManager { get; private set; }
+
+        public RelationManager relationManager { get; private set; }
+
         public App()
         {
             World = new Earth();
@@ -36,6 +40,8 @@ namespace EscalationAPP
             ideologyManager = new IdeologyManager(World, Random);
             populationManager = new PopulationManager(World, Random);
             economyManager = new EconomyManager(World, Random);
+            relationManager = new RelationManager(World, Random);
+            geographyManager = new GeographyManager(World, Random);
 
             //build countries : 
             //World.initCountries();
@@ -49,10 +55,10 @@ namespace EscalationAPP
                 nation.initEconomicStats( 0, 0 ,Random.Next(0, 100000));
             }
 
-            //World.setCountriesNeighbors();
-
-
-
+            geographyManager.initializeNeighbors();
+            relationManager.initRelations();
+         
+          
 
         }
 
