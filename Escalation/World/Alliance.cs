@@ -10,14 +10,14 @@ namespace Escalation.World
     {
         private String name;
 
-        private String color;
+        public String color;
 
         private static int cpt = -1;
 
         
         private List<Nation> members;
 
-        private int militaryPower;
+        private decimal militaryPower;
         private int id;
 
         public Alliance(String name, String color)
@@ -27,6 +27,7 @@ namespace Escalation.World
             this.name = name;
             this.color = color;
             this.members = new List<Nation>();
+            this.militaryPower = 0; 
         }
 
 
@@ -35,20 +36,25 @@ namespace Escalation.World
         {
             this.members.Add(n);
             n.MilitaryPact = id;
+          
         }
 
         public void RemoveMember(Nation nation)
         {
             this.members.Remove(nation);
             nation.MilitaryPact = -1;
+            
         }
 
         public List<Nation> GetMembers()
         {
             return members;
         }
-      
 
+        public decimal GetMilitaryPower()
+        {
+            return members.Sum(n => n.Military);
+        }
 
 
     }

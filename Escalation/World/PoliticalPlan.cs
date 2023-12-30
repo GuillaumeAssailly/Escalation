@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Animation;
+using Microsoft.VisualBasic.FileIO;
+using Random =  Escalation.Utils.Random;
 
 namespace Escalation.World
 {
@@ -93,6 +95,40 @@ namespace Escalation.World
         protected internal override void init() { this.maxcpt = 75; this.cpt = 0; }
         protected internal override void takeEffect(Nation n) { n.HealthRate += 0.05; }
     }
+
+    public class MilitaryEngagementI : PoliticalPlan
+    {
+        public MilitaryEngagementI() : base("Plan d'investissement dans le militaire (tiers I).") { }
+        protected internal override void init() { this.maxcpt = 25; this.cpt = 0; }
+
+        protected internal override void takeEffect(Nation n)
+        {
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.01;
+        }
+    }
+
+    public class MilitaryEngagementII : PoliticalPlan
+    {
+        public MilitaryEngagementII() : base("Plan d'investissement dans le militaire (tiers II).") { }
+        protected internal override void init() { this.maxcpt = 25; this.cpt = 0; }
+
+        protected internal override void takeEffect(Nation n)
+        {
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.05;
+        }
+    }
+
+    public class MilitaryEngagementIII : PoliticalPlan
+    {
+        public MilitaryEngagementIII() : base("Plan d'investissement dans le militaire (tiers III).") { }
+        protected internal override void init() { this.maxcpt = 25; this.cpt = 0; }
+
+        protected internal override void takeEffect(Nation n)
+        {
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.1;
+        }
+    }
+
 
     public class EducationPlan : PoliticalPlan
     {

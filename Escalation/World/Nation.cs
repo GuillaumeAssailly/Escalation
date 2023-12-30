@@ -77,6 +77,8 @@ namespace Escalation.World
         //List of Neighbors with qualifiers (M for Marine, L for Land): 
         public Dictionary<Ecode, char> neighbors = new Dictionary<Ecode, char>();
 
+        public int NbWarEngagedIn { get; set; }
+
         public Nation(Ecode code,
             double stability, int politicalPower, int ideology, double minIdeo, double maxIdeo, decimal population, double populationGrowthRate, double populationDeathRate,
             double populationDensity, int industrialPower, int agriculturalPower, int tertiaryPower, decimal gdp, int militaryPoints, int victoryPoints)
@@ -105,12 +107,13 @@ namespace Escalation.World
             this.MilitaryPact = -1;
             this.Military = militaryPoints;
             this.VictoryPoints = victoryPoints;
-            this.CurrentVictoryPoints = victoryPoints;
-            this.SetIdeologies((Ideology)ideology,minIdeo,maxIdeo);
+            CurrentVictoryPoints = victoryPoints;
+            
+            this.SetIdeologiesRandom((Ideology)ideology,minIdeo,maxIdeo);
           
             currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
 
-
+            NbWarEngagedIn = 0;
         }
 
 
@@ -145,7 +148,12 @@ namespace Escalation.World
             return ideologies;
         }
 
-        public void SetIdeologies(Ideology mainIdeology, double min, double max)
+        public void SetIdeologies(Dictionary<Ideology, double> ideologies)
+        {
+            this.ideologies = ideologies;
+        }
+
+        public void SetIdeologiesRandom(Ideology mainIdeology, double min, double max)
         {
             ideologies = new Dictionary<Ideology, double>
                 {
@@ -329,7 +337,26 @@ namespace Escalation.World
             new PublicHealth(),
             new EducationPlan(),
             new FoodRatePlan(),
-            new NatalityPlan()
+            new NatalityPlan(),
+            new MilitaryEngagementI(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementIII(),
+
+        };
+
+        private static List<PoliticalPlan> WarPoliticalPlan = new List<PoliticalPlan>
+        {
+            new MilitaryEngagementI(),
+            new MilitaryEngagementI(),
+            new MilitaryEngagementI(),
+            new MilitaryEngagementI(),
+            new MilitaryEngagementI(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementII(),
+            new MilitaryEngagementIII(),
         };
 
         private static List<PoliticalPlan> AltRightPoliticalPlan = new List<PoliticalPlan>
@@ -387,49 +414,56 @@ namespace Escalation.World
             {
                 currentPlan.takeEffect(this);
                 //TODO: change the percentage value :
-                if (Random.NextDouble() < 0.5) // We pick a plan depending on the current ideology : 
-                {
-                    switch (ideologies.Last().Key)
+                //if (NbWarEngagedIn == 0)
+                //{
+                    if (Random.NextDouble() < 0.5) // We pick a plan depending on the current ideology : 
                     {
-                        case Ideology.Communism:
-                            currentPlan = (PoliticalPlan)CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)].Clone();
-                            currentPlan.init();
-                        break;
+                        switch (ideologies.Last().Key)
+                        {
+                            case Ideology.Communism:
+                                currentPlan = (PoliticalPlan)CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)].Clone();
+                                currentPlan.init();
+                                break;
 
-                        case Ideology.Socialism: 
-                            currentPlan = (PoliticalPlan)SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)].Clone();
-                            currentPlan.init();
-                        break;
+                            case Ideology.Socialism: 
+                                currentPlan = (PoliticalPlan)SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)].Clone();
+                                currentPlan.init();
+                                break;
 
-                        case Ideology.Despotism:
-                            currentPlan = (PoliticalPlan)DespoticPlan[Random.Next(DespoticPlan.Count)].Clone();
-                            currentPlan.init();
-                            break;
+                            case Ideology.Despotism:
+                                currentPlan = (PoliticalPlan)DespoticPlan[Random.Next(DespoticPlan.Count)].Clone();
+                                currentPlan.init();
+                                break;
 
-                        case Ideology.Fascism: 
-                            currentPlan  = (PoliticalPlan)FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)].Clone();
-                            currentPlan.init();
-                        break;
+                            case Ideology.Fascism: 
+                                currentPlan  = (PoliticalPlan)FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)].Clone();
+                                currentPlan.init();
+                                break;
 
-                        default:
-                            currentPlan = (PoliticalPlan)AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)].Clone();
+                            default:
+                                currentPlan = (PoliticalPlan)AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)].Clone();
+                                currentPlan.init();
+                                break;
+                        }
+                    } else // We pick a plan depending on the current financial decision  :
+                    {
+                        if (incomes > expenses) //We pick a plan expected to decrease the economic balance :
+                        {
+                            currentPlan = (PoliticalPlan)ExpensesPoliticalPlan[Random.Next(ExpensesPoliticalPlan.Count)].Clone();
                             currentPlan.init();
-                        break;
+                        } else // We pick a plan to increase the income :
+                        {
+                            currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
+                            currentPlan.init();
+                        }
                     }
-                } else // We pick a plan depending on the current financial decision  :
-                {
-                    if (incomes > expenses) //We pick a plan expected to decrease the economic balance :
-                    {
-                        currentPlan = (PoliticalPlan)ExpensesPoliticalPlan[Random.Next(ExpensesPoliticalPlan.Count)].Clone();
-                        currentPlan.init();
-                    } else // We pick a plan to increase the income :
-                    {
-                        currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
-                        currentPlan.init();
-                    }
-                }
-                
-             
+                //}
+                //else //We pick a plan for the war: 
+                //{
+                //    currentPlan = (PoliticalPlan)WarPoliticalPlan[Random.Next(WarPoliticalPlan.Count)].Clone();
+                 //   currentPlan.init();
+                //}
+
             }
             else
             {
@@ -472,7 +506,7 @@ namespace Escalation.World
             //TODO : Update this 
             incomes = ((decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population))/700000;
             expenses = ((decimal)healthRate * Population * 5 + (decimal)educationRate * Population * 1 +
-                        (decimal)foodRate * Population * 1)/10000;
+                        (decimal)foodRate * Population * 1)/10000 + (decimal)Military/10000;
 
             decimal netBalance = incomes - expenses - debtInterest;
 
@@ -553,7 +587,12 @@ namespace Escalation.World
 
         public int VictoryPoints { get; set; }
 
-        public int CurrentVictoryPoints { get; set; }
+        private int currentVictoryPoints;
+        public int CurrentVictoryPoints
+        {
+            get => currentVictoryPoints;
+            set => currentVictoryPoints = value < 0 ? 0 : value;
+        }
 
         //Demographic Statistics
         private decimal _population;

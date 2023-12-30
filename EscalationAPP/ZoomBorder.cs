@@ -60,8 +60,7 @@ namespace PanAndZoom
                 //Pareil
                 //this.MouseLeftButtonUp += child_MouseLeftButtonUp;
                 this.MouseMove += child_MouseMove;
-                this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
-                  child_PreviewMouseRightButtonDown);
+               // this.PreviewMouseRightButtonDown += new MouseButtonEventHandler child_PreviewMouseRightButtonDown);
             }
         }
 

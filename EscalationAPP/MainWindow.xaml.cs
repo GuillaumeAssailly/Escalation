@@ -28,11 +28,39 @@ using Wpf.Ui.Controls;
 using Path = System.Windows.Shapes.Path;
 using Random = Escalation.Utils.Random;
 
+
 namespace EscalationAPP
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
+    ///
+    ///
+
+    public class MyTraceListener : TraceListener
+    {
+        private readonly System.Windows.Controls.TextBox _textBox;
+
+        public MyTraceListener(System.Windows.Controls.TextBox textBlock)
+        {
+            _textBox = textBlock;
+        }
+
+
+        public override void Write(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteLine(string message)
+        {
+            _textBox.Dispatcher.Invoke(() => _textBox.Text += message + "\n");
+            
+        }
+    }
+
+
+
     public partial class MainWindow : FluentWindow, INotifyPropertyChanged
     {
 
@@ -98,6 +126,14 @@ namespace EscalationAPP
             set => focusedNation = value;
         }
 
+        private Ecode focusedNationRelation;
+
+        public Ecode FocusedNationRelation
+        {
+            get => focusedNationRelation;
+            set => focusedNationRelation = value;
+        }
+
         public SeriesCollection FocusedIdeologies { get; set; }
         public SeriesCollection FocusedPopulation { get; set; }
 
@@ -118,6 +154,9 @@ namespace EscalationAPP
             InitializeComponent();
             DataContext = this;
 
+            var traceListener = new MyTraceListener(outputTextBox);
+            Trace.Listeners.Add(traceListener);
+            Trace.AutoFlush = true;
 
             pauseToken = pauseTokenSource.Token;
 
@@ -143,25 +182,17 @@ namespace EscalationAPP
             initEconomyGraph();
 
             
-
-
-            CountryLayer = new Dictionary<Ecode, SolidColorBrush>
+            foreach (Alliance a in World.Alliances)
             {
-                { Ecode.RUS, Brushes.DarkRed },{ Ecode.MOG, Brushes.DarkRed },
-                { Ecode.POL, Brushes.DarkRed },{ Ecode.DDR, Brushes.DarkRed },
-                { Ecode.TCQ, Brushes.DarkRed },{ Ecode.HON, Brushes.DarkRed },
-                { Ecode.ROM, Brushes.DarkRed },{ Ecode.BUL, Brushes.DarkRed },
-                { Ecode.YOU, Brushes.DarkRed}, { Ecode.ALB, Brushes.DarkRed},
-                { Ecode.CHI, Brushes.Firebrick},   { Ecode.NCO, Brushes.Firebrick},
-                { Ecode.VIE, Brushes.Firebrick},
-                { Ecode.FRA, Brushes.Navy}, { Ecode.ETU, Brushes.Navy},
-                { Ecode.CAN, Brushes.Navy}, { Ecode.ROY, Brushes.Navy},
-                { Ecode.GDR, Brushes.Navy}, { Ecode.DAN, Brushes.Navy},
-                { Ecode.NOR, Brushes.Navy}, { Ecode.ISL, Brushes.Navy},
-                { Ecode.ITA, Brushes.Navy}, { Ecode.BEL, Brushes.Navy},
-                { Ecode.PAB, Brushes.Navy}, { Ecode.POR, Brushes.Navy},
-            };
+                foreach (Nation n in a.GetMembers())
+                {
+                    CountryLayer.Add(n.Code, new SolidColorBrush((Color)ColorConverter.ConvertFromString(a.color)));
 
+                }
+            }
+
+            
+          
 
         }
 
@@ -206,23 +237,30 @@ namespace EscalationAPP
                     //DAY LOOP OVER HERE :
                     foreach (Nation currentNation in World.Nations)
                     {
-                        if (World.CurrentDate.Day == 1)
-                        {
-                            EconomyManager.ManageEconomy(currentNation.Code);
 
-                        }
-
-                        //print the 20 richest countries : order by treasury :
-                       // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
-                       
 
                         if (i % 10 == 0)
                         {
                             IdeologyManager.ManageIdeologies(currentNation.Code);
                         }
 
+
+                        if (World.CurrentDate.Day == 1)
+                        {
+                            EconomyManager.ManageEconomy(currentNation.Code);
+                            RelationManager.updateRelations(currentNation); 
+                            currentNation.DriftIdeologies();
+                        }
+
+                        //print the 20 richest countries : order by treasury :
+                       // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
+                       
+
+                       
+
                         PopulationManager.ManagePopulation(currentNation.Code);
-                        currentNation.DriftIdeologies();
+                        
+                        
                         //Print majorIdeology in each nation : 
                         //Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
                         currentNation.takeAction();
@@ -230,6 +268,7 @@ namespace EscalationAPP
 
                     RelationManager.GoToWar();
                     RelationManager.ManageWars();
+                    RelationManager.ManageTension();
                     World.AddDay();
 
                     //Delay of 1 second :
@@ -250,10 +289,36 @@ namespace EscalationAPP
 
         private void UpdateLayer()
         {
-            
+
+            foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
+            {
+
+                //get the path with the tag :
+                if ((Ecode)entry.Key != countryMouseEntered)
+                {
+                    Path country = (Path)FindName(entry.Key.ToString());
+                    //set the color :
+                    country.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+                }
+
+            }
+
+            CountryLayer.Clear();
+
+
+            foreach (Alliance a in World.Alliances)
+            {
+                foreach (Nation n in a.GetMembers())
+                {
+                    CountryLayer.Add(n.Code, new SolidColorBrush((Color)ColorConverter.ConvertFromString(a.color)));
+
+                }
+            }
+
             //foreach element on dictionnary layer :
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
+
                 //get the path with the tag :
                 if ((Ecode)entry.Key != countryMouseEntered)
                 {
@@ -269,12 +334,14 @@ namespace EscalationAPP
         private void UpdateUI()
         {
             DateBlock.Text = CurrentDate.ToString("dd/MM/yyyy");
+            WorldTension.Text = World.WorldTension.ToString("00.000");
             UpdateInternalDetails();
             UpdateChart();
             UpdatePopGraph();
             UpdateEconomyGraph();
-            UpdateNeighboor();
+            //UpdateNeighboor();
             UpdateLayer();
+            outputTextBox.ScrollToEnd();
             
         }
 
@@ -354,6 +421,7 @@ namespace EscalationAPP
             CountryIndustrialPower.Text = World.Nations[(int)FocusedNation].IndustrialPower.ToString();
             CountryTertiaryPower.Text = World.Nations[(int)FocusedNation].TertiaryPower.ToString();
             CountryMilitary.Text = World.Nations[(int)FocusedNation].Military.ToString();
+            CountryVP.Text = World.Nations[(int)FocusedNation].CurrentVictoryPoints.ToString();
             CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
             CountryGDPGROWTH.Text = World.Nations[(int)FocusedNation].GDPGrowthRate.ToString();
             CountryGDP.Text = World.Nations[(int)FocusedNation].GDP.ToString();
@@ -620,6 +688,16 @@ namespace EscalationAPP
             p.Fill.BeginAnimation(SolidColorBrush.ColorProperty, colorAnimation);
         }
 
+        private void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
+
+        private void OnMouserRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+           
+            
+        }
     }
 
     

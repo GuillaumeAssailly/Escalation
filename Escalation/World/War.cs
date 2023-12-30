@@ -9,6 +9,18 @@ using Random = Escalation.Utils.Random;
 
 namespace Escalation.World
 {
+
+    public class AnnexionNationEventArgs : EventArgs
+    {
+        public Nation AnnexedNation { get; }
+        public bool IsDefender { get; }
+
+        public AnnexionNationEventArgs(Nation annexedNation, bool isDefender)
+        {
+            AnnexedNation = annexedNation;
+            IsDefender = isDefender;
+        }
+    }
     public class War 
     {
 
@@ -16,6 +28,7 @@ namespace Escalation.World
 
         public string Name;
 
+        public event EventHandler<AnnexionNationEventArgs> AnnexationOccurred;
 
         public List<Nation> Attackers { get; private set; }
         public List<Nation> Defenders { get; private set; }
@@ -58,18 +71,19 @@ namespace Escalation.World
         {
             bool res = false;
             timeToLive--;
+            DaysElapsed++;
             computeCasualties();   
 
 
             //We compute the probability of a battle, depending on the number of countries involved in the war :
-            if (Random.NextDouble() - numberOfCountries/100 < 0.05)
+            if (Random.NextDouble() - (double)numberOfCountries/100 < 0.05)
             {
                 computeBattle();
             }
 
             if (Attackers.Count == 0 || Defenders.Count == 0)
             {
-                Trace.WriteLine(Name + "Annihilation : War ended on " + DateTime.Now);
+                Trace.WriteLine(Name + "Annihilation : War ended on " + StartDate.AddDays(DaysElapsed));
                 res = true;
             }
            
@@ -78,7 +92,7 @@ namespace Escalation.World
             {
                 if (Random.NextDouble() < probabilityOfEndingConflict)
                 {
-                    Trace.WriteLine(Name+"Draw : War ended on " + DateTime.Now);
+                    Trace.WriteLine(Name+"Draw : War ended on " + StartDate.AddDays(DaysElapsed));
                     res = true;
                 }
                 else
@@ -129,7 +143,7 @@ namespace Escalation.World
                         RemoveDefender(defender);
                     }
                 }
-                Trace.WriteLine(this.Name + attacker.Code + " wins the day !");
+                //Trace.WriteLine(this.Name + attacker.Code + " wins the day !");
                 attacker.Military -= Random.Next(0, (int)defender.Military);
                 defender.Military -= Random.Next(0, (int)attacker.Military);
 
@@ -150,7 +164,7 @@ namespace Escalation.World
 
                     }
                 }
-                Trace.WriteLine(this.Name+defender.Code + " wins the day !");
+                //Trace.WriteLine(this.Name+defender.Code + " wins the day !");
                 decimal tmp = attacker.Military /1000;
                 attacker.Military -= Random.Next(0, defender.Military/1000);
                 defender.Military -= Random.Next(0, tmp);
@@ -163,10 +177,17 @@ namespace Escalation.World
         private void computeCasualties()
         {
             Nation attacker = Attackers[Random.Next(0, Attackers.Count)];
+            foreach (Nation n in Defenders)
+            {
+                n.Population -= Random.Next(0, (ulong)(attacker.Military*n.Population)/100000);
+                
+            }
             Nation defender = Defenders[Random.Next(0, Defenders.Count)];
-
-            attacker.Population -= Random.Next(0, (ulong)(defender.Military*attacker.Population)/100000);
-            defender.Population -= Random.Next(0, (ulong)(attacker.Military*defender.Population)/100000);
+            foreach (Nation n in Attackers)
+            {
+                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / 100000);
+            }
+            
           
         }
 
@@ -177,7 +198,7 @@ namespace Escalation.World
             Attackers = attackers;
             Defenders = defenders;
             StartDate = startDate;
-
+            DaysElapsed = 0;
             numberOfCountries = attackers.Count + defenders.Count;
          
             scoreDef = 0;
@@ -221,16 +242,29 @@ namespace Escalation.World
 
         public void RemoveAttacker(Nation n)
         {
+            Nation strongestDefender = Defenders.OrderByDescending(n => n.Military).FirstOrDefault();
+
+           
+
             Attackers.Remove(n);
             scoreAtt -= n.CurrentVictoryPoints;
             numberOfCountries--;
+
+            AnnexationOccurred?.Invoke(this, new AnnexionNationEventArgs(n, false));
+
         }
 
         public void RemoveDefender(Nation n)
         {
+            
+
             Defenders.Remove(n);
             scoreDef -= n.CurrentVictoryPoints;
             numberOfCountries--;
+
+            //Call annex function with n and this as args
+            AnnexationOccurred?.Invoke(this, new AnnexionNationEventArgs(n,true));
+
         }
 
     }
