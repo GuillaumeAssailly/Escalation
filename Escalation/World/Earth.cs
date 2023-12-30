@@ -48,6 +48,9 @@ namespace Escalation.World
         //list of alliances (and military pacts) : 
         public List<Alliance> Alliances;
 
+
+        //list of wars :
+        public List<War> Wars;
         
         
 
@@ -129,8 +132,11 @@ namespace Escalation.World
         public Earth()
         {
             Nations = new List<Nation>();
+            Wars = new List<War>();
+            Alliances = new List<Alliance>();
             //setAdjacencyMatrixFromFile();
             CurrentDate =  new DateTime(1966, 1, 1);
+            WorldTension = 10;
 
         }
 

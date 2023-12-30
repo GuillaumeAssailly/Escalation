@@ -219,7 +219,7 @@ namespace EscalationAPP
                         PopulationManager.ManagePopulation(currentNation.Code);
                         currentNation.DriftIdeologies();
                         //Print majorIdeology in each nation : 
-                        Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
+                        //Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
                         currentNation.takeAction();
                     }
 

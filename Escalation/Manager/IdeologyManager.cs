@@ -28,7 +28,7 @@ namespace Escalation.Manager
             // - Despotism :            X% chance of being the rising ideology + what remains of chance of being a random ideology in country
             // - Fascism :              X% chance of being the rising ideology + what remains of chance of being a random neighbor in country
 
-            //Get the  last ideology of the dictionnary (the most popular one) :
+            //Get the  last ideology of the dictionary (the most popular one) :
             Ideology CurrentIdeology = CurrentNation.getIdeologies().Last().Key;
 
             Ideology NewRisingIdeology;

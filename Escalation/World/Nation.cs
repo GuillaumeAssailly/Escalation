@@ -79,7 +79,7 @@ namespace Escalation.World
 
         public Nation(Ecode code,
             double stability, int politicalPower, int ideology, double minIdeo, double maxIdeo, decimal population, double populationGrowthRate, double populationDeathRate,
-            double populationDensity, int industrialPower, int agriculturalPower, int tertiaryPower, decimal gdp)
+            double populationDensity, int industrialPower, int agriculturalPower, int tertiaryPower, decimal gdp, int militaryPoints, int victoryPoints)
         {
             Code = code;
             Stability = stability;
@@ -101,6 +101,10 @@ namespace Escalation.World
             this.tertiaryPower = tertiaryPower;
 
             this._gdp = gdp;
+
+            this.Military = militaryPoints;
+            this.VictoryPoints = victoryPoints;
+            this.CurrentVictoryPoints = victoryPoints;
             this.SetIdeologies((Ideology)ideology,minIdeo,maxIdeo);
           
             currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
@@ -262,7 +266,7 @@ namespace Escalation.World
                         }
                     }
                     //Print current ideology value : 
-                    Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
+                    //Console.WriteLine(ideologies.ElementAt(i).Key + " : " + ideologies.ElementAt(i).Value);
 
                 }
             }
@@ -523,8 +527,10 @@ namespace Escalation.World
         private ulong navalForces;
         private ulong nuclearForces;
 
+        public int Military { get; set; }
+        public int VictoryPoints { get; set; }
 
-
+        public int CurrentVictoryPoints { get; set; }
 
         //Demographic Statistics
         private decimal _population;
@@ -555,6 +561,7 @@ namespace Escalation.World
         public List<decimal> IncomesHistory { get; set; }
         public List<decimal> ExpensesHistory { get; set; }
         public List<decimal> DebtHistory { get; set; }
+     
 
         //Geographic Statistics
         private ulong landArea;

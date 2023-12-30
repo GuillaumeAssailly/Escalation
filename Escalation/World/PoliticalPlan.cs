@@ -207,7 +207,7 @@ namespace Escalation.World
         public TotalitarianRepression() : base("Répression totalitaire (Stabilité + 1%, Population - 5%) ") { }
         protected internal override void init() { this.maxcpt = 20; this.cpt = 0; }
         protected internal override void takeEffect(Nation n) { n.Stability += 0.05; n.Population -= (decimal)0.05 * n.Population;
-            Console.WriteLine(n.Population);
+            //Console.WriteLine(n.Population);
         }
 
     }

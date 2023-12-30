@@ -65,7 +65,7 @@ namespace Escalation.Utils
                 while ((line = reader.ReadLine()) != null)
                 {
                     var parts = line.Split(';');
-                    if (parts.Length == 12)
+                    if (parts.Length == 14)
                     {
 
 
@@ -84,7 +84,9 @@ namespace Escalation.Utils
                             int.Parse(parts[8], CultureInfo.InvariantCulture),
                             int.Parse(parts[9], CultureInfo.InvariantCulture),
                             int.Parse(parts[10], CultureInfo.InvariantCulture),
-                            decimal.Parse(parts[11], CultureInfo.InvariantCulture)
+                            decimal.Parse(parts[11], CultureInfo.InvariantCulture),
+                            int.Parse(parts[12], CultureInfo.InvariantCulture),
+                            int.Parse(parts[13], CultureInfo.InvariantCulture)
                         );
                         nations.Add(nation);
                     }

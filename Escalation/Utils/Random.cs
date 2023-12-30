@@ -31,12 +31,12 @@ namespace Escalation.Utils
 
         public static ulong Next(ulong min, ulong max)
         {
-            return (min + (TMT64.GetRandInt() % (max - min)));
+            return min==max ? min : (min + (TMT64.GetRandInt() % (max - min)));
         }
 
         public static int Next(int min, int max)
         {
-            return (min + (int)(TMT64.GetRandInt() % (ulong)(max - min)));
+            return min==max? min : (min + (int)(TMT64.GetRandInt() % (ulong)(max - min)));
         }
 
         public static double NextDouble()

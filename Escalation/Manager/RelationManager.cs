@@ -88,10 +88,59 @@ namespace Escalation.Manager
             //We will create wars depending on the relations between nations and the world tension.
             // Two nations that are neighboors are more likely to go to war, we can as well have a world war if the world tension is high enough.
 
+            if (Random.NextDouble() < World.WorldTension/100)
+            {
+                Nation attacker = World.Nations[Random.Next(World.Nations.Count)];
+                Nation defender = attacker;
+                if (Random.NextDouble() < 0.01) //Interventions war : basically two randoms nations that may not have any links declare wars on each other
+                {
+                    //We check for two nations that are not allies and that are not at war with each other :
+                    while (defender == attacker)
+                    {
+                        defender = World.Nations[Random.Next(World.Nations.Count)];
+                    }
+                }
+                else if (World.Nations[(int) attacker.Code].GetNeighbors().Count()>1) //Neighbor conflict : two neighboors nations declare war on each other
+                {
+                    while (defender == attacker)
+                    {
+                        defender = World.Nations[(int)World.Nations[(int)attacker.Code].GetNeighbors().Keys.ElementAt(Random.Next(World.Nations[(int)attacker.Code].GetNeighbors().Count))];
+                    }
+                }
+                else
+                {
+                    return; 
+                }
+                if (World.RelationsMatrix[(int)attacker.Code, (int)defender.Code] < 50 )
+                {
+                    //THEN THE WAR ERUPTS !
+                    World.Wars.Add(new War(new List<Nation>() { attacker }, new List<Nation>() { defender }, World.CurrentDate));
+                    World.WorldTension +=  (attacker.Military + defender.Military)/100;
+                }
 
+
+            }
 
         }
 
+
+        public void ManageWars()
+        {
+            List<War> warsToRemove = new List<War>();
+            foreach (War w in World.Wars)
+            {
+                if(w.DayPassed())
+                {
+                    warsToRemove.Add(w);
+                }
+            }
+            foreach (War w in warsToRemove)
+            {
+                World.Wars.Remove(w);
+            }
+
+
+        }
 
         public void CreateAlliances()
         {

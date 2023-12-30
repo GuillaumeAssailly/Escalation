@@ -68,18 +68,35 @@ namespace Escalation
             /////////////////////////////
             /// - FILES CREATION -  /////
             /////////////////////////////
+         
             foreach (Nation n in World.Nations)
             {
                 FileWriter.CreateFiles("", n.Code);
                 FileWriter.SaveIdeologies("idee.txt", n.getIdeologies());
             }
 
+            //print the whole adjacency matrix :
+            /*
+            for (int i = 0; i < World.Nations.Count; i++)
+            {
+                for (int j = 0; j < World.Nations.Count; j++)
+                {
+                    Console.Write(World.RelationsMatrix[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            */
+          
+
             /////////////////////////////
             ///  - RUNNING -  ///////////
             /////////////////////////////  
             for (int i = 0; i < 100000; i++)
             {
-
+                if (i % 365 == 0)
+                {
+                    Console.WriteLine("Year : " + World.CurrentDate.Year + " World Tension : " + World.WorldTension);
+                }
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
                 {
@@ -100,11 +117,13 @@ namespace Escalation
                     populationManager.ManagePopulation(currentNation.Code);
                     currentNation.DriftIdeologies();
                     //Print majorIdeology in each nation : 
-                    Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " +
-                                      currentNation.getIdeologies().Last().Value);
+                   // Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " +currentNation.getIdeologies().Last().Value);
                     currentNation.takeAction();
-                }
 
+                    
+                }
+                relationManager.GoToWar();
+                relationManager.ManageWars();
 
                 World.AddDay();
             }
@@ -118,5 +137,3 @@ namespace Escalation
         }
     }
 }
-
-
