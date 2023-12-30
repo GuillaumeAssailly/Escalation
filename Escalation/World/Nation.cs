@@ -102,12 +102,15 @@ namespace Escalation.World
 
             this._gdp = gdp;
 
+            this.MilitaryPact = -1;
             this.Military = militaryPoints;
             this.VictoryPoints = victoryPoints;
             this.CurrentVictoryPoints = victoryPoints;
             this.SetIdeologies((Ideology)ideology,minIdeo,maxIdeo);
           
             currentPlan = (PoliticalPlan)IncomepoliticalPlans[Random.Next(IncomepoliticalPlans.Count)].Clone();
+
+
         }
 
 
@@ -527,7 +530,27 @@ namespace Escalation.World
         private ulong navalForces;
         private ulong nuclearForces;
 
-        public int Military { get; set; }
+
+        public int MilitaryPact;
+
+
+        private decimal military;
+        public decimal Military
+        {
+            get => military;
+            set
+            {
+                if (value < 0)
+                {
+                    military = 0;
+                }
+                else
+                {
+                    military = value;
+                }
+            }
+        }
+
         public int VictoryPoints { get; set; }
 
         public int CurrentVictoryPoints { get; set; }

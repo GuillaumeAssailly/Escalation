@@ -34,11 +34,17 @@ namespace Escalation.Utils
             return min==max ? min : (min + (TMT64.GetRandInt() % (max - min)));
         }
 
+        public static decimal Next(decimal min, decimal max)
+        {
+            return min==max ? min : (min +(TMT64.GetRandInt() % (max - min)));
+        }
+
         public static int Next(int min, int max)
         {
             return min==max? min : (min + (int)(TMT64.GetRandInt() % (ulong)(max - min)));
         }
 
+       
         public static double NextDouble()
         {
             return TMT64.GetRandDouble();

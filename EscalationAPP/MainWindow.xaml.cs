@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
@@ -47,6 +48,10 @@ namespace EscalationAPP
         public IdeologyManager IdeologyManager => (App.Current as App).ideologyManager;
         public PopulationManager PopulationManager => (App.Current as App).populationManager;
         public EconomyManager EconomyManager => (App.Current as App).economyManager;
+
+        public GeographyManager GeographyManager => (App.Current as App).geographyManager;
+
+        public RelationManager RelationManager => (App.Current as App).relationManager;
 
 
         private Ecode? countryMouseEntered = null;
@@ -223,9 +228,9 @@ namespace EscalationAPP
                         currentNation.takeAction();
                     }
 
-
+                    RelationManager.GoToWar();
+                    RelationManager.ManageWars();
                     World.AddDay();
-
 
                     //Delay of 1 second :
                     Thread.Sleep(speed * 500+5);
@@ -348,6 +353,7 @@ namespace EscalationAPP
             CountryAgriculturalPower.Text = World.Nations[(int)FocusedNation].AgriculturalPower.ToString();
             CountryIndustrialPower.Text = World.Nations[(int)FocusedNation].IndustrialPower.ToString();
             CountryTertiaryPower.Text = World.Nations[(int)FocusedNation].TertiaryPower.ToString();
+            CountryMilitary.Text = World.Nations[(int)FocusedNation].Military.ToString();
             CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
             CountryGDPGROWTH.Text = World.Nations[(int)FocusedNation].GDPGrowthRate.ToString();
             CountryGDP.Text = World.Nations[(int)FocusedNation].GDP.ToString();

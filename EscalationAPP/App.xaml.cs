@@ -56,6 +56,7 @@ namespace EscalationAPP
             }
 
             geographyManager.initializeNeighbors();
+            relationManager.initAlliances();
             relationManager.initRelations();
          
           

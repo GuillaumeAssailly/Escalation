@@ -327,6 +327,8 @@
                     <TextBlock x:Name="CountryGDPGROWTH" Grid.Column="1" Grid.Row="0">+ 5 %</TextBlock>
                     <TextBlock x:Name="CountryIndustrialPower" Grid.Column="0" Grid.Row="1">+ 5 %</TextBlock>
                     <TextBlock x:Name="CountryAgriculturalPower" Grid.Column="0" Grid.Row="2">+ 5 %</TextBlock>
+                    <TextBlock x:Name="CountryMilitary" Grid.Column="1" Grid.Row="1">+ 5 %</TextBlock>
+
                     <TextBlock x:Name="CountryTertiaryPower" Grid.Column="0" Grid.Row="3">+ 5 %</TextBlock>
                     <TextBlock Grid.Row="4">Statistiques internes :</TextBlock>
                     <TextBlock x:Name="CountryProductivity" Grid.Column="0" Grid.Row="5"> Productivity %</TextBlock>

@@ -14,9 +14,44 @@ namespace Escalation.Manager
 
         }
 
+        public void initAlliances()
+        {
+            World.Alliances.Add(new Alliance("NATO", "Blue"));
+            World.Alliances.Add(new Alliance("Warsaw Pact", "Red"));
+
+            ///NATO MEMBERS
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.FRA]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.ROY]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.ESP]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.POR]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.ISL]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.LUX]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.BEL]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.PAB]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.GDR]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.ITA]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.DAN]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.GRE]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.TUR]);
+            World.Alliances[0].AddMember(World.Nations[(int)Ecode.ETU]);
+
+
+            ///WARSAW PACT MEMBERS
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.DDR]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.POL]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.TCQ]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.HON]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.ROM]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.BUL]);
+            World.Alliances[1].AddMember(World.Nations[(int)Ecode.RUS]);
+            
+
+        }
+
         public void initRelations()
         {
             World.RelationsMatrix = new int[World.Nations.Count, World.Nations.Count];
+            World.WarMatrix = new bool[World.Nations.Count, World.Nations.Count];
             foreach (Nation nation in World.Nations)
             {
                 foreach (Nation otherNation in World.Nations)
@@ -24,6 +59,12 @@ namespace Escalation.Manager
                     if (nation != otherNation)
                     {
                         World.RelationsMatrix[(int)nation.Code, (int)otherNation.Code] = computeRelation(nation, otherNation);
+                        World.WarMatrix[(int)nation.Code, (int)otherNation.Code] = false;
+                    }
+                    else
+                    {
+                        World.RelationsMatrix[(int)nation.Code, (int)otherNation.Code] = 100000; //Debug purpose
+                        World.WarMatrix[(int)nation.Code, (int)otherNation.Code] = true; //very important
                     }
                 }
             }
@@ -75,6 +116,19 @@ namespace Escalation.Manager
                     relation -= Random.Next(400); ;
                 }
             }
+
+            //It is important to see if the two nations are in the same alliance :
+            if (nation.MilitaryPact != -1 && otherNation.MilitaryPact != -1)
+            {
+                if (nation.MilitaryPact == otherNation.MilitaryPact)
+                {
+                    relation += Random.Next(100,200);
+                }
+                else
+                {
+                    relation -= Random.Next(100,200);
+                }
+            }
             
             //Some randomness to make it fun :)
 
@@ -95,17 +149,38 @@ namespace Escalation.Manager
                 if (Random.NextDouble() < 0.01) //Interventions war : basically two randoms nations that may not have any links declare wars on each other
                 {
                     //We check for two nations that are not allies and that are not at war with each other :
-                    while (defender == attacker)
+                    while (defender == attacker || World.WarMatrix[(int)attacker.Code,(int)defender.Code] == true)
                     {
                         defender = World.Nations[Random.Next(World.Nations.Count)];
                     }
                 }
                 else if (World.Nations[(int) attacker.Code].GetNeighbors().Count()>1) //Neighbor conflict : two neighboors nations declare war on each other
                 {
-                    while (defender == attacker)
+                    //We have to check if the attacker still has neighboors that are not at war with him :
+                    bool isOk = false;
+                    foreach (Ecode n in World.Nations[(int)attacker.Code].GetNeighbors().Keys)
                     {
-                        defender = World.Nations[(int)World.Nations[(int)attacker.Code].GetNeighbors().Keys.ElementAt(Random.Next(World.Nations[(int)attacker.Code].GetNeighbors().Count))];
+                        if (World.WarMatrix[(int)attacker.Code, (int)n] == false)
+                        {
+                            
+                            isOk = true;
+                            break;
+                        }
                     }
+                    
+                    if (isOk)
+                    {
+                        while (defender == attacker || World.WarMatrix[(int)attacker.Code, (int)defender.Code] == true)
+                        {
+                            defender = World.Nations[(int)World.Nations[(int)attacker.Code].GetNeighbors().Keys.ElementAt(Random.Next(World.Nations[(int)attacker.Code].GetNeighbors().Count))];
+                        }
+
+                    }
+                    else
+                    {
+                        return;
+                    }
+                   
                 }
                 else
                 {
@@ -115,7 +190,42 @@ namespace Escalation.Manager
                 {
                     //THEN THE WAR ERUPTS !
                     World.Wars.Add(new War(new List<Nation>() { attacker }, new List<Nation>() { defender }, World.CurrentDate));
-                    World.WorldTension +=  (attacker.Military + defender.Military)/100;
+
+                    World.WarMatrix[(int)attacker.Code, (int)defender.Code] = true;
+                    World.WarMatrix[(int)defender.Code, (int)attacker.Code] = true;
+
+                    World.WorldTension +=  (double)((attacker.Military + defender.Military)/100);
+
+
+
+                    //We eventually add some allies to the war :
+                    if (attacker.MilitaryPact != -1)
+                    {
+                        foreach (Nation n in World.Alliances[attacker.MilitaryPact].GetMembers())
+                        {
+                            if (n != attacker && n != defender &&
+                                World.RelationsMatrix[(int)n.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)n.Code,(int)defender.Code] == false)
+                            {
+                                World.Wars.Last().AddAttacker(n);
+                                World.WarMatrix[(int)n.Code, (int)defender.Code] = true;
+                                World.WarMatrix[(int)defender.Code, (int)n.Code] = true;
+                            }
+                        }
+                    }
+
+                    if (defender.MilitaryPact != -1)
+                    {
+                        foreach (Nation n in World.Alliances[defender.MilitaryPact].GetMembers())
+                        {
+                            if (n != attacker && n != defender &&
+                                World.RelationsMatrix[(int)n.Code, (int)attacker.Code] < 100 && World.WarMatrix[(int)n.Code, (int)attacker.Code] == false)
+                            {
+                                World.Wars.Last().AddDefender(n);
+                                World.WarMatrix[(int)n.Code, (int)attacker.Code] = true;
+                                World.WarMatrix[(int)attacker.Code, (int)n.Code] = true;
+                            }
+                        }
+                    }
                 }
 
 
@@ -136,7 +246,16 @@ namespace Escalation.Manager
             }
             foreach (War w in warsToRemove)
             {
+                foreach (Nation n in w.Attackers)
+                {
+                    foreach (Nation n2 in w.Defenders)
+                    {
+                        World.WarMatrix[(int)n.Code, (int)n2.Code] = false;
+                        World.WarMatrix[(int)n2.Code, (int)n.Code] = false;
+                    }
+                }
                 World.Wars.Remove(w);
+
             }
 
 

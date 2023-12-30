@@ -58,7 +58,8 @@ namespace Escalation.World
         public char[,] AdjacencyMatrix;
 
         public int[,] RelationsMatrix;
-        
+
+        public bool[,] WarMatrix;
 
         //list of all Influence Sphere : 
 
