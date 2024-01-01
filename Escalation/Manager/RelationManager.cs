@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Escalation.Utils;
 using Escalation.World;
 using Random = Escalation.Utils.Random;
 namespace Escalation.Manager
@@ -134,6 +135,11 @@ namespace Escalation.Manager
                 }
             }
             
+            //We check if the two nations are at war with each other (to prevent joining any alliance between them)
+            if (World.WarMatrix[(int)nation.Code, (int)otherNation.Code] == true)
+            {
+                relation -= Random.Next(200, 500);
+            }
             
 
 
@@ -153,11 +159,20 @@ namespace Escalation.Manager
             {
                 if (Random.NextDouble() < (double)World.Wars.Count/20) //We limit the max number of wars at roughly 20
                 {
-                   // We join a war !!!
+                    // We join a war !!!
 
-                   //We select a random ongoing war :
-                   War war = World.Wars[Random.Next(World.Wars.Count)];
-                   if (Random.NextDouble() < 0.5)
+                    //We select a random ongoing war where the wars.count > 0
+                    var eligibleWars = World.Wars.Where(w => w.Attackers.Count > 0 && w.Defenders.Count > 0).ToList();
+                    War war;
+                    if (eligibleWars.Count > 0)
+                    {
+                        war = eligibleWars[Random.Next(eligibleWars.Count)];
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    if (Random.NextDouble() < 0.5 )
                    {
                        // we then select a random attacker :
                        Nation attacker = war.Attackers[Random.Next(war.Attackers.Count)];
@@ -205,10 +220,10 @@ namespace Escalation.Manager
                 {
                     Nation attacker = World.Nations[Random.Next(World.Nations.Count)];
                     Nation defender = attacker;
-                    if (Random.NextDouble() < 0.01) //Interventions war : basically two randoms nations that may not have any links declare wars on each other
+                    if (Random.NextDouble() < 0.05) //Interventions war : basically two randoms nations that may not have any links declare wars on each other
                     {
                         //We check for two nations that are not allies and that are not at war with each other :
-                        while (defender == attacker || World.WarMatrix[(int)attacker.Code, (int)defender.Code] == true)
+                        while ((attacker.MilitaryPact!=-1&&defender.MilitaryPact==attacker.MilitaryPact) || defender == attacker || World.WarMatrix[(int)attacker.Code, (int)defender.Code] == true)
                         {
                             defender = World.Nations[Random.Next(World.Nations.Count)];
                         }
@@ -216,11 +231,13 @@ namespace Escalation.Manager
                     else if (World.Nations[(int)attacker.Code].GetNeighbors().Count() > 1) //Neighbor conflict : two neighboors nations declare war on each other
                     {
                         //We have to check if the attacker still has neighboors that are not at war with him :
-                        bool isOk = World.Nations[(int)attacker.Code].GetNeighbors().Keys.Any(n => World.WarMatrix[(int)attacker.Code, (int)n] == false);
-
-                        if (isOk)
+                        bool isOk = World.Nations[(int)attacker.Code].GetNeighbors().Keys.Any(n => World.WarMatrix[(int)attacker.Code, (int)n] == false && World.Nations[(int)attacker.Code].MilitaryPact != World.Nations[(int)n].MilitaryPact);
+                        //TODO : Check if neighbooors are not all parts of the same Military Pact !
+                        bool isOk2 = World.Nations[(int)attacker.Code].GetNeighbors().Keys.Any(n => World.Nations[(int)n].MilitaryPact != attacker.MilitaryPact);
+                        
+                        if (isOk && isOk2)
                         {
-                            while (defender == attacker || World.WarMatrix[(int)attacker.Code, (int)defender.Code] == true)
+                            while ((attacker.MilitaryPact!=-1&&defender.MilitaryPact==attacker.MilitaryPact) || defender == attacker || World.WarMatrix[(int)attacker.Code, (int)defender.Code] == true)
                             {
                                 defender = World.Nations[(int)World.Nations[(int)attacker.Code].GetNeighbors().Keys.ElementAt(Random.Next(World.Nations[(int)attacker.Code].GetNeighbors().Count))];
                             }
@@ -236,7 +253,7 @@ namespace Escalation.Manager
                     {
                         return;
                     }
-                    if (World.RelationsMatrix[(int)attacker.Code, (int)defender.Code] < 50
+                    if (World.RelationsMatrix[(int)attacker.Code, (int)defender.Code] < 0
                         && (World.WorldTension >= 60 ||  defender.MilitaryPact == -1))
                     {
                         
@@ -251,7 +268,7 @@ namespace Escalation.Manager
                         World.WarMatrix[(int)attacker.Code, (int)defender.Code] = true;
                         World.WarMatrix[(int)defender.Code, (int)attacker.Code] = true;
 
-                        World.WorldTension += (double)((attacker.Military + defender.Military) / 100);
+                        World.WorldTension += 2* (double)((attacker.Military + defender.Military) / 100);
 
 
 
@@ -326,13 +343,51 @@ namespace Escalation.Manager
 
         public void ManageTension()
         {
-            World.WorldTension  =(World.WorldTension -  0.00001 * World.WorldTension) + 0.001 * World.Wars.Count;
+            World.WorldTension  =(World.WorldTension -  0.0001 * World.WorldTension) + 0.001 * World.Wars.Count;
         }
 
-        public void CreateAlliances()
+        public void ManageAlliances()
         {
-            // We will define different types of Alliance to be created !
-            // Do remember that alliance are more likely to be created when the world tension is high !!!
+
+            if (Random.NextDouble() < World.WorldTension/100)
+            {
+                if (World.WorldTension >= 60) // We are at Defcon 2, meaning no more great alliances
+                                              // will be created, and nations will rather choose to join existing alliances
+                {
+                    //We select a random world country : 
+                    Nation n = World.Nations[Random.Next(World.Nations.Count)];
+                    //We select a random alliance :
+                    if (n.MilitaryPact == -1 )
+                    {
+                        Alliance a = World.Alliances[Random.Next(World.Alliances.Count)];
+                        while (!a.GetMembers().Any())
+                        {
+                            a = World.Alliances[Random.Next(World.Alliances.Count)];
+                        }
+                        if (World.RelationsMatrix[(int)a.GetMembers().First().Code, (int)n.Code] > 100 )
+                        {
+                            foreach (Nation n2 in a.GetMembers())
+                            {
+                                foreach (War w in World.Wars)
+                                {
+                                    //We check if the two nations are at war with each other :
+                                    if ((w.Attackers.Contains(n2) && w.Defenders.Contains(n)) || (w.Attackers.Contains(n) && w.Defenders.Contains(n2)))
+                                    {
+                                        return;
+                                    }
+                                }
+                            }
+                            a.AddMember(n);
+                            Trace.WriteLine(n.Code + " has joined " + a.GetMembers().First().Code +"'s alliance" );
+                        }
+                    }
+                }
+                else
+                {
+                    //We create an alliance between two nations that are not at war with each other and that are not allies :
+
+                }
+            }
 
 
         }
@@ -340,6 +395,31 @@ namespace Escalation.Manager
         public void Annex(object sender, AnnexionNationEventArgs e)
         {
             War w = (War)sender;
+
+            foreach (War war in World.Wars)
+            {
+                if (war.Attackers.Contains(e.AnnexedNation))
+                {
+                    war.DisengageAttacker(e.AnnexedNation);
+                    foreach (Nation n in war.Defenders)
+                    {
+                        World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                        World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                    }
+                }
+
+                if (war.Defenders.Contains(e.AnnexedNation))
+                {
+                    war.DisengageDefender(e.AnnexedNation);
+                    foreach (Nation n in war.Attackers)
+                    {
+                        World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                        World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                    }
+                }
+                
+            }
+
 
             if (e.IsDefender)
             {
@@ -353,10 +433,36 @@ namespace Escalation.Manager
 
                 if (strongestAttacker.MilitaryPact != -1)
                 {
+                    //We stop the wars between every members
+                    foreach (Nation n in World.Alliances[strongestAttacker.MilitaryPact].GetMembers())
+                    {
+                        foreach (War war in World.Wars)
+                        {
+                            if (war.Attackers.Contains(n) && war.Defenders.Contains(e.AnnexedNation))
+                            {
+                                war.DisengageDefender(e.AnnexedNation);
+                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                            }
+
+                            if (war.Attackers.Contains(e.AnnexedNation) && war.Defenders.Contains(n))
+                            {
+                                war.DisengageDefender(e.AnnexedNation);
+                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                            }
+                         
+                        }
+                    }
+                   
+                  
                     World.Alliances[strongestAttacker.MilitaryPact].AddMember(e.AnnexedNation);
                 }
                 e.AnnexedNation.SetIdeologies(strongestAttacker.getIdeologies());
                 e.AnnexedNation.CurrentVictoryPoints = e.AnnexedNation.VictoryPoints;
+                World.WarMatrix[(int)strongestAttacker.Code, (int)e.AnnexedNation.Code] = false;
+                World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestAttacker.Code] = false;
+
                 Trace.WriteLine(w.Name + strongestAttacker.Code + " has seized the territory of " + e.AnnexedNation.Code);
             }
             else
@@ -371,12 +477,34 @@ namespace Escalation.Manager
 
                 if (strongestDefender.MilitaryPact != -1)
                 {
+                    //We stop the wars between every members
+                    foreach (Nation n in World.Alliances[strongestDefender.MilitaryPact].GetMembers())
+                    {
+                        foreach (War war in World.Wars)
+                        {
+                            if (war.Attackers.Contains(n) && war.Defenders.Contains(e.AnnexedNation))
+                            {
+                                war.DisengageDefender(e.AnnexedNation);
+                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                            }
+
+                            if (war.Attackers.Contains(e.AnnexedNation) && war.Defenders.Contains(n))
+                            {
+                                war.DisengageDefender(e.AnnexedNation);
+                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
+                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
+                            }
+
+                        }
+                    }
                     World.Alliances[strongestDefender.MilitaryPact].AddMember(e.AnnexedNation);
                 }
 
                 e.AnnexedNation.SetIdeologies(strongestDefender.getIdeologies());
                 e.AnnexedNation.CurrentVictoryPoints = e.AnnexedNation.VictoryPoints;
-
+                World.WarMatrix[(int)strongestDefender.Code, (int)e.AnnexedNation.Code] = false;
+                World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestDefender.Code] = false;
 
                 Trace.WriteLine(w.Name + strongestDefender.Code + " has seized the territory of " + e.AnnexedNation.Code);
             }

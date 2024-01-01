@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Escalation.World
 {
+
+    
     public class Alliance
     {
         private String name;
@@ -19,6 +21,9 @@ namespace Escalation.World
 
         private decimal militaryPower;
         private int id;
+
+        private static List<string>Colors = new() {"Red", "Blue", "Green", "Yellow", "Orange", "Purple", "Pink", "Brown", "Black", "White", "Grey", "Cyan", "Magenta"};
+    
 
         public Alliance(String name, String color)
         {
@@ -35,6 +40,8 @@ namespace Escalation.World
         public void AddMember(Nation n)
         {
             this.members.Add(n);
+            //sort list by military power
+            this.members = this.members.OrderByDescending(n => n.Military).ToList();
             n.MilitaryPact = id;
           
         }
@@ -42,8 +49,9 @@ namespace Escalation.World
         public void RemoveMember(Nation nation)
         {
             this.members.Remove(nation);
+            this.members = this.members.OrderByDescending(n => n.Military).ToList();
             nation.MilitaryPact = -1;
-            
+           
         }
 
         public List<Nation> GetMembers()

@@ -20,10 +20,10 @@ namespace Escalation.World
             get => worldTension;
             set
             {
-                //keep it between 0 and 100 :
-                if (value < 0)
+                //keep it between 5 and 100 :
+                if (value < 5)
                 {
-                    worldTension = 0;
+                    worldTension = 5;
                 }
                 else if (value > 100)
                 {

@@ -54,7 +54,7 @@ namespace EscalationAPP
 
         public override void WriteLine(string message)
         {
-            _textBox.Dispatcher.Invoke(() => _textBox.Text += message + "\n");
+            //_textBox.Dispatcher.Invoke(() => _textBox.Text += message + "\n");
             
         }
     }
@@ -84,7 +84,9 @@ namespace EscalationAPP
 
         private Ecode? countryMouseEntered = null;
         private Dictionary<Ecode, SolidColorBrush> CountryLayer;
-            
+
+
+        private int layerMode = 0;
     
         private double _axisMaxY;
         public double AxisMaxY
@@ -132,7 +134,7 @@ namespace EscalationAPP
         {
             get => focusedNationRelation;
             set => focusedNationRelation = value;
-        }
+        } 
 
         public SeriesCollection FocusedIdeologies { get; set; }
         public SeriesCollection FocusedPopulation { get; set; }
@@ -233,12 +235,10 @@ namespace EscalationAPP
 
 
                   
-
+                     
                     //DAY LOOP OVER HERE :
                     foreach (Nation currentNation in World.Nations)
                     {
-
-
                         if (i % 10 == 0)
                         {
                             IdeologyManager.ManageIdeologies(currentNation.Code);
@@ -266,6 +266,7 @@ namespace EscalationAPP
                         currentNation.takeAction();
                     }
 
+                    RelationManager.ManageAlliances();
                     RelationManager.GoToWar();
                     RelationManager.ManageWars();
                     RelationManager.ManageTension();
@@ -289,7 +290,6 @@ namespace EscalationAPP
 
         private void UpdateLayer()
         {
-
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
 
@@ -302,23 +302,66 @@ namespace EscalationAPP
                 }
 
             }
-
             CountryLayer.Clear();
 
-
-            foreach (Alliance a in World.Alliances)
+            if (layerMode == 0)
             {
-                foreach (Nation n in a.GetMembers())
+                foreach (Alliance a in World.Alliances)
                 {
-                    CountryLayer.Add(n.Code, new SolidColorBrush((Color)ColorConverter.ConvertFromString(a.color)));
+                    foreach (Nation n in a.GetMembers())
+                    {
+                        CountryLayer.Add(n.Code, new SolidColorBrush((Color)ColorConverter.ConvertFromString(a.color)));
+                    }
+                }
+            }
+            else if (layerMode == 1)
+            {
+                foreach (War w in World.Wars)
+                {
+                    if (w.Attackers.Contains(World.Nations[(int)FocusedNation]))
+                    {
+                        foreach (Nation n in w.Defenders)
+                        {
+                            if (CountryLayer.ContainsKey(n.Code))
+                            {
+                                continue;
+                            }
+                            CountryLayer.Add(n.Code, Brushes.Red);
+                        }
+                        foreach (Nation n in w.Attackers)
+                        {
+                            if (CountryLayer.ContainsKey(n.Code))
+                            {
+                                continue;
+                            }
+                            CountryLayer.Add(n.Code, Brushes.Green);
+                        }
+                    }
+                    if (w.Defenders.Contains(World.Nations[(int)FocusedNation]))
+                    {
+                        foreach (Nation n in w.Attackers)
+                        {
+                            if (CountryLayer.ContainsKey(n.Code))
+                            {
+                                continue;
+                            }
+                            CountryLayer.Add(n.Code, Brushes.Red);
+                        }
+                        foreach (Nation n in w.Defenders)
+                        {
+                            if (CountryLayer.ContainsKey(n.Code))
+                            {
+                                continue;
+                            }
+                            CountryLayer.Add(n.Code, Brushes.Green);
+                        }
+                    }
+
 
                 }
             }
-
-            //foreach element on dictionnary layer :
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
-
                 //get the path with the tag :
                 if ((Ecode)entry.Key != countryMouseEntered)
                 {
@@ -326,9 +369,8 @@ namespace EscalationAPP
                     //set the color :
                     country.Fill = entry.Value;
                 }
-             
             }
-           
+
         }
 
         private void UpdateUI()
@@ -647,6 +689,12 @@ namespace EscalationAPP
                     break;
                 case Key.C:
                     World.Nations[(int)FocusedNation].Population += Random.Next(0, 10000000);
+                    break;
+                case Key.F1:
+                    layerMode = 0; UpdateLayer();
+                    break;
+                case Key.F2:
+                    layerMode = 1; UpdateLayer();
                     break;
             }
             {

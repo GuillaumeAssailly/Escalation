@@ -413,9 +413,10 @@ namespace Escalation.World
             if (currentPlan.isFinished())
             {
                 currentPlan.takeEffect(this);
+                currentPlan = null;
                 //TODO: change the percentage value :
-                //if (NbWarEngagedIn == 0)
-                //{
+                if (NbWarEngagedIn == 0)
+                {
                     if (Random.NextDouble() < 0.5) // We pick a plan depending on the current ideology : 
                     {
                         switch (ideologies.Last().Key)
@@ -457,12 +458,12 @@ namespace Escalation.World
                             currentPlan.init();
                         }
                     }
-                //}
-                //else //We pick a plan for the war: 
-                //{
-                //    currentPlan = (PoliticalPlan)WarPoliticalPlan[Random.Next(WarPoliticalPlan.Count)].Clone();
-                 //   currentPlan.init();
-                //}
+                }
+                else //We pick a plan for the war: 
+                {
+                    currentPlan = (PoliticalPlan)WarPoliticalPlan[Random.Next(WarPoliticalPlan.Count)].Clone();
+                    currentPlan.init();
+                }
 
             }
             else

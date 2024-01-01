@@ -72,21 +72,28 @@ namespace Escalation.World
             bool res = false;
             timeToLive--;
             DaysElapsed++;
-            computeCasualties();   
-
-
-            //We compute the probability of a battle, depending on the number of countries involved in the war :
-            if (Random.NextDouble() - (double)numberOfCountries/100 < 0.05)
-            {
-                computeBattle();
-            }
 
             if (Attackers.Count == 0 || Defenders.Count == 0)
             {
                 Trace.WriteLine(Name + "Annihilation : War ended on " + StartDate.AddDays(DaysElapsed));
                 res = true;
             }
-           
+            else
+            {
+                computeCasualties();
+                //We compute the probability of a battle, depending on the number of countries involved in the war :
+                if (Random.NextDouble() - (double)numberOfCountries / 100 < 0.05)
+                {
+                    computeBattle();
+                }
+
+
+
+                
+            }
+            
+            
+
 
             if (timeToLive == 0)
             {
@@ -179,13 +186,13 @@ namespace Escalation.World
             Nation attacker = Attackers[Random.Next(0, Attackers.Count)];
             foreach (Nation n in Defenders)
             {
-                n.Population -= Random.Next(0, (ulong)(attacker.Military*n.Population)/100000);
+                n.Population -= Random.Next(0, (ulong)(attacker.Military*n.Population)/1000000);
                 
             }
             Nation defender = Defenders[Random.Next(0, Defenders.Count)];
             foreach (Nation n in Attackers)
             {
-                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / 100000);
+                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / 1000000);
             }
             
           
@@ -246,25 +253,36 @@ namespace Escalation.World
 
            
 
-            Attackers.Remove(n);
-            scoreAtt -= n.CurrentVictoryPoints;
-            numberOfCountries--;
 
             AnnexationOccurred?.Invoke(this, new AnnexionNationEventArgs(n, false));
 
+           DisengageAttacker(n);
         }
 
         public void RemoveDefender(Nation n)
         {
             
 
-            Defenders.Remove(n);
-            scoreDef -= n.CurrentVictoryPoints;
-            numberOfCountries--;
+          
 
             //Call annex function with n and this as args
             AnnexationOccurred?.Invoke(this, new AnnexionNationEventArgs(n,true));
 
+            DisengageDefender(n);
+        }
+
+        public void DisengageDefender(Nation n)
+        {
+            Defenders.Remove(n);
+            scoreDef -= n.CurrentVictoryPoints;
+            numberOfCountries--;
+        }
+
+        public void DisengageAttacker(Nation n)
+        {
+            Attackers.Remove(n);
+            scoreAtt -= n.CurrentVictoryPoints;
+            numberOfCountries--;
         }
 
     }
