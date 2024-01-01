@@ -491,16 +491,15 @@ namespace EscalationAPP
             CountryTertiaryPower.Text = World.Nations[(int)FocusedNation].TertiaryPower.ToString();
             CountryMilitary.Text = World.Nations[(int)FocusedNation].Military.ToString();
             CountryVP.Text = World.Nations[(int)FocusedNation].CurrentVictoryPoints.ToString();
-            CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
             CountryGDPGROWTH.Text = World.Nations[(int)FocusedNation].GDPGrowthRate.ToString();
             CountryGDP.Text = World.Nations[(int)FocusedNation].GDP.ToString();
-            CountryEducationRate.Text = World.Nations[(int)FocusedNation].EducationRate.ToString();
-            CountryHealthCare.Text = World.Nations[(int)FocusedNation].HealthRate.ToString();
-            CountryProductivity.Text = World.Nations[(int)FocusedNation].Productivity.ToString();
-            CountryCrimeRate.Text = World.Nations[(int)FocusedNation].CrimeRate.ToString();
-            CountryFoodRate.Text = World.Nations[(int)FocusedNation].FoodRate.ToString();
-            CountryHappiness.Text = World.Nations[(int)FocusedNation].HappinessRate.ToString();
-            CountryCorruptionRate.Text = World.Nations[(int)FocusedNation].CorruptionRate.ToString();
+            CountryEducationRate.Text = "Education Rate :" + World.Nations[(int)FocusedNation].EducationRate.ToString();
+            CountryHealthCare.Text = "Health Care  : " + World.Nations[(int)FocusedNation].HealthRate.ToString();
+            CountryProductivity.Text = "Productivity : " + World.Nations[(int)FocusedNation].Productivity.ToString();
+            CountryCrimeRate.Text = "Crime Rate :" + World.Nations[(int)FocusedNation].CrimeRate.ToString();
+            CountryFoodRate.Text = "Food Rate :" + World.Nations[(int)FocusedNation].FoodRate.ToString();
+            CountryHappiness.Text = "Happiness : " + World.Nations[(int)FocusedNation].HappinessRate.ToString();
+            CountryCorruptionRate.Text = "Corruption :" + World.Nations[(int)FocusedNation].CorruptionRate.ToString();
 
             CurrentPlan.Text = World.Nations[(int)FocusedNation].CurrentPlan.GetDescription().ToString();
             CurrentPlanProgress.Value = World.Nations[(int)FocusedNation].CurrentPlan.GetProgress() * 100;

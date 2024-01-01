@@ -82,7 +82,7 @@ namespace Escalation.World
             {
                 computeCasualties();
                 //We compute the probability of a battle, depending on the number of countries involved in the war :
-                if (Random.NextDouble() - (double)numberOfCountries / 100 < 0.05)
+                if (Random.NextDouble() < 0.05)
                 {
                     computeBattle();
                 }
@@ -182,17 +182,18 @@ namespace Escalation.World
         }
 
         private void computeCasualties()
-        {
+        { 
             Nation attacker = Attackers[Random.Next(0, Attackers.Count)];
             foreach (Nation n in Defenders)
             {
-                n.Population -= Random.Next(0, (ulong)(attacker.Military*n.Population)/1000000);
-                
+                n.Population -= Random.Next(0,
+                    (attacker.Military * n.Population) / ((ulong)n.NbWarEngagedIn * 100000));
+
             }
             Nation defender = Defenders[Random.Next(0, Defenders.Count)];
             foreach (Nation n in Attackers)
             {
-                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / 1000000);
+                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / ((ulong)n.NbWarEngagedIn * 1000000))  ; 
             }
             
           
@@ -215,12 +216,14 @@ namespace Escalation.World
             foreach(Nation n in defenders)
             {
                 scoreDef += n.CurrentVictoryPoints;
+                n.NbWarEngagedIn ++;
             }
 
 
             foreach (Nation n in attackers)
             {
                 scoreAtt += n.CurrentVictoryPoints;
+                n.NbWarEngagedIn++;
             }
             
             timeToLive =(scoreDef+ scoreAtt) * Random.Next(100);
@@ -235,6 +238,7 @@ namespace Escalation.World
         {
             Attackers.Add(n);
             scoreAtt += n.CurrentVictoryPoints;
+            n.NbWarEngagedIn ++;
             Trace.WriteLine(Name+n.Code+" has joined the war on the side of the attackers !");
             numberOfCountries++;
         }
@@ -242,6 +246,7 @@ namespace Escalation.World
         public void AddDefender(Nation n)
         {
             Defenders.Add(n);
+            n.NbWarEngagedIn++;
             scoreDef += n.CurrentVictoryPoints;
             Trace.WriteLine(Name+n.Code+" has joined the war on the side of the defenders !");
             numberOfCountries++;
@@ -276,6 +281,7 @@ namespace Escalation.World
             Defenders.Remove(n);
             scoreDef -= n.CurrentVictoryPoints;
             numberOfCountries--;
+            n.NbWarEngagedIn--;
         }
 
         public void DisengageAttacker(Nation n)
@@ -283,6 +289,7 @@ namespace Escalation.World
             Attackers.Remove(n);
             scoreAtt -= n.CurrentVictoryPoints;
             numberOfCountries--;
+            n.NbWarEngagedIn--;
         }
 
     }

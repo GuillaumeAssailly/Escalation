@@ -103,7 +103,7 @@ namespace Escalation.World
 
         protected internal override void takeEffect(Nation n)
         {
-            n.Military += (decimal)n.IndustrialPower * (decimal)0.01;
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.001;
         }
     }
 
@@ -114,7 +114,7 @@ namespace Escalation.World
 
         protected internal override void takeEffect(Nation n)
         {
-            n.Military += (decimal)n.IndustrialPower * (decimal)0.05;
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.005;
         }
     }
 
@@ -125,7 +125,7 @@ namespace Escalation.World
 
         protected internal override void takeEffect(Nation n)
         {
-            n.Military += (decimal)n.IndustrialPower * (decimal)0.1;
+            n.Military += (decimal)n.IndustrialPower * (decimal)0.01;
         }
     }
 

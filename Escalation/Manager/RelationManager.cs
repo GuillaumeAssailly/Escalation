@@ -334,6 +334,8 @@ namespace Escalation.Manager
                         World.WarMatrix[(int)n2.Code, (int)n.Code] = false;
                     }
                 }
+                w.Attackers.ForEach(nation=> nation.NbWarEngagedIn--);
+                w.Defenders.ForEach(nation => nation.NbWarEngagedIn--);
 
                 World.WorldTension -= (double)w.DaysElapsed / 100;
                 World.Wars.Remove(w);
@@ -345,7 +347,7 @@ namespace Escalation.Manager
 
         public void ManageTension()
         {
-            World.WorldTension  =(World.WorldTension -  0.001 * World.WorldTension) + 0.001 * World.Wars.Count;
+            World.WorldTension  =(World.WorldTension -  0.0001 * World.WorldTension) + 0.001 * World.Wars.Count;
         }
 
         public void ManageAlliances()

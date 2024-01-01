@@ -77,7 +77,13 @@ namespace Escalation.World
         //List of Neighbors with qualifiers (M for Marine, L for Land): 
         public Dictionary<Ecode, char> neighbors = new Dictionary<Ecode, char>();
 
-        public int NbWarEngagedIn { get; set; }
+        private int nbWarEngagedIn;
+
+        public int NbWarEngagedIn
+        {
+            get => nbWarEngagedIn;
+            set => nbWarEngagedIn = value < 0 ? 0 : value;
+        }
 
         public Nation(Ecode code,
             double stability, int politicalPower, int ideology, double minIdeo, double maxIdeo, decimal population, double populationGrowthRate, double populationDeathRate,
