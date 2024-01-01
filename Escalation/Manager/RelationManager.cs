@@ -173,47 +173,55 @@ namespace Escalation.Manager
                         return;
                     }
                     if (Random.NextDouble() < 0.5 )
-                   {
-                       // we then select a random attacker :
-                       Nation attacker = war.Attackers[Random.Next(war.Attackers.Count)];
+                    {
+                        // we then select a random attacker :
+                        Nation attacker = war.Attackers[Random.Next(war.Attackers.Count)];
 
-                       //We then select a random neighbor of him : 
-                       Nation attackerNeighbor = World.Nations[(int)attacker.GetNeighbors().Keys.ElementAt(Random.Next(attacker.GetNeighbors().Count))];
+                        //We then select a random neighbor of him : 
+                        Nation attackerNeighbor = World.Nations[(int)attacker.GetNeighbors().Keys.ElementAt(Random.Next(attacker.GetNeighbors().Count))];
 
-                       //We then select a random defender :
-                       Nation defender = war.Defenders[Random.Next(war.Defenders.Count)];
+                        //We then select a random defender :
+                        Nation defender = war.Defenders[Random.Next(war.Defenders.Count)];
 
-                       if (World.RelationsMatrix[(int)attackerNeighbor.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)attackerNeighbor.Code, (int)defender.Code] == false)
-                       {
-                           war.AddAttacker(attackerNeighbor);
-                           attackerNeighbor.NbWarEngagedIn++;
-                           World.WarMatrix[(int)attackerNeighbor.Code, (int)defender.Code] = true;
-                           World.WarMatrix[(int)defender.Code, (int)attackerNeighbor.Code] = true;
-                           World.WorldTension += (double)(attackerNeighbor.Military / 100);
+                        if (World.RelationsMatrix[(int)attackerNeighbor.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)attackerNeighbor.Code, (int)defender.Code] == false)
+                        {
+                            if (war.Defenders.Any(n => n.MilitaryPact == attackerNeighbor.MilitaryPact &&
+                                                       attackerNeighbor.MilitaryPact != -1) || war.Attackers.Contains(attackerNeighbor))
+                            {
+                                return;
+                            }
+                            war.AddAttacker(attackerNeighbor);
+                            World.WarMatrix[(int)attackerNeighbor.Code, (int)defender.Code] = true;
+                            World.WarMatrix[(int)defender.Code, (int)attackerNeighbor.Code] = true;
+                            World.WorldTension += (double)(attackerNeighbor.Military / 100);
 
-                       }
-                   }
-                   else
-                   {
-                       // we then select a random defender :
-                       Nation defender = war.Defenders[Random.Next(war.Defenders.Count)];
+                        }
+                    }
+                    else
+                    {
+                        // we then select a random defender :
+                        Nation defender = war.Defenders[Random.Next(war.Defenders.Count)];
 
-                       //We then select a random neighbor of him : 
-                       Nation defenderNeighbor = World.Nations[(int)defender.GetNeighbors().Keys.ElementAt(Random.Next(defender.GetNeighbors().Count))];
+                        //We then select a random neighbor of him : 
+                        Nation defenderNeighbor = World.Nations[(int)defender.GetNeighbors().Keys.ElementAt(Random.Next(defender.GetNeighbors().Count))];
 
-                       //We then select a random attacker :
-                       Nation attacker = war.Defenders[Random.Next(war.Defenders.Count)];
+                        //We then select a random attacker :
+                        Nation attacker = war.Defenders[Random.Next(war.Defenders.Count)];
 
-                       if (World.RelationsMatrix[(int)defenderNeighbor.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)defenderNeighbor.Code, (int)defender.Code] == false)
-                       {
-                           war.AddAttacker(defenderNeighbor);
-                           defenderNeighbor.NbWarEngagedIn++;
-                           World.WarMatrix[(int)defenderNeighbor.Code, (int)defender.Code] = true;
-                           World.WarMatrix[(int)defender.Code, (int)defenderNeighbor.Code] = true;
-                           World.WorldTension += (double)(defenderNeighbor.Military / 100);
+                        if (World.RelationsMatrix[(int)defenderNeighbor.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)defenderNeighbor.Code, (int)defender.Code] == false)
+                        {
+                            if (war.Attackers.Any(n => n.MilitaryPact == defenderNeighbor.MilitaryPact &&
+                                                       defenderNeighbor.MilitaryPact != -1) || war.Attackers.Contains(defenderNeighbor))
+                            {
+                                return;
+                            }
+                            war.AddAttacker(defenderNeighbor);
+                            World.WarMatrix[(int)defenderNeighbor.Code, (int)defender.Code] = true;
+                            World.WarMatrix[(int)defender.Code, (int)defenderNeighbor.Code] = true;
+                            World.WorldTension += (double)(defenderNeighbor.Military / 100);
 
-                       }
-                   }
+                        }
+                    }
                    
                 }
                 else // We create a War !!
@@ -258,8 +266,6 @@ namespace Escalation.Manager
                     {
                         
                         //THEN THE WAR ERUPTS !
-                        attacker.NbWarEngagedIn++;
-                        defender.NbWarEngagedIn++;
                         War w = new War(new List<Nation>() { attacker }, new List<Nation>() { defender },
                             World.CurrentDate);
                         w.AnnexationOccurred += Annex;
@@ -278,10 +284,9 @@ namespace Escalation.Manager
                         if (World.WorldTension >= 60 &&  attacker.MilitaryPact != -1)
                         {
                             foreach (var n in World.Alliances[attacker.MilitaryPact].GetMembers().Where(n => n != attacker && n != defender &&
-                                         World.RelationsMatrix[(int)n.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)n.Code, (int)defender.Code] == false))
+                                         World.RelationsMatrix[(int)n.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)n.Code, (int)defender.Code] == false && n.MilitaryPact!=defender.MilitaryPact))
                             {
                                 World.Wars.Last().AddAttacker(n);
-                                n.NbWarEngagedIn++;
                                 World.WarMatrix[(int)n.Code, (int)defender.Code] = true;
                                 World.WarMatrix[(int)defender.Code, (int)n.Code] = true;
                                 World.WorldTension += (double)(n.Military / 100);
@@ -291,9 +296,8 @@ namespace Escalation.Manager
                         if (World.WorldTension >= 60 && defender.MilitaryPact != -1)
                         {
                             foreach (var n in World.Alliances[defender.MilitaryPact].GetMembers().Where(n => n != attacker && n != defender &&
-                                         World.RelationsMatrix[(int)n.Code, (int)attacker.Code] < 100 && World.WarMatrix[(int)n.Code, (int)attacker.Code] == false))
+                                         World.RelationsMatrix[(int)n.Code, (int)attacker.Code] < 100 && World.WarMatrix[(int)n.Code, (int)attacker.Code] == false &&n.MilitaryPact!=attacker.MilitaryPact))
                             {
-                                n.NbWarEngagedIn++;
                                 World.Wars.Last().AddDefender(n);
                                 World.WarMatrix[(int)n.Code, (int)attacker.Code] = true;
                                 World.WarMatrix[(int)attacker.Code, (int)n.Code] = true;
@@ -324,10 +328,8 @@ namespace Escalation.Manager
             {
                 foreach (Nation n in w.Attackers)
                 {
-                    n.NbWarEngagedIn--;
                     foreach (Nation n2 in w.Defenders)
                     {
-                        n2.NbWarEngagedIn--;
                         World.WarMatrix[(int)n.Code, (int)n2.Code] = false;
                         World.WarMatrix[(int)n2.Code, (int)n.Code] = false;
                     }
@@ -343,7 +345,7 @@ namespace Escalation.Manager
 
         public void ManageTension()
         {
-            World.WorldTension  =(World.WorldTension -  0.0001 * World.WorldTension) + 0.001 * World.Wars.Count;
+            World.WorldTension  =(World.WorldTension -  0.001 * World.WorldTension) + 0.001 * World.Wars.Count;
         }
 
         public void ManageAlliances()
@@ -396,7 +398,7 @@ namespace Escalation.Manager
         {
             War w = (War)sender;
 
-            foreach (War war in World.Wars)
+              foreach (War war in World.Wars)
             {
                 if (war.Attackers.Contains(e.AnnexedNation))
                 {
@@ -410,7 +412,7 @@ namespace Escalation.Manager
 
                 if (war.Defenders.Contains(e.AnnexedNation))
                 {
-                    war.DisengageDefender(e.AnnexedNation);
+                     war.DisengageDefender(e.AnnexedNation);
                     foreach (Nation n in war.Attackers)
                     {
                         World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
@@ -429,7 +431,6 @@ namespace Escalation.Manager
                     World.Alliances[e.AnnexedNation.MilitaryPact].RemoveMember(e.AnnexedNation);
                 }
 
-                e.AnnexedNation.NbWarEngagedIn--;
 
                 if (strongestAttacker.MilitaryPact != -1)
                 {
@@ -473,7 +474,6 @@ namespace Escalation.Manager
                     World.Alliances[e.AnnexedNation.MilitaryPact].RemoveMember(e.AnnexedNation);
                 }
 
-                e.AnnexedNation.NbWarEngagedIn--;
 
                 if (strongestDefender.MilitaryPact != -1)
                 {

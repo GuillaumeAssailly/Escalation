@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
@@ -69,6 +70,13 @@ namespace EscalationAPP
         /// <summary>
         /// ATTRIBUTES OBJECTS : 
         /// </summary>
+        ///
+        ///
+        ///
+
+        public ObservableCollection<War> ListOfWars { get; set; }
+
+
         public Earth World => (Application.Current as App)?.World;
 
         public DateTime CurrentDate => World.CurrentDate;
@@ -228,12 +236,12 @@ namespace EscalationAPP
                         while (isPaused)
                         {
                             pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
-                            Thread.Sleep(100);
+                             Thread.Sleep(100);
                         }
                     }
 
 
-
+                     
                   
                      
                     //DAY LOOP OVER HERE :
@@ -273,7 +281,7 @@ namespace EscalationAPP
                     World.AddDay();
 
                     //Delay of 1 second :
-                    Thread.Sleep(speed * 500+5);
+                    Thread.Sleep(speed * 200+5);
 
                     Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
 
@@ -360,6 +368,24 @@ namespace EscalationAPP
 
                 }
             }
+            else if (layerMode == 2)
+            {
+                foreach(Nation n in World.Nations)
+                {
+                    if (n.Code == FocusedNation)
+                    {
+                        CountryLayer.Add(n.Code, Brushes.Blue); ;
+                    }
+                    else if (!World.WarMatrix[(int)n.Code, (int)FocusedNation] )
+                    {
+                        CountryLayer.Add(n.Code, Brushes.Green);
+                    }
+                    else
+                    {
+                        CountryLayer.Add(n.Code, Brushes.Red);
+                    }
+                }
+            }
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
                 //get the path with the tag :
@@ -384,6 +410,7 @@ namespace EscalationAPP
             //UpdateNeighboor();
             UpdateLayer();
             outputTextBox.ScrollToEnd();
+            ListOfWars = new ObservableCollection<War>(World.Wars);
             
         }
 
@@ -695,6 +722,9 @@ namespace EscalationAPP
                     break;
                 case Key.F2:
                     layerMode = 1; UpdateLayer();
+                    break;
+                case Key:
+                    layerMode = 2; UpdateLayer();
                     break;
             }
             {

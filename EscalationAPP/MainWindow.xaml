@@ -364,6 +364,7 @@
                 <TextBox  x:Name="outputTextBox" Width ="668"  VerticalScrollBarVisibility="Auto" IsReadOnly="True" MaxLines="20" /> 
 
             </ui:TreeViewItem>
+           
         </TreeView>
 
 
