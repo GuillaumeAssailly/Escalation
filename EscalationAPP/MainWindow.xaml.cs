@@ -7,6 +7,7 @@ using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -286,6 +287,8 @@ namespace EscalationAPP
                     Application.Current?.Dispatcher.Invoke(new Action(UpdateUI));
 
                     pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
+
+                    //Trace.WriteLine(JsonSerializer.Serialize(World)));
 
                 }
             });

@@ -22,10 +22,18 @@ namespace Escalation.World
         private decimal militaryPower;
         private int id;
 
-        private static List<string>Colors = new() {"Red", "Blue", "Green", "Yellow", "Orange", "Purple", "Pink", "Brown", "Black", "White", "Grey", "Cyan", "Magenta"};
-    
+        public static List<string> Colors = new()
+        {
+            "DarkBlue" , "DarkRed",
+            "Red", "Blue", "Green", "Yellow", "Orange",
+            "Purple", "Pink", "Brown", "Black", "White", "Cyan", "Magenta", "Aqua",
+            "AntiqueWhite", "Aquamarine", "Azure", "Beige", "Bisque", "BlanchedAlmond", "BlueViolet", "BurlyWood",
+            "CadetBlue", "Chartreuse", "Chocolate", "Coral", "CornflowerBlue", "Cornsilk", "Crimson", "Cyan",
+           "DarkCyan", "DarkGoldenrod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta",
+        };
+        
 
-        public Alliance(String name, String color)
+        public Alliance(String name)
         {
             cpt++;
             this.id = cpt;
@@ -33,6 +41,7 @@ namespace Escalation.World
             this.color = color;
             this.members = new List<Nation>();
             this.militaryPower = 0; 
+            color = Colors[cpt%Colors.Count];
         }
 
 

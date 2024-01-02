@@ -187,13 +187,13 @@ namespace Escalation.World
             foreach (Nation n in Defenders)
             {
                 n.Population -= Random.Next(0,
-                    (attacker.Military * n.Population) / ((ulong)n.NbWarEngagedIn * 100000));
+                    (attacker.Military * n.Population) / 1000000);
 
             }
             Nation defender = Defenders[Random.Next(0, Defenders.Count)];
             foreach (Nation n in Attackers)
             {
-                n.Population -= Random.Next(0, (ulong)(defender.Military * n.Population) / ((ulong)n.NbWarEngagedIn * 1000000))  ; 
+                n.Population -= Random.Next(0, (defender.Military * n.Population) / 1000000)  ; 
             }
             
           
