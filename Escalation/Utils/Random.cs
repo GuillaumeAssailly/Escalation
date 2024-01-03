@@ -17,13 +17,13 @@ namespace Escalation.Utils
         public static UInt64 TMat_64 = 0x58d02ffeffbfffbc;
 
         */
-        public static UInt64 Seed_64 = 1;
-        public static UInt32 Mat1_64 = 2;
-        public static UInt32 Mat2_64 = 3;
+        public static UInt64 Seed_64 = 4;
+        public static UInt32 Mat1_64 = 5;
+        public static UInt32 Mat2_64 = 4;
         public static UInt64 TMat_64 = 4;
 
         //Tiny mersenne twister
-        static TinyMT64 TMT64 = new TinyMT64(1, 0xfa051f40, 0xffd0fff4, 0x58d02ffeffbfffbc);
+        static TinyMT64 TMT64 = new TinyMT64(15564642, 0xfa051f40, 0xffd0fff4, 0x58d02ffeffbfffbc);
 
 
 

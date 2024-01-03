@@ -1,0 +1,159 @@
+Afghanistan	AFG						
+Sahara occidental SAH					
+Afrique du Sud	RSA					
+Albanie	ALB							
+Algérie	ALG								
+Andorre	AND	
+Angola	ANG								
+Arabie saoudite	ASA							
+Argentine	ARG						
+Australie	AUS						
+Autorité palestinienne	PAL						
+Autriche	AUT						
+Bahamas	BAH						
+Bangladesh	BAN					
+Belgique	BEL					
+Belize	BEI						
+Bénin	BEN						
+Bhoutan	BHO						
+Birmanie	BIR					
+Bolivie	BOL						
+Botswana	BOT					
+Brésil	BRA	
+Brunei	BRU	
+Bulgarie	BUL	
+Burkina Faso	BUR	
+Burundi	BUD	
+Cambodge	CAM	
+Cameroun	CAO	
+Canada	CAN	
+Chili	CHL	
+Chine	CHI	
+Chypre	CHY	
+Colombie	COL	
+Corée du Nord	NCO	
+Corée du Sud	SCO	
+Costa Rica	COS	
+Côte d'Ivoire	CIV	
+Cuba	CUB	
+Danemark	DAN	
+Allemagne de l'Ouest	DDR	
+Djibouti	DJI	
+Égypte	EGY	
+Émirats arabes unis	EAU
+Équateur	EQA		
+Espagne	ESP	
+Swaziland ESW 												
+États-Unis	ETU	
+Éthiopie	ETH	
+Fidji	FID	
+Finlande	FIN	
+France	FRA
+Gabon	GAB	
+Gambie	GAM
+Allemagne de l'Est	GDR	
+Ghana	GHA	
+Grèce	GRE
+Groenland GRO
+Guatemala	GUA	
+Guinée	GUI	
+Guinée équatoriale	GEQ	
+Guinée-Bissau	GBI	
+Guyana	GUY	
+Guyane	FGY	
+Haïti	HAI
+Honduras HOD	
+Hongrie	HON	
+Iles Malaouines IMA
+Îles Salomon 	ISA
+Inde	IND	
+Indonésie	IDO	
+Irak	IRK	
+Iran	IRA	
+Irlande	IRL	
+Islande	ISL	
+Israël	ISR	
+Italie	ITA
+Jamaïque	JAM	
+Japon	JAP	
+Jordanie	JOR	
+Kenya	KEN	
+Koweït	KOW
+Laos	LAO	
+Lesotho	LES	
+Liban	LIB	
+Liberia	LIA	
+Libye	LIY	
+Luxembourg	LUX	
+Madagascar	MAD	
+Malaisie	MAS	
+Malawi	MAW	
+Mali	MAL	
+Maroc	MAR	
+Mauritanie	MAU	
+Mexique	MEX	
+Monaco MON
+Mongolie	MOG	
+Mozambique	MOZ	
+Népal	NEP	
+Nicaragua	NIC	
+Niger	NGR	
+Nigeria	NIG	
+Norvège	NOR	
+Nouvelle-Calédonie	NCA	
+Nouvelle-Zélande	NZE	
+Oman	OMA	
+Ouganda	OGD	
+Pakistan	PAK	
+Panama	PAN	
+Papouasie-Nouvelle-Guinée	PNG	
+Paraguay	PAR	
+Pays-Bas	PAB
+Pérou	PER	
+Philippines	PHI	
+Pologne	POL	
+Porto Rico	PRI	2
+Portugal	POR	
+Qatar	QAT	
+République centrafricaine	RCE	
+République démocratique du Congo	RDE	
+République dominicaine	RDO	
+République du Congo	RDC
+Roumanie	ROM	
+Royaume-Uni	ROY	
+Russie	RUS	232243000	
+République du Vietnam	RVI
+Rwanda	RWA	
+Salvador	SAL	
+Sénégal	SEN	
+Sierra Leone	SLE	
+Érythrée	SOM						
+Soudan	SOU	
+Soudan du Sud SDS
+Sri Lanka	SRI
+Suède	SUE	
+Suisse	SUI	
+Suriname	SUR	
+Iles Svalbard SVA
+Syrie	SYR	
+Taïwan	TAW	
+Tanzanie	TAN	
+Tchad	TCH	
+Tchéquoslovaquie TCQ	
+Terres Australes Antarctiques TAA
+Thaïlande THA
+Timor oriental	TOR	
+Togo	TOG	
+Trinité-et-Tobago	TET	
+Tunisie	TUN	
+Turquie	TUR	
+Uruguay	URU		
+Vanuatu VAN
+Vatican	VAT
+Venezuela	VEN	
+Viêt Nam	VIE	
+République Arabe du Yémen	YEA	
+Yémen	YEM	
+Yougoslavie	YOU	
+Zambie	ZAM	
+Zimbabwe	ZIM	

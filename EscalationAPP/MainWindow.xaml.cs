@@ -393,6 +393,16 @@ namespace EscalationAPP
                     }
                 }
             }
+            else if (layerMode == 3)
+            {
+                foreach (Ecode n in World.Nations[(int)FocusedNation].neighbors.Keys)
+                {
+                    CountryLayer.Add(n, Brushes.Green);
+                }
+                
+
+                
+            }
             foreach (KeyValuePair<Ecode, SolidColorBrush> entry in CountryLayer)
             {
                 //get the path with the tag :
@@ -729,8 +739,11 @@ namespace EscalationAPP
                 case Key.F2:
                     layerMode = 1; UpdateLayer();
                     break;
-                case Key:
+                case Key.F3:
                     layerMode = 2; UpdateLayer();
+                    break;
+                case Key.F4: 
+                    layerMode = 3; UpdateLayer();
                     break;
             }
             {

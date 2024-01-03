@@ -22,7 +22,6 @@ namespace Escalation.Manager
 
             //Print the population :
             //Console.WriteLine(CurrentNation.Code + " : " + CurrentNation.Population);
-            FileWriter.AppendLine(CurrentNation.Code + "/population.txt", CurrentNation.Population.ToString("0"));
 
             //Remove the first element of the list :
             if (CurrentNation.PopulationHistory.Count > 50)

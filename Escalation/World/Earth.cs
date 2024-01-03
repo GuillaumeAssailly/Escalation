@@ -11,7 +11,7 @@ namespace Escalation.World
     public class Earth
     {
         //Parameters :
-        const int nbNations = 180;
+        const int nbNations = 158;
 
         private double worldTension;
 

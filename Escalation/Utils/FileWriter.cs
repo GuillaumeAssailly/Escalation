@@ -36,6 +36,14 @@ namespace Escalation.Utils
             }
         }
 
+        public static void DeleteDir(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path,true);
+            }
+        }
+
         public static void AppendLine(string path, string line)
         {
             File.AppendAllText(path,line+Environment.NewLine);

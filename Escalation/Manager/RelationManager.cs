@@ -354,7 +354,7 @@ namespace Escalation.Manager
 
         public void ManageTension()
         {
-            World.WorldTension  =(World.WorldTension -  0.0001 * World.WorldTension) + 0.001 * World.Wars.Count;
+            World.WorldTension = (World.WorldTension - 0.001 * World.WorldTension);
         }
 
         public void ManageAlliances()
@@ -465,7 +465,7 @@ namespace Escalation.Manager
                     if (n.MilitaryPact != -1)
                     {
                         if (World.RelationsMatrix[(int)n.Code,
-                                (int)World.Alliances[n.MilitaryPact].GetMembers().First().Code] > 50)
+                                (int)World.Alliances[n.MilitaryPact].GetMembers().First().Code] < 100)
                         {
                             Trace.WriteLine(n.Code + " has left " + World.Alliances[n.MilitaryPact].GetMembers().First().Code + "'s alliance");
                             World.Alliances[n.MilitaryPact].RemoveMember(n);
@@ -516,30 +516,7 @@ namespace Escalation.Manager
 
 
                 if (strongestAttacker.MilitaryPact != -1)
-                {
-                    //We stop the wars between every members
-                    foreach (Nation n in World.Alliances[strongestAttacker.MilitaryPact].GetMembers())
-                    {
-                        foreach (War war in World.Wars)
-                        {
-                            if (war.Attackers.Contains(n) && war.Defenders.Contains(e.AnnexedNation))
-                            {
-                                war.DisengageDefender(e.AnnexedNation);
-                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
-                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
-                            }
-
-                            if (war.Attackers.Contains(e.AnnexedNation) && war.Defenders.Contains(n))
-                            {
-                                war.DisengageDefender(e.AnnexedNation);
-                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
-                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
-                            }
-                         
-                        }
-                    }
-                   
-                  
+                { 
                     World.Alliances[strongestAttacker.MilitaryPact].AddMember(e.AnnexedNation);
                 }
                 e.AnnexedNation.SetIdeologies(strongestAttacker.getIdeologies());
@@ -560,27 +537,6 @@ namespace Escalation.Manager
 
                 if (strongestDefender.MilitaryPact != -1)
                 {
-                    //We stop the wars between every members
-                    foreach (Nation n in World.Alliances[strongestDefender.MilitaryPact].GetMembers())
-                    {
-                        foreach (War war in World.Wars)
-                        {
-                            if (war.Attackers.Contains(n) && war.Defenders.Contains(e.AnnexedNation))
-                            {
-                                war.DisengageDefender(e.AnnexedNation);
-                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
-                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
-                            }
-
-                            if (war.Attackers.Contains(e.AnnexedNation) && war.Defenders.Contains(n))
-                            {
-                                war.DisengageDefender(e.AnnexedNation);
-                                World.WarMatrix[(int)n.Code, (int)e.AnnexedNation.Code] = false;
-                                World.WarMatrix[(int)e.AnnexedNation.Code, (int)n.Code] = false;
-                            }
-
-                        }
-                    }
                     World.Alliances[strongestDefender.MilitaryPact].AddMember(e.AnnexedNation);
                 }
 

@@ -35,24 +35,10 @@ namespace Escalation.World
         LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MON, MOG, MOZ,
         NEP, NIC, NGR, NIG, NOR, NCA, NZE, OMA, OGD, PAK, PAN, PNG, PAR, PAB,
         PER, PHI, POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RVI,
-        RWA, SAL, SEN, SLE, SOM,SOU, SDS, SRI, SUE, SUI, SUR, SVA, SYR,
+        RWA, SAL, SEN, SLE, SOM,SOU, SRI, SUE, SUI, SUR, SVA, SYR,
         TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN,TUR, URU, VAN, VAT,
         VEN, VIE, YEA, YEM, YOU, ZAM, ZIM,
-
-        /*
-                FRA = 0, 
-                ALL,
-                ITA,
-                ROY,
-                ESP,
-                IRL,
-                POR,
-                BEL,
-                PAB,
-                SUI,
-                LUX,*/
-
-
+        
     }
 
     //Enum for Nation Title and type (duchy, etc.)
@@ -65,6 +51,7 @@ namespace Escalation.World
     public class Nation
     {
 
+       
         public Ecode Code { get; set; }
 
         [JsonIgnore]
@@ -73,8 +60,6 @@ namespace Escalation.World
         [JsonIgnore]
         public string Description { get; set; }
 
-        [JsonIgnore]
-        public string Flag { get; set; }
 
         [JsonIgnore]
         public ETitle Title { get; set; }
@@ -150,7 +135,7 @@ namespace Escalation.World
         public double Stability { get; set; }
 
 
-
+        [JsonPropertyName("I")]
         private Dictionary<Ideology, double> ideologies { get; set; }       //Dictionnary of ideologies to their respective percentages
         private Tuple<Ideology, double> risingIdeology;        //Tuple of the ideology that is rising and the percentage gained every day
 
@@ -318,25 +303,38 @@ namespace Escalation.World
 
         //Internal Statistics
         private double productivity;
+
+        [JsonPropertyName("PR")]
         public double Productivity { get => productivity; set { if (value > 1) { productivity = 1; } else if (value < 0) { productivity = 0; } else { productivity = value; } } }
         private double educationRate;
+        [JsonPropertyName("E")]
         public double EducationRate { get => educationRate; set  {if (value > 1) { educationRate = 1; } else if ( value < 0) { educationRate = 0; } else { educationRate = value; } } }
         private double healthRate;
+        [JsonPropertyName("H")]
         public double HealthRate { get => healthRate; set { if ( value > 1) { healthRate = 1; } else if ( value < 0) { healthRate = 0; } else { healthRate = value; } } }
         private double happinessRate;
+      
         public double HappinessRate { get => happinessRate; set { if ( value > 1) { happinessRate = 1; } else if ( value < 0) { happinessRate = 0; } else { happinessRate = value; } } }
         private double corruptionRate;
+        [JsonIgnore]
         public double CorruptionRate { get => corruptionRate; set  {if ( value > 1) { corruptionRate = 1; } else if ( value < 0) { corruptionRate = 0; } else { corruptionRate = value; } } }
         private double crimeRate;
+        [JsonIgnore]
         public double CrimeRate { get => crimeRate; set { if ( value > 1) { crimeRate = 1; } else if ( value < 0) { crimeRate = 0; } else { crimeRate = value; } } }
         private double foodRate;
+        [JsonIgnore]
         public double FoodRate { get => foodRate; set { if ( value > 1) { foodRate = 1; } else if ( value < 0) { foodRate = 0; } else { foodRate = value; } } }
 
         private int industrialPower;
+        [JsonPropertyName("IP")]
         public double IndustrialPower { get => industrialPower; set => industrialPower = (int)(value < 0 ? 0 : value); }
         private int agriculturalPower;
+
+        [JsonPropertyName("AP")]
         public double AgriculturalPower { get => agriculturalPower; set => agriculturalPower = (int)(value < 0 ? 0 : value); }
         private int tertiaryPower;
+
+        [JsonPropertyName("TP")]
         public double TertiaryPower { get => tertiaryPower; set => tertiaryPower = (int)(value < 0 ? 0 : value); }
         private int infrastructurePower;
 
@@ -409,6 +407,7 @@ namespace Escalation.World
 
         private PoliticalPlan currentPlan;
 
+        [JsonPropertyName("CP")]
         public PoliticalPlan CurrentPlan { get => currentPlan; set => currentPlan = value; }
 
         public void initInternalStatistics( int infrastructurePower, 
@@ -500,13 +499,19 @@ namespace Escalation.World
         private decimal _gdp;
         public decimal GDP { get => _gdp; set => _gdp = value < 0 ? 0 : value; }
         private decimal _gdpGrowthRate;
+
+        [JsonPropertyName("GDPG")]
         public decimal GDPGrowthRate { get => _gdpGrowthRate; set => _gdpGrowthRate = value < 0 ? 0 : value; }
 
-
+        [JsonPropertyName("EX")]
         public decimal Expenses { get => expenses; set => expenses = value < 0 ? 0 : value; }
+        [JsonPropertyName("IN")]
         public decimal Incomes { get => incomes; set => incomes = value < 0 ? 0 : value; }
+        [JsonPropertyName("DE")]
         public decimal Debt { get => debt; set => debt = value < 0 ? 0 : value; }
+        [JsonIgnore]
         public decimal DebtInterest { get => debtInterest; set => debtInterest = value < 0 ? 0 : value; }
+        [JsonPropertyName("TR")]
         public decimal Treasury { get => treasury; set => treasury = value < 0 ? 0 : value; }
 
         public void  initEconomicStats( decimal debt, decimal debtInterest, decimal treasury)
@@ -582,11 +587,13 @@ namespace Escalation.World
         private ulong navalForces;
         private ulong nuclearForces;
 
-
+        [JsonPropertyName("MP")]
         public int MilitaryPact { get; set; }
 
 
         private decimal military;
+
+        [JsonPropertyName("M")]
         public decimal Military
         {
             get => military;
@@ -603,9 +610,12 @@ namespace Escalation.World
             }
         }
 
+        [JsonPropertyName("VP")]
         public int VictoryPoints { get; set; }
 
         private int currentVictoryPoints;
+
+        [JsonPropertyName("CVP")]
         public int CurrentVictoryPoints
         {
             get => currentVictoryPoints;
@@ -614,6 +624,8 @@ namespace Escalation.World
 
         //Demographic Statistics
         private decimal _population;
+
+        [JsonPropertyName("P")]
         public decimal Population
         {
             get => _population;
@@ -632,8 +644,13 @@ namespace Escalation.World
             }
         }
 
+        [JsonPropertyName("PG")]
         public double PopulationGrowthRate { get; set; }
+
+        [JsonPropertyName("PDR")]
         public double PopulationDeathRate { get; set; }
+
+        [JsonPropertyName("PD")]
         public double PopulationDensity { get; set; }
 
         [JsonIgnore]

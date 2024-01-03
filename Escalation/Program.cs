@@ -1,6 +1,7 @@
 ﻿using Escalation.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Escalation.World;
 using Random = Escalation.Utils.Random;
 using System.Threading;
 using System.Text.Json;
+using System.Globalization;
 
 namespace Escalation
 {
@@ -67,11 +69,19 @@ namespace Escalation
 
 
             /////////////////////////////
+            /// - Files -  //////////////
+            ///
+            FileWriter.DeleteDir("History");
+          
+            Directory.CreateDirectory("History");
+            
+
+            /////////////////////////////
             ///  - TESTS -  /////////////
             /////////////////////////////  
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 30000; i++)
             {
-
+                FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-M-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
                 
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
@@ -112,10 +122,8 @@ namespace Escalation
 
 
 
-                string fileName = "History.json";
 
-                string jsonstring = JsonSerializer.Serialize(World);
-                FileWriter.AppendLine(fileName, jsonstring);
+              
 
 
 
