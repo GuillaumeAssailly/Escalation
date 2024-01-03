@@ -8,6 +8,7 @@ using Escalation.Manager;
 using Escalation.World;
 using Random = Escalation.Utils.Random;
 using System.Threading;
+using System.Text.Json;
 
 namespace Escalation
 {
@@ -66,74 +67,63 @@ namespace Escalation
 
 
             /////////////////////////////
-            /// - FILES CREATION -  /////
-            /////////////////////////////
-         
-            foreach (Nation n in World.Nations)
-            {
-                FileWriter.CreateFiles("", n.Code);
-                FileWriter.SaveIdeologies("idee.txt", n.getIdeologies());
-            }
-
-            //print the whole adjacency matrix :
-            /*
-            for (int i = 0; i < World.Nations.Count; i++)
-            {
-                for (int j = 0; j < World.Nations.Count; j++)
-                {
-                    Console.Write(World.RelationsMatrix[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
-            */
-          
-
-            /////////////////////////////
-            ///  - RUNNING -  ///////////
+            ///  - TESTS -  /////////////
             /////////////////////////////  
             for (int i = 0; i < 100000; i++)
             {
-                if (i % 365 == 0)
-                {
-                    Console.WriteLine("Year : " + World.CurrentDate.Year + " World Tension : " + World.WorldTension);
-                }
+
+                
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
                 {
-                    if (World.CurrentDate.Day == 1)
-                    {
-                        economyManager.ManageEconomy(currentNation.Code);
-
-                    }
-
-                    //print the 20 richest countries : order by treasury :
-                    // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
-
                     if (i % 10 == 0)
                     {
                         ideologyManager.ManageIdeologies(currentNation.Code);
                     }
 
-                    populationManager.ManagePopulation(currentNation.Code);
-                    currentNation.DriftIdeologies();
-                    //Print majorIdeology in each nation : 
-                   // Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " +currentNation.getIdeologies().Last().Value);
-                    currentNation.takeAction();
 
-                    
+                    if (World.CurrentDate.Day == 1)
+                    {
+                        economyManager.ManageEconomy(currentNation.Code);
+                        relationManager.updateRelations(currentNation);
+                        currentNation.DriftIdeologies();
+                    }
+
+                    //print the 20 richest countries : order by treasury :
+                    // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
+
+
+
+
+                    populationManager.ManagePopulation(currentNation.Code);
+
+
+                    //Print majorIdeology in each nation : 
+                    //Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
+                    currentNation.takeAction();
                 }
+
+                relationManager.ManageAlliances();
                 relationManager.GoToWar();
                 relationManager.ManageWars();
-
+                relationManager.ManageTension();
                 World.AddDay();
+
+
+
+
+                string fileName = "History.json";
+
+                string jsonstring = JsonSerializer.Serialize(World);
+                FileWriter.AppendLine(fileName, jsonstring);
+
+
+
+
+
+
+
             }
-
-
-
-
-
-
-
         }
     }
 }

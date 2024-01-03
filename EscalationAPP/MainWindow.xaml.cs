@@ -56,7 +56,7 @@ namespace EscalationAPP
 
         public override void WriteLine(string message)
         {
-            //_textBox.Dispatcher.Invoke(() => _textBox.Text += message + "\n");
+            _textBox.Dispatcher.Invoke(() => _textBox.Text += message + "\n");
             
         }
     }
@@ -216,6 +216,7 @@ namespace EscalationAPP
                 /////////////////////////////
                 /// - FILES CREATION -  /////
                 /////////////////////////////
+                FileWriter.DeleteFile("History.json");
                 foreach (Nation n in World.Nations)
                 {
                     FileWriter.CreateFiles("", n.Code);
@@ -288,7 +289,10 @@ namespace EscalationAPP
 
                     pauseToken.ThrowIfCancellationRequested(); // This will throw if the task has been cancelled.
 
-                    //Trace.WriteLine(JsonSerializer.Serialize(World)));
+                    string fileName = "History.json";
+                   
+                    string jsonstring=  JsonSerializer.Serialize(World);
+                    FileWriter.AppendLine(fileName, jsonstring);
 
                 }
             });

@@ -28,6 +28,14 @@ namespace Escalation.Utils
 
         }
 
+        public static void DeleteFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
         public static void AppendLine(string path, string line)
         {
             File.AppendAllText(path,line+Environment.NewLine);

@@ -11,7 +11,9 @@
         xmlns:escalationApp="clr-namespace:EscalationAPP"
         xmlns:converters="clr-namespace:EscalationAPP.Converters"
         Width="1920"
-        Height="1055"
+        MaxWidth="1920"
+        MaxHeight="1052"
+        Height="1052"
         mc:Ignorable="d"
 
         d:DataContext="{d:DesignInstance escalationApp:MainWindow,IsDesignTimeCreatable=False}"

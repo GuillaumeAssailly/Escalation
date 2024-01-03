@@ -38,19 +38,19 @@ namespace Escalation.World
 
 
 
-        public DateTime CurrentDate;
+        public DateTime CurrentDate { get; set; }
 
 
         //list of nations : 
-        public List<Nation> Nations;
+        public List<Nation> Nations { get; set; }
 
 
         //list of alliances (and military pacts) : 
-        public List<Alliance> Alliances;
+        public List<Alliance> Alliances { get; set; }
 
 
         //list of wars :
-        public List<War> Wars;
+        public List<War> Wars { get; set; }
         
         
 

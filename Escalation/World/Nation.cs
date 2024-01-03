@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Random = Escalation.Utils.Random;
 
 
@@ -66,19 +67,26 @@ namespace Escalation.World
 
         public Ecode Code { get; set; }
 
+        [JsonIgnore]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public string Description { get; set; }
 
+        [JsonIgnore]
         public string Flag { get; set; }
 
+        [JsonIgnore]
         public ETitle Title { get; set; }
 
+        [JsonIgnore]
         //List of Neighbors with qualifiers (M for Marine, L for Land): 
         public Dictionary<Ecode, char> neighbors = new Dictionary<Ecode, char>();
 
+        [JsonIgnore]
         private int nbWarEngagedIn;
 
+        [JsonIgnore]
         public int NbWarEngagedIn
         {
             get => nbWarEngagedIn;
@@ -135,12 +143,15 @@ namespace Escalation.World
         }
 
         //Political Statistics
+        [JsonIgnore]
         private int politicalPower;
+
+        [JsonIgnore]
         public double Stability { get; set; }
 
 
 
-        private Dictionary<Ideology, double> ideologies;       //Dictionnary of ideologies to their respective percentages
+        private Dictionary<Ideology, double> ideologies { get; set; }       //Dictionnary of ideologies to their respective percentages
         private Tuple<Ideology, double> risingIdeology;        //Tuple of the ideology that is rising and the percentage gained every day
 
 
@@ -572,7 +583,7 @@ namespace Escalation.World
         private ulong nuclearForces;
 
 
-        public int MilitaryPact;
+        public int MilitaryPact { get; set; }
 
 
         private decimal military;
@@ -625,10 +636,19 @@ namespace Escalation.World
         public double PopulationDeathRate { get; set; }
         public double PopulationDensity { get; set; }
 
+        [JsonIgnore]
         public List<decimal> PopulationHistory { get; set; }
+
+        [JsonIgnore]
         public List<decimal> TreasuryHistory { get; set; }
+
+        [JsonIgnore]
         public List<decimal> IncomesHistory { get; set; }
+
+        [JsonIgnore]
         public List<decimal> ExpensesHistory { get; set; }
+
+        [JsonIgnore]
         public List<decimal> DebtHistory { get; set; }
      
 

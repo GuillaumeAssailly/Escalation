@@ -393,7 +393,7 @@ namespace Escalation.Manager
                         }
                     }
                 }
-                else
+                else if(World.WorldTension is >= 7 and < 60)
                 {
                     //We create an alliance between two nations that are not at war with each other and that are not allies :
 
@@ -455,6 +455,20 @@ namespace Escalation.Manager
                                     Trace.WriteLine(n.Code + " has joined " + a.GetMembers().First().Code + "'s alliance");
                                 }
                             }
+                        }
+                    }
+                }
+                else //Peace is starting to go back into the world
+                {
+                    //We select a random nation in the world :
+                    Nation n = World.Nations[Random.Next(World.Nations.Count)];
+                    if (n.MilitaryPact != -1)
+                    {
+                        if (World.RelationsMatrix[(int)n.Code,
+                                (int)World.Alliances[n.MilitaryPact].GetMembers().First().Code] > 50)
+                        {
+                            Trace.WriteLine(n.Code + " has left " + World.Alliances[n.MilitaryPact].GetMembers().First().Code + "'s alliance");
+                            World.Alliances[n.MilitaryPact].RemoveMember(n);
                         }
                     }
                 }
