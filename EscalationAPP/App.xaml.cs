@@ -55,7 +55,7 @@ namespace EscalationAPP
                 nation.initEconomicStats( 0, 0 ,Random.Next(0, 100000));
             }
 
-            geographyManager.initializeNeighbors();
+            geographyManager.initializeNeighbors("../../../neighbors.txt");
             relationManager.initAlliances();
             relationManager.initRelations();
          

@@ -29,84 +29,84 @@ namespace Escalation.Manager
             // - Fascism :              X% chance of being the rising ideology + what remains of chance of being a random neighbor in country
 
             //Get the  last ideology of the dictionary (the most popular one) :
-            Ideology CurrentIdeology = CurrentNation.getIdeologies().Last().Key;
+            Ideology CurrentIdeology = CurrentNation.Ideologies.Last().Key;
 
             Ideology NewRisingIdeology;
 
             switch (CurrentIdeology)
             {
-                case Ideology.Communism:
+                case Ideology.C:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.Communism;
+                        NewRisingIdeology = Ideology.C;
                     }
                     else
                     { 
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.Socialism:
+                case Ideology.S:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.Socialism;
+                        NewRisingIdeology = Ideology.S;
                     }
                     else
                     {
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.LeftWingDemocracy:
+                case Ideology.L:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.LeftWingDemocracy;
+                        NewRisingIdeology = Ideology.L;
                     }
                     else
                     {
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.RightWingDemocracy:
+                case Ideology.R:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.RightWingDemocracy;
+                        NewRisingIdeology = Ideology.R;
                     }
                     else
                     {
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.Authoritarianism:
+                case Ideology.A:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.Authoritarianism;
+                        NewRisingIdeology = Ideology.A;
                     }
                     else
                     {
-                       NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                       NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.Despotism:
+                case Ideology.D:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.Despotism;
+                        NewRisingIdeology = Ideology.D;
                     }
                     else
                     {
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
-                case Ideology.Fascism:
+                case Ideology.F:
                     if (Random.NextDouble() < CurrentNation.Stability)
                     {
-                        NewRisingIdeology = Ideology.Fascism;
+                        NewRisingIdeology = Ideology.F;
                     }
                     else
                     {
-                        NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count));
+                        NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count));
                     }
                     break;
                 default:
-                    NewRisingIdeology = CurrentNation.getIdeologies().Keys.ElementAt(Random.Next(CurrentNation.getIdeologies().Count)); 
+                    NewRisingIdeology = CurrentNation.Ideologies.Keys.ElementAt(Random.Next(CurrentNation.Ideologies.Count)); 
                     break;
             }
             

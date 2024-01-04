@@ -220,7 +220,7 @@ namespace EscalationAPP
                 foreach (Nation n in World.Nations)
                 {
                     FileWriter.CreateFiles("", n.Code);
-                    FileWriter.SaveIdeologies("idee.txt", n.getIdeologies());
+                    FileWriter.SaveIdeologies("idee.txt", n.Ideologies);
                 }
 
                 
@@ -459,15 +459,15 @@ namespace EscalationAPP
 
         private void UpdateChart()
         {
-            Dictionary<Ideology, double> ideologies = World.Nations[(int)focusedNation].getIdeologies();
+            Dictionary<Ideology, double> ideologies = World.Nations[(int)focusedNation].Ideologies;
 
-            FocusedIdeologies.ElementAt(0).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Communism] * 100;
-            FocusedIdeologies.ElementAt(1).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Socialism] * 100;
-            FocusedIdeologies.ElementAt(2).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.LeftWingDemocracy] * 100;
-            FocusedIdeologies.ElementAt(3).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.RightWingDemocracy] * 100;
-            FocusedIdeologies.ElementAt(4).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Authoritarianism] * 100;
-            FocusedIdeologies.ElementAt(5).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Despotism] * 100;
-            FocusedIdeologies.ElementAt(6).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.Fascism] * 100;
+            FocusedIdeologies.ElementAt(0).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.C] * 100;
+            FocusedIdeologies.ElementAt(1).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.S] * 100;
+            FocusedIdeologies.ElementAt(2).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.L] * 100;
+            FocusedIdeologies.ElementAt(3).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.R] * 100;
+            FocusedIdeologies.ElementAt(4).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.A] * 100;
+            FocusedIdeologies.ElementAt(5).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.D] * 100;
+            FocusedIdeologies.ElementAt(6).Values.Cast<ObservableValue>().ElementAt(0).Value = ideologies[Ideology.F] * 100;
 
         }
        
@@ -524,7 +524,7 @@ namespace EscalationAPP
 
         private void initChart()
         {
-            Dictionary<Ideology, double> ideologies = World.Nations[(int)focusedNation].getIdeologies();
+            Dictionary<Ideology, double> ideologies = World.Nations[(int)focusedNation].Ideologies;
 
             
             FocusedIdeologies = new SeriesCollection
@@ -532,14 +532,14 @@ namespace EscalationAPP
                 new PieSeries
                 {
                     Title = "Communism",
-                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Communism] * 100) },
+                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.C] * 100) },
                     Fill = Brushes.DarkRed,
                     Stroke = Brushes.Transparent 
                 },
                 new PieSeries
                 {
                     Title = "Socialism",
-                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Socialism] * 100) },
+                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.S] * 100) },
                     Fill = Brushes.Red,
                     Stroke = Brushes.Transparent
 
@@ -548,7 +548,7 @@ namespace EscalationAPP
                 {
                     Title = "LeftWingDemocracy",
                     Values = new ChartValues<ObservableValue>
-                        { new ObservableValue(ideologies[Ideology.LeftWingDemocracy] * 100) },
+                        { new ObservableValue(ideologies[Ideology.L] * 100) },
                     Fill = Brushes.Pink,
                     Stroke = Brushes.Transparent
 
@@ -557,7 +557,7 @@ namespace EscalationAPP
                 {
                     Title = "RightWingDemocracy",
                     Values = new ChartValues<ObservableValue>
-                        { new ObservableValue(ideologies[Ideology.RightWingDemocracy]*100) },
+                        { new ObservableValue(ideologies[Ideology.R]*100) },
                     Fill = Brushes.LightBlue,
                     Stroke = Brushes.Transparent
 
@@ -566,7 +566,7 @@ namespace EscalationAPP
                 {
                     Title = "Authoritarianism",
                     Values = new ChartValues<ObservableValue>
-                        { new ObservableValue(ideologies[Ideology.Authoritarianism] * 100) },
+                        { new ObservableValue(ideologies[Ideology.A] * 100) },
                     Fill = Brushes.Gray,
                     Stroke = Brushes.Transparent
 
@@ -574,14 +574,14 @@ namespace EscalationAPP
                 new PieSeries
                 {
                     Title = "Despotism",
-                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Despotism] * 100) },
+                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.D] * 100) },
                     Fill = Brushes.Black,
                     Stroke = Brushes.Transparent 
                 },
                 new PieSeries
                 {
                     Title = "Fascism",
-                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.Fascism]*100) },
+                    Values = new ChartValues<ObservableValue> { new ObservableValue(ideologies[Ideology.F]*100) },
 
                     Fill = Brushes.SaddleBrown,
                     Stroke = Brushes.Transparent

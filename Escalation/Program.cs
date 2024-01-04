@@ -36,6 +36,8 @@ namespace Escalation
         public static UInt32 Mat2_64 = 0xffd0fff4;
         public static UInt64 TMat_64 = 0x58d02ffeffbfffbc;
 
+     
+
         static void Main(string[] args)
         {
             World = new Earth();
@@ -54,7 +56,8 @@ namespace Escalation
             //build countries : 
             //World.initCountries();
 
-            World.Nations.AddRange(FileReader.ReadNationsFromCsv("../../../ESCALATION.csv"));
+            World.Nations.AddRange(FileReader.ReadNationsFromCsv("ESCALATION.csv"));
+
 
             foreach (Nation nation in World.Nations)
             {
@@ -64,7 +67,8 @@ namespace Escalation
                 nation.initEconomicStats(0, 0, Random.Next(0, 100000));
             }
 
-            geographyManager.initializeNeighbors();
+            geographyManager.initializeNeighbors("../../../neighbors.txt");
+            relationManager.initAlliances();
             relationManager.initRelations();
 
 
@@ -99,9 +103,10 @@ namespace Escalation
                         currentNation.DriftIdeologies();
                     }
 
+
+
                     //print the 20 richest countries : order by treasury :
                     // List<Nation> richestCountries = World.Nations.OrderByDescending(o => o.Treasury).ToList();
-
 
 
 

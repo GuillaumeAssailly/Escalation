@@ -18,9 +18,9 @@ namespace Escalation.Manager
 
 
         //Method to initialize the neighbors of each nation, by reading an ajdacency matrix :
-        public void initializeNeighbors()
+        public void initializeNeighbors(string path)
         {
-            World.AdjacencyMatrix = FileReader.ReadMatrixFromFile("../../../neighbors.txt");
+            World.AdjacencyMatrix = FileReader.ReadMatrixFromFile(path);
             foreach (Nation currentNation in World.Nations)
             {
                 Dictionary<Ecode, char> neighbors = new Dictionary<Ecode, char>();

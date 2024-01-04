@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Escalation.World
@@ -10,14 +11,19 @@ namespace Escalation.World
     
     public class Alliance
     {
-        private String name;
+        [JsonPropertyName("N")]
+        public String Name {get; set; }
 
-        public String color;
+        [JsonIgnore]
+        public String color {get; set; }
 
         private static int cpt = -1;
 
         
         private List<Nation> members;
+
+        [JsonPropertyName("M")]
+        public List<Ecode> CodeMembers { get; private set; }
 
         private decimal militaryPower;
         private int id;
@@ -37,11 +43,12 @@ namespace Escalation.World
         {
             cpt++;
             this.id = cpt;
-            this.name = name;
+            Name = name;
             this.color = color;
             this.members = new List<Nation>();
             this.militaryPower = 0; 
             color = Colors[cpt%Colors.Count];
+            CodeMembers = new List<Ecode>();
         }
 
 
@@ -52,6 +59,7 @@ namespace Escalation.World
             //sort list by military power
             this.members = this.members.OrderByDescending(n => n.Military).ToList();
             n.MilitaryPact = id;
+            CodeMembers.Add(n.Code);
           
         }
 
@@ -60,6 +68,7 @@ namespace Escalation.World
             this.members.Remove(nation);
             this.members = this.members.OrderByDescending(n => n.Military).ToList();
             nation.MilitaryPact = -1;
+            CodeMembers.Remove(nation.Code);
            
         }
 

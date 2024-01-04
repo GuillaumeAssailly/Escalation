@@ -105,7 +105,7 @@ namespace Escalation.Manager
                 { -50, -60, -60, 0, 40, 100, 50 },
                 { -100, -80, -80, -30, 20, 50, 100 } };
 
-            int ideologyRelation = ideologyMatrix[(int)nation.getIdeologies().Last().Key, (int)otherNation.getIdeologies().Last().Key];
+            int ideologyRelation = ideologyMatrix[(int)nation.Ideologies.Last().Key, (int)otherNation.Ideologies.Last().Key];
             
             relation += ideologyRelation;
 
@@ -519,7 +519,7 @@ namespace Escalation.Manager
                 { 
                     World.Alliances[strongestAttacker.MilitaryPact].AddMember(e.AnnexedNation);
                 }
-                e.AnnexedNation.SetIdeologies(strongestAttacker.getIdeologies());
+                e.AnnexedNation.Ideologies = strongestAttacker.Ideologies;
                 e.AnnexedNation.CurrentVictoryPoints = e.AnnexedNation.VictoryPoints;
                 World.WarMatrix[(int)strongestAttacker.Code, (int)e.AnnexedNation.Code] = false;
                 World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestAttacker.Code] = false;
@@ -540,7 +540,7 @@ namespace Escalation.Manager
                     World.Alliances[strongestDefender.MilitaryPact].AddMember(e.AnnexedNation);
                 }
 
-                e.AnnexedNation.SetIdeologies(strongestDefender.getIdeologies());
+                e.AnnexedNation.Ideologies = strongestDefender.Ideologies;
                 e.AnnexedNation.CurrentVictoryPoints = e.AnnexedNation.VictoryPoints;
                 World.WarMatrix[(int)strongestDefender.Code, (int)e.AnnexedNation.Code] = false;
                 World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestDefender.Code] = false;

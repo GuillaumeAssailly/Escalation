@@ -10,16 +10,25 @@ using Random = Escalation.Utils.Random;
 namespace Escalation.World
 {
 
-    //Enum for ideologies
+    //Enum for ideologies*
+    /// <summary>
+    /// Communism,                      C
+    /// Socialism,                      S
+    /// LeftWingDemocracy,              L
+    /// RightWingDemocracy,             R
+    /// Authoritarianism,               A
+    /// Despotism,                      D
+    /// Fascism,                        F
+    /// </summary>
     public enum Ideology
     {
-        Communism,
-        Socialism,
-        LeftWingDemocracy,
-        RightWingDemocracy,
-        Authoritarianism,
-        Despotism,
-        Fascism,
+        C,
+        S,
+        L,
+        R,
+        A,
+        D,
+        F
     }
 
 
@@ -30,7 +39,7 @@ namespace Escalation.World
         BEL, BEI, BEN, BHO, BIR, BOL, BOT, BRA, BRU, BUL, BUR, BUD, CAM, CAO,
         CAN, CHL, CHI, CHY, COL, NCO, SCO, COS, CIV, CUB, DAN, DDR, DJI, EGY,
         EAU, EQA, ESP, ESW,  ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR, GHA,
-        GRE, GRO, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND,
+        GRE, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND,
         IDO, IRK, IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR, KEN, KOW, LAO, LES,
         LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MON, MOG, MOZ,
         NEP, NIC, NGR, NIG, NOR, NCA, NZE, OMA, OGD, PAK, PAN, PNG, PAR, PAB,
@@ -134,9 +143,11 @@ namespace Escalation.World
         [JsonIgnore]
         public double Stability { get; set; }
 
+        private Dictionary<Ideology, double> ideologies { get; set; }       //Dictionnary of ideologies to their respective percentages
 
         [JsonPropertyName("I")]
-        private Dictionary<Ideology, double> ideologies { get; set; }       //Dictionnary of ideologies to their respective percentages
+        public Dictionary<Ideology, double> Ideologies { get => ideologies; set => ideologies = value; }
+        
         private Tuple<Ideology, double> risingIdeology;        //Tuple of the ideology that is rising and the percentage gained every day
 
 
@@ -145,27 +156,20 @@ namespace Escalation.World
             risingIdeology = new Tuple<Ideology, double>(ideology, percentage);
         }
 
-        public Dictionary<Ideology, double> getIdeologies()
-        {
-            return ideologies;
-        }
-
-        public void SetIdeologies(Dictionary<Ideology, double> ideologies)
-        {
-            this.ideologies = ideologies;
-        }
+       
+        
 
         public void SetIdeologiesRandom(Ideology mainIdeology, double min, double max)
         {
-            ideologies = new Dictionary<Ideology, double>
+            Ideologies = new Dictionary<Ideology, double>
                 {
-                    { Ideology.Communism, 0 },
-                    { Ideology.Socialism,0 },
-                    { Ideology.LeftWingDemocracy, 0 },
-                    { Ideology.RightWingDemocracy, 0 },
-                    { Ideology.Authoritarianism, 0 },
-                    { Ideology.Despotism, 0 },
-                    { Ideology.Fascism, 0 }
+                    { Ideology.C, 0 },
+                    { Ideology.S,0 },
+                    { Ideology.L, 0 },
+                    { Ideology.R, 0 },
+                    { Ideology.A, 0 },
+                    { Ideology.D, 0 },
+                    { Ideology.F, 0 }
                 };
             if (min == 0 && max == 1)
             {
@@ -187,13 +191,13 @@ namespace Escalation.World
                     (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
                 }
 
-                ideologies[Ideology.Communism] = numbers[0];
-                ideologies[Ideology.Socialism] = numbers[1];
-                ideologies[Ideology.LeftWingDemocracy] = numbers[2];
-                ideologies[Ideology.RightWingDemocracy] = numbers[3];
-                ideologies[Ideology.Authoritarianism] = numbers[4];
-                ideologies[Ideology.Despotism] = numbers[5];
-                ideologies[Ideology.Fascism] = numbers[6];
+                Ideologies[Ideology.C] = numbers[0];
+                Ideologies[Ideology.S] = numbers[1];
+                Ideologies[Ideology.L] = numbers[2];
+                Ideologies[Ideology.R] = numbers[3];
+                Ideologies[Ideology.A] = numbers[4];
+                Ideologies[Ideology.D] = numbers[5];
+                Ideologies[Ideology.F] = numbers[6];
             }
             else
             {
@@ -212,20 +216,20 @@ namespace Escalation.World
             {
                 if (ideology == mainIdeology)
                 {
-                    ideologies[ideology] = specificPercentage;
+                    Ideologies[ideology] = specificPercentage;
                     sum+= specificPercentage;
                 }
                 else
                 {
-                    ideologies[ideology] = Random.NextDouble() * (1 - sum);
-                    sum += ideologies[ideology];
+                    Ideologies[ideology] = Random.NextDouble() * (1 - sum);
+                    sum += Ideologies[ideology];
                 }
             }
 
             // shuffle the values excpet for the key containing the main ideology : 
-            for (int i = ideologies.Count-1; i > 0; i--)
+            for (int i = Ideologies.Count-1; i > 0; i--)
             {
-                if (ideologies.ElementAt(i).Key != mainIdeology)
+                if (Ideologies.ElementAt(i).Key != mainIdeology)
                 {
                     int j = Random.Next(i+1);
                     while (j == (int)mainIdeology)
@@ -233,7 +237,7 @@ namespace Escalation.World
                         j = Random.Next(i + 1);
 
                     }
-                    (ideologies[(Ideology)i], ideologies[(Ideology)j]) = (ideologies.ElementAt(j).Value, ideologies.ElementAt(i).Value);
+                    (Ideologies[(Ideology)i], Ideologies[(Ideology)j]) = (Ideologies.ElementAt(j).Value, Ideologies.ElementAt(i).Value);
                 }
             }
 
@@ -247,32 +251,32 @@ namespace Escalation.World
 
 
             //check if rising ideology progression dont go over 1 :
-            if (ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
+            if (Ideologies[risingIdeology.Item1] + risingIdeology.Item2 <= 1)
             {
 
-                ideologies[risingIdeology.Item1] += risingIdeology.Item2;
+                Ideologies[risingIdeology.Item1] += risingIdeology.Item2;
 
-                int nbIdeoNotNull = ideologies.Count(x => x.Key != risingIdeology.Item1 && x.Value > 0);
+                int nbIdeoNotNull = Ideologies.Count(x => x.Key != risingIdeology.Item1 && x.Value > 0);
 
                 //TODO : check if not equal to zero
                 double totalToDecrease = risingIdeology.Item2 / nbIdeoNotNull;
 
-                ideologies = ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                Ideologies = Ideologies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
 
-                for (int i = 0; i < ideologies.Count; i++)
+                for (int i = 0; i < Ideologies.Count; i++)
                 {
-                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1 && ideologies.ElementAt(i).Value != 0)
+                    if (Ideologies.ElementAt(i).Key != risingIdeology.Item1 && Ideologies.ElementAt(i).Value != 0)
                     {
-                        if (ideologies.ElementAt(i).Value - totalToDecrease > 0)
+                        if (Ideologies.ElementAt(i).Value - totalToDecrease > 0)
                         {
-                            ideologies[ideologies.ElementAt(i).Key] -= totalToDecrease;
+                            Ideologies[Ideologies.ElementAt(i).Key] -= totalToDecrease;
                         }
                         else
                         {
                             // add the difference to the totalToDecrease divided by the number of  the remaining non zeroe ideologies
-                            double delta = totalToDecrease - ideologies.ElementAt(i).Value;
-                            ideologies[ideologies.ElementAt(i).Key] = 0;
+                            double delta = totalToDecrease - Ideologies.ElementAt(i).Value;
+                            Ideologies[Ideologies.ElementAt(i).Key] = 0;
                             nbIdeoNotNull--;
                             //TODO : check if not equal to zero
                             totalToDecrease += delta / nbIdeoNotNull;
@@ -285,13 +289,13 @@ namespace Escalation.World
             }
             else
             {
-                ideologies[risingIdeology.Item1] = 1;
+                Ideologies[risingIdeology.Item1] = 1;
                 // all other are at zero
-                for (int i = 0; i < ideologies.Count; i++)
+                for (int i = 0; i < Ideologies.Count; i++)
                 {
-                    if (ideologies.ElementAt(i).Key != risingIdeology.Item1)
+                    if (Ideologies.ElementAt(i).Key != risingIdeology.Item1)
                     {
-                        ideologies[ideologies.ElementAt(i).Key] = 0;
+                        Ideologies[Ideologies.ElementAt(i).Key] = 0;
                     }
                 }
             }
@@ -313,7 +317,9 @@ namespace Escalation.World
         [JsonPropertyName("H")]
         public double HealthRate { get => healthRate; set { if ( value > 1) { healthRate = 1; } else if ( value < 0) { healthRate = 0; } else { healthRate = value; } } }
         private double happinessRate;
-      
+
+
+        [JsonIgnore]
         public double HappinessRate { get => happinessRate; set { if ( value > 1) { happinessRate = 1; } else if ( value < 0) { happinessRate = 0; } else { happinessRate = value; } } }
         private double corruptionRate;
         [JsonIgnore]
@@ -426,40 +432,40 @@ namespace Escalation.World
 
         public void takeAction()
         {
-            if (currentPlan.isFinished())
+            if (CurrentPlan.isFinished())
             {
-                currentPlan.takeEffect(this);
-                currentPlan = null;
+                CurrentPlan.takeEffect(this);
+                CurrentPlan = null;
                 //TODO: change the percentage value :
                 if (NbWarEngagedIn == 0)
                 {
                     if (Random.NextDouble() < 0.5) // We pick a plan depending on the current ideology : 
                     {
-                        switch (ideologies.Last().Key)
+                        switch (Ideologies.Last().Key)
                         {
-                            case Ideology.Communism:
-                                currentPlan = (PoliticalPlan)CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)].Clone();
-                                currentPlan.init();
+                            case Ideology.C:
+                                CurrentPlan = (PoliticalPlan)CommunistPoliticalPlan[Random.Next(CommunistPoliticalPlan.Count)].Clone();
+                                CurrentPlan.init();
                                 break;
 
-                            case Ideology.Socialism: 
-                                currentPlan = (PoliticalPlan)SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)].Clone();
-                                currentPlan.init();
+                            case Ideology.S:
+                                CurrentPlan = (PoliticalPlan)SocialistPoliticalPlan[Random.Next(SocialistPoliticalPlan.Count)].Clone();
+                                CurrentPlan.init();
                                 break;
 
-                            case Ideology.Despotism:
-                                currentPlan = (PoliticalPlan)DespoticPlan[Random.Next(DespoticPlan.Count)].Clone();
-                                currentPlan.init();
+                            case Ideology.D:
+                                CurrentPlan = (PoliticalPlan)DespoticPlan[Random.Next(DespoticPlan.Count)].Clone();
+                                CurrentPlan.init();
                                 break;
 
-                            case Ideology.Fascism: 
-                                currentPlan  = (PoliticalPlan)FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)].Clone();
-                                currentPlan.init();
+                            case Ideology.F: 
+                                CurrentPlan  = (PoliticalPlan)FascistPoliticalPlan[Random.Next(FascistPoliticalPlan.Count)].Clone();
+                                CurrentPlan.init();
                                 break;
 
                             default:
-                                currentPlan = (PoliticalPlan)AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)].Clone();
-                                currentPlan.init();
+                                CurrentPlan = (PoliticalPlan)AltRightPoliticalPlan[Random.Next(AltRightPoliticalPlan.Count)].Clone();
+                                CurrentPlan.init();
                                 break;
                         }
                     } else // We pick a plan depending on the current financial decision  :
@@ -631,7 +637,7 @@ namespace Escalation.World
             get => _population;
             set
             {
-                if (Population + value >= 0)
+                if (value >= 0)
                 {
                     _population = value;
                 }

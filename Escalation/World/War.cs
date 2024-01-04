@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using Random = Escalation.Utils.Random;
@@ -30,11 +31,20 @@ namespace Escalation.World
 
         public event EventHandler<AnnexionNationEventArgs> AnnexationOccurred;
 
+        [JsonIgnore]
         public List<Nation> Attackers { get; private set; }
+
+        [JsonIgnore]
         public List<Nation> Defenders { get; private set; }
 
+        [JsonPropertyName("A")]
+        public List<Ecode> CodeAttackers { get; private set; }
 
-        public DateTime StartDate;
+        [JsonPropertyName("D")]
+        public List<Ecode> CodeDefenders { get; private set; }
+
+        [JsonPropertyName("S")]
+        public DateTime StartDate { get; set; }
 
         private int daysElapsed;
         private int timeToLive;
@@ -208,7 +218,17 @@ namespace Escalation.World
             StartDate = startDate;
             DaysElapsed = 0;
             numberOfCountries = attackers.Count + defenders.Count;
-         
+            CodeAttackers = new List<Ecode>();
+            CodeDefenders = new List<Ecode>();
+            foreach (Nation n in attackers)
+            {
+                CodeAttackers.Add(n.Code);
+            }
+            foreach (Nation n in defenders)
+            {
+                CodeDefenders.Add(n.Code);
+            }
+
             scoreDef = 0;
             scoreAtt = 0;
             probabilityOfEndingConflict = 0.1;
@@ -237,6 +257,7 @@ namespace Escalation.World
         public void AddAttacker(Nation n)
         {
             Attackers.Add(n);
+            CodeAttackers.Add(n.Code);
             scoreAtt += n.CurrentVictoryPoints;
             n.NbWarEngagedIn ++;
             Trace.WriteLine(Name+n.Code+" has joined the war on the side of the attackers !");
@@ -246,6 +267,7 @@ namespace Escalation.World
         public void AddDefender(Nation n)
         {
             Defenders.Add(n);
+            CodeDefenders.Add(n.Code);
             n.NbWarEngagedIn++;
             scoreDef += n.CurrentVictoryPoints;
             Trace.WriteLine(Name+n.Code+" has joined the war on the side of the defenders !");
@@ -279,6 +301,7 @@ namespace Escalation.World
         public void DisengageDefender(Nation n)
         {
             Defenders.Remove(n);
+            CodeDefenders.Remove(n.Code);
             scoreDef -= n.CurrentVictoryPoints;
             numberOfCountries--;
             n.NbWarEngagedIn--;
@@ -287,6 +310,7 @@ namespace Escalation.World
         public void DisengageAttacker(Nation n)
         {
             Attackers.Remove(n);
+            CodeAttackers.Remove(n.Code);
             scoreAtt -= n.CurrentVictoryPoints;
             numberOfCountries--;
             n.NbWarEngagedIn--;

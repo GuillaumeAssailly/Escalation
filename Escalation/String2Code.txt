@@ -54,7 +54,6 @@ Gambie	GAM
 Allemagne de l'Est	GDR	
 Ghana	GHA	
 Grèce	GRE
-Groenland GRO
 Guatemala	GUA	
 Guinée	GUI	
 Guinée équatoriale	GEQ	
@@ -129,7 +128,6 @@ Sénégal	SEN
 Sierra Leone	SLE	
 Érythrée	SOM						
 Soudan	SOU	
-Soudan du Sud SDS
 Sri Lanka	SRI
 Suède	SUE	
 Suisse	SUI	
