@@ -57,6 +57,7 @@ namespace Escalation.World
         private int scoreDef;
         private int scoreAtt;
 
+        [JsonPropertyName("T")]
         public int DaysElapsed
         {
             get => daysElapsed;
