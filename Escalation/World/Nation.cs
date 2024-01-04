@@ -211,21 +211,22 @@ namespace Escalation.World
         {
             double sum = 0;
             double specificPercentage = (Random.NextDouble() * (max - min)) + min;
-
+            sum +=specificPercentage;
             foreach (Ideology ideology in Enum.GetValues(typeof(Ideology)))
             {
                 if (ideology == mainIdeology)
                 {
                     Ideologies[ideology] = specificPercentage;
-                    sum+= specificPercentage;
                 }
                 else
                 {
-                    Ideologies[ideology] = Random.NextDouble() * (1 - sum);
+                    Ideologies[ideology] = Random.NextDouble() * (1-sum);
                     sum += Ideologies[ideology];
                 }
             }
 
+            double value = Ideologies.Sum(x => x.Value);
+            int a = 0;
             // shuffle the values excpet for the key containing the main ideology : 
             for (int i = Ideologies.Count-1; i > 0; i--)
             {
@@ -241,7 +242,8 @@ namespace Escalation.World
                 }
             }
 
-
+            double value2 = Ideologies.Sum(x => x.Value);
+            int a2 = 0;
         }
 
         public void DriftIdeologies()
