@@ -85,7 +85,7 @@ namespace Escalation
             /////////////////////////////  
             for (int i = 0; i < 30000; i++)
             {
-                FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-M-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
+                FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
                 
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
