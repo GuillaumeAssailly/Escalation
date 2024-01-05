@@ -53,8 +53,9 @@ namespace Escalation
             relationManager = new RelationManager(World, Random);
             geographyManager = new GeographyManager(World, Random);
 
-            //build countries : 
-            //World.initCountries();
+            //Creating Serializer/Saver : 
+            EarthSaver earthSaver = new JsonEarthSaver();
+
 
             World.Nations.AddRange(FileReader.ReadNationsFromCsv("ESCALATION.csv"));
 
@@ -85,8 +86,13 @@ namespace Escalation
             /////////////////////////////  
             for (int i = 0; i < 30000; i++)
             {
-                FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
+                Memento memento = new Memento(World);
+                earthSaver.SaveState(memento);
+                earthSaver.SaveLastAndRemove("History\\" + World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json");
                 
+                //FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
+                
+
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
                 {
