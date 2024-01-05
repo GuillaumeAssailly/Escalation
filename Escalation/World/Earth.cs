@@ -13,6 +13,9 @@ namespace Escalation.World
         //Parameters :
         const int nbNations = 158;
 
+
+        private static Earth _instance;
+
         private double worldTension;
 
         public double WorldTension
@@ -130,7 +133,7 @@ namespace Escalation.World
         }
 
 
-        public Earth()
+        private Earth()
         {
             Nations = new List<Nation>();
             Wars = new List<War>();
@@ -139,6 +142,16 @@ namespace Escalation.World
             CurrentDate =  new DateTime(1966, 1, 1);
             WorldTension = 10;
 
+        }
+
+        public static Earth getWorld()
+        {
+            if (_instance == null)
+            {
+                _instance = new Earth();
+            }
+
+            return _instance;
         }
 
     }

@@ -30,7 +30,7 @@ namespace EscalationAPP
 
         public App()
         {
-            World = new Earth();
+            World = Earth.getWorld();
             Random = new Random();
 
             /////////////////////////////

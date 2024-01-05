@@ -21,17 +21,8 @@ namespace Escalation
     {
 
         public static Earth World { get; private set; }
-        public static Random Random { get; private set; }
-        public static IdeologyManager ideologyManager { get; private set; }
-        public static PopulationManager populationManager { get; private set; }
-
-        public static EconomyManager economyManager { get; private set; }
-
-        public static GeographyManager geographyManager { get; private set; }
-
-        public static RelationManager relationManager { get; private set; }
-
-        public static UInt64 Seed_64 = 1;
+       
+        public static UInt64 Seed_64 = 10465520;
         public static UInt32 Mat1_64 = 0xfa051f40;
         public static UInt32 Mat2_64 = 0xffd0fff4;
         public static UInt64 TMat_64 = 0x58d02ffeffbfffbc;
@@ -40,8 +31,8 @@ namespace Escalation
 
         static void Main(string[] args)
         {
-            World = new Earth();
-            Random = new Random();
+            World = Earth.getWorld();
+            Random.SetSeed(Seed_64);
 
             /////////////////////////////
 
