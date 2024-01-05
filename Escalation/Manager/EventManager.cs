@@ -12,7 +12,7 @@ namespace Escalation.Manager
     {
         private List<Event> Events;
 
-        public EventManager(Earth World, Random Random) : base(World, Random)
+        public EventManager(Earth World) : base(World)
         {
             Events = new List<Event>
             {

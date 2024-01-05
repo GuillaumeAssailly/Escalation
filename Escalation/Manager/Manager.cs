@@ -11,17 +11,11 @@ namespace Escalation.Manager
     {
         public Earth World;
 
-        //Attribute of random generator
-        public Utils.Random Random;
-
-     
-
-
+       
         //Constructor : 
-        protected Manager(Earth World, Utils.Random Random)
+        protected Manager(Earth World)
         {
             this.World = World;
-            this.Random = Random;
         }
 
     }

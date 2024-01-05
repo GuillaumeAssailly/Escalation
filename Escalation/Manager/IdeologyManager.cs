@@ -124,7 +124,7 @@ namespace Escalation.Manager
         }
 
 
-        public IdeologyManager(Earth World, Random Random) : base(World, Random)
+        public IdeologyManager(Earth World) : base(World)
         {
 
         }

@@ -11,7 +11,7 @@ namespace Escalation.Manager
     public class EconomyManager : Manager
 
     {
-        public EconomyManager(Earth World, Random Random) : base(World, Random)
+        public EconomyManager(Earth World) : base(World)
         {
         }
 

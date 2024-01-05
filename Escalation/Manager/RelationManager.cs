@@ -12,7 +12,7 @@ namespace Escalation.Manager
 {
     public  class RelationManager : Manager
     {
-        public RelationManager(Earth World, Random Random) : base(World, Random)
+        public RelationManager(Earth World) : base(World)
         {
 
         }

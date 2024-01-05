@@ -11,7 +11,7 @@ namespace Escalation.Manager
 {
     public class GeographyManager : Manager
     {
-        public GeographyManager(Earth World, Random Random) : base(World, Random)
+        public GeographyManager(Earth World) : base(World)
         {
         }
 

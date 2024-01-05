@@ -34,7 +34,7 @@ namespace Escalation.Manager
 
         }
 
-        public PopulationManager(Earth World, Random Random) : base(World, Random)
+        public PopulationManager(Earth World) : base(World)
         {
         }
     }

@@ -418,8 +418,7 @@ namespace Escalation.World
         [JsonPropertyName("CP")]
         public PoliticalPlan CurrentPlan { get => currentPlan; set => currentPlan = value; }
 
-        public void initInternalStatistics( int infrastructurePower, 
-            double productivity, double educationRate, double healthRate,
+        public void initInternalStatistics(double productivity, double educationRate, double healthRate,
             double happinessRate, double corruptionRate, double crimeRate, double foodRate)
         {
 

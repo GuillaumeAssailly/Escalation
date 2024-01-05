@@ -47,30 +47,42 @@ namespace Escalation
 
 
             //Creating Managers : 
-            ideologyManager = new IdeologyManager(World, Random);
-            populationManager = new PopulationManager(World, Random);
-            economyManager = new EconomyManager(World, Random);
-            relationManager = new RelationManager(World, Random);
-            geographyManager = new GeographyManager(World, Random);
+            /*
+            ideologyManager = new IdeologyManager(World);
+            populationManager = new PopulationManager(World);
+            economyManager = new EconomyManager(World);
+            relationManager = new RelationManager(World);
+            geographyManager = new GeographyManager(World);
+            */
+
+            //Using a Facade Design Pattern, we now have : 
+            ManagerFront managerFront = new ManagerFront(World);
+
 
             //Creating Serializer/Saver : 
             EarthSaver earthSaver = new JsonEarthSaver();
 
-
+            //Creating Countries from CSV :
             World.Nations.AddRange(FileReader.ReadNationsFromCsv("ESCALATION.csv"));
 
 
+            //We initialize the internal stats of nations with random values :
             foreach (Nation nation in World.Nations)
             {
                 nation.initInternalStatistics(
                     (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),
-                    Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+                    Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
                 nation.initEconomicStats(0, 0, Random.Next(0, 100000));
             }
 
+
+            /*
             geographyManager.initializeNeighbors("../../../neighbors.txt");
             relationManager.initAlliances();
             relationManager.initRelations();
+            */
+
+            managerFront.InitAll("../../../neighbors.txt");
 
 
             /////////////////////////////
@@ -98,14 +110,14 @@ namespace Escalation
                 {
                     if (i % 10 == 0)
                     {
-                        ideologyManager.ManageIdeologies(currentNation.Code);
+                        managerFront.ManageIdeologies(currentNation.Code);
                     }
 
 
                     if (World.CurrentDate.Day == 1)
                     {
-                        economyManager.ManageEconomy(currentNation.Code);
-                        relationManager.updateRelations(currentNation);
+                        managerFront.ManageEconomy(currentNation.Code);
+                        managerFront.updateRelations(currentNation);
                         currentNation.DriftIdeologies();
                     }
 
@@ -116,7 +128,7 @@ namespace Escalation
 
 
 
-                    populationManager.ManagePopulation(currentNation.Code);
+                    managerFront.ManagePopulation(currentNation.Code);
 
 
                     //Print majorIdeology in each nation : 
@@ -124,23 +136,14 @@ namespace Escalation
                     currentNation.takeAction();
                 }
 
-                relationManager.ManageAlliances();
+                /*
                 relationManager.GoToWar();
+                relationManager.ManageAlliances();
                 relationManager.ManageWars();
                 relationManager.ManageTension();
                 World.AddDay();
-
-
-
-
-
-              
-
-
-
-
-
-
+                */
+                managerFront.EndDay();
 
             }
         }

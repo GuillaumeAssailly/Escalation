@@ -37,11 +37,11 @@ namespace EscalationAPP
 
        
             //Creating Managers : 
-            ideologyManager = new IdeologyManager(World, Random);
-            populationManager = new PopulationManager(World, Random);
-            economyManager = new EconomyManager(World, Random);
-            relationManager = new RelationManager(World, Random);
-            geographyManager = new GeographyManager(World, Random);
+            ideologyManager = new IdeologyManager(World);
+            populationManager = new PopulationManager(World);
+            economyManager = new EconomyManager(World);
+            relationManager = new RelationManager(World);
+            geographyManager = new GeographyManager(World);
 
             //build countries : 
             //World.initCountries();
@@ -51,7 +51,7 @@ namespace EscalationAPP
             foreach (Nation nation in World.Nations)
             {
                 nation.initInternalStatistics(
-                    (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),Random.NextDouble());
+                    (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
                 nation.initEconomicStats( 0, 0 ,Random.Next(0, 100000));
             }
 
