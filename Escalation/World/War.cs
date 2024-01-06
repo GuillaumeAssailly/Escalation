@@ -26,8 +26,8 @@ namespace Escalation.World
     {
 
 
-
-        public string Name;
+        [JsonPropertyName("N")]
+        public string Name { get; set; }
 
         public event EventHandler<AnnexionNationEventArgs> AnnexationOccurred;
 

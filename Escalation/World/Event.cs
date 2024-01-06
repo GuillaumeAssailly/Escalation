@@ -22,7 +22,8 @@ namespace Escalation.World
 
 
         private readonly string description;
-       
+
+        [JsonPropertyName("D")]
         public string Description
         {
             get => description;
