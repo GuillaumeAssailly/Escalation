@@ -66,7 +66,10 @@ namespace Escalation.Utils
 
         public override void SaveLast(string path)
         {
-            FileWriter.AppendLine(path, JsonSerializer.Serialize(history.Last().GetState()));
+            FileWriter.AppendLine(path, JsonSerializer.Serialize(history.Last().GetState(), new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            }));
         }
 
         public override void SaveAll(string path)
@@ -76,7 +79,10 @@ namespace Escalation.Utils
 
         public override void SaveLastAndRemove(string path)
         {
-            FileWriter.AppendLine(path, JsonSerializer.Serialize(history.Last().GetState()));
+            FileWriter.AppendLine(path, JsonSerializer.Serialize(history.Last().GetState(), new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            }));
             DeleteLast();
         }
     }

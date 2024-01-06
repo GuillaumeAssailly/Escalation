@@ -162,8 +162,9 @@ namespace Escalation.World
                     }
                 }
                 //Trace.WriteLine(this.Name + attacker.Code + " wins the day !");
-                attacker.Military -= Random.Next(0, (int)defender.Military);
-                defender.Military -= Random.Next(0, (int)attacker.Military);
+                decimal tmp = defender.Military / 1000;
+                attacker.Military -= Random.Next(0, tmp);
+                defender.Military -= Random.Next(0, (int)attacker.Military/1000);
 
             }
             else //Defender wins the day !
@@ -198,13 +199,13 @@ namespace Escalation.World
             foreach (Nation n in Defenders)
             {
                 n.Population -= Random.Next(0,
-                    (attacker.Military * n.Population) / 1000000);
+                    (attacker.Military * n.Population) / 10000000);
 
             }
             Nation defender = Defenders[Random.Next(0, Defenders.Count)];
             foreach (Nation n in Attackers)
             {
-                n.Population -= Random.Next(0, (defender.Military * n.Population) / 1000000)  ; 
+                n.Population -= Random.Next(0, (defender.Military * n.Population) / 10000000)  ; 
             }
             
           

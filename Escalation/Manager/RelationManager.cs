@@ -19,8 +19,8 @@ namespace Escalation.Manager
 
         public void initAlliances()
         {
-            World.Alliances.Add(new Alliance("NATO" ));
-            World.Alliances.Add(new Alliance("Warsaw Pact"));
+            World.Alliances.Add(new Alliance("OTAN" ));
+            World.Alliances.Add(new Alliance("Pacte de Varsovie"));
 
             ///NATO MEMBERS
             World.Alliances[0].AddMember(World.Nations[(int)Ecode.FRA]);
@@ -191,6 +191,7 @@ namespace Escalation.Manager
                                 return;
                             }
                             war.AddAttacker(attackerNeighbor);
+                            World.CurrentEvents.Add(new Event("Le pays ("+attackerNeighbor.Code+") a rejoint la guerre contre la nation ("+war.CodeDefenders.First()+")."));
                             foreach (Nation n in war.Defenders)
                             {
                                 World.WarMatrix[(int)n.Code, (int)attackerNeighbor.Code] = true;
@@ -219,6 +220,7 @@ namespace Escalation.Manager
                                 return;
                             }
                             war.AddDefender(defenderNeighbor);
+                            World.CurrentEvents.Add(new Event("Le pays (" + defenderNeighbor.Code + ") a rejoint la guerre contre la nation (" + war.CodeAttackers.First() + ")."));
                             foreach (Nation n in war.Attackers)
                             {
                                 World.WarMatrix[(int)n.Code, (int)defenderNeighbor.Code] = true;
@@ -283,6 +285,7 @@ namespace Escalation.Manager
 
                         World.WorldTension += 2* (double)((attacker.Military + defender.Military) / 100);
 
+                        World.CurrentEvents.Add(new Event("Le pays ("+attacker.Code + ") a déclaré la guerre à la nation (" + defender.Code+")."));
 
 
                         //We eventually add some allies to the war :
@@ -294,6 +297,7 @@ namespace Escalation.Manager
                                          World.RelationsMatrix[(int)n.Code, (int)defender.Code] < 100 && World.WarMatrix[(int)n.Code, (int)defender.Code] == false && n.MilitaryPact!=defender.MilitaryPact))
                             {
                                 World.Wars.Last().AddAttacker(n);
+                                World.CurrentEvents.Add(new Event("Le pays (" + n.Code + ") a rejoint la guerre contre la nation (" + defender.Code + ")."));
                                 World.WarMatrix[(int)n.Code, (int)defender.Code] = true;
                                 World.WarMatrix[(int)defender.Code, (int)n.Code] = true;
                                 World.WorldTension += (double)(n.Military / 100);
@@ -306,6 +310,7 @@ namespace Escalation.Manager
                                          World.RelationsMatrix[(int)n.Code, (int)attacker.Code] < 100 && World.WarMatrix[(int)n.Code, (int)attacker.Code] == false &&n.MilitaryPact!=attacker.MilitaryPact))
                             {
                                 World.Wars.Last().AddDefender(n);
+                                World.CurrentEvents.Add(new Event("Le pays (" + n.Code + ") a rejoint la guerre contre la nation (" + attacker.Code + ")."));
                                 World.WarMatrix[(int)n.Code, (int)attacker.Code] = true;
                                 World.WarMatrix[(int)attacker.Code, (int)n.Code] = true;
                                 World.WorldTension += (double)(n.Military / 100);
@@ -354,7 +359,7 @@ namespace Escalation.Manager
 
         public void ManageTension()
         {
-            World.WorldTension = (World.WorldTension - 0.001 * World.WorldTension);
+            World.WorldTension = (World.WorldTension - 0.001 * World.WorldTension) + World.Wars.Count * 0.01;
         }
 
         public void ManageAlliances()
@@ -390,6 +395,7 @@ namespace Escalation.Manager
                             }
                             a.AddMember(n);
                             Trace.WriteLine(n.Code + " has joined " + a.GetMembers().First().Code +"'s alliance" );
+                            World.CurrentEvents.Add(new Event("Le pays (" + n.Code + ") a rejoint l'alliance de la nation (" + a.GetMembers().First().Code + ")."));
                         }
                     }
                 }
@@ -427,6 +433,7 @@ namespace Escalation.Manager
                             World.Alliances.Add(a);
                             Trace.WriteLine(a.GetMembers().First().Code + " has created an alliance with " +
                                             a.GetMembers().Last().Code);
+                            World.CurrentEvents.Add(new Event("Le pays (" + a.GetMembers().First().Code + ") a créé une alliance avec la nation (" + a.GetMembers().Last().Code + ")."));
                         }
                         else
                         {
@@ -453,6 +460,7 @@ namespace Escalation.Manager
                                     }
                                     a.AddMember(World.Nations[(int)neighborN]);
                                     Trace.WriteLine(n.Code + " has joined " + a.GetMembers().First().Code + "'s alliance");
+                                    World.CurrentEvents.Add(new Event("Le pays (" + a.GetMembers().First().Code + ") a créé une alliance avec la nation (" + a.GetMembers().Last().Code + ")."));
                                 }
                             }
                         }
@@ -468,6 +476,7 @@ namespace Escalation.Manager
                                 (int)World.Alliances[n.MilitaryPact].GetMembers().First().Code] < 100)
                         {
                             Trace.WriteLine(n.Code + " has left " + World.Alliances[n.MilitaryPact].GetMembers().First().Code + "'s alliance");
+                            World.CurrentEvents.Add(new Event("Le pays (" + n.Code + ") a quitté l'alliance de la nation (" + World.Alliances[n.MilitaryPact].GetMembers().First().Code + ")."));
                             World.Alliances[n.MilitaryPact].RemoveMember(n);
                         }
                     }
@@ -525,6 +534,7 @@ namespace Escalation.Manager
                 World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestAttacker.Code] = false;
 
                 Trace.WriteLine(w.Name + strongestAttacker.Code + " has seized the territory of " + e.AnnexedNation.Code);
+                World.CurrentEvents.Add(new Event("Le pays (" + strongestAttacker.Code + ") a annexé la nation (" + e.AnnexedNation.Code + ")."));
             }
             else
             {
@@ -546,6 +556,7 @@ namespace Escalation.Manager
                 World.WarMatrix[(int)e.AnnexedNation.Code, (int)strongestDefender.Code] = false;
 
                 Trace.WriteLine(w.Name + strongestDefender.Code + " has seized the territory of " + e.AnnexedNation.Code);
+                World.CurrentEvents.Add(new Event("Le pays (" + strongestDefender.Code + ") a annexé la nation (" + e.AnnexedNation.Code + ")."));
             }
 
         }

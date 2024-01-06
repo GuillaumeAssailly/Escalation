@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Escalation.World
@@ -38,6 +39,9 @@ namespace Escalation.World
                 }
             }
         }
+
+        [JsonPropertyName("LCE")]
+        public List<Event> CurrentEvents { get; set; }
 
 
 
@@ -141,6 +145,7 @@ namespace Escalation.World
             //setAdjacencyMatrixFromFile();
             CurrentDate =  new DateTime(1966, 1, 1);
             WorldTension = 10;
+            CurrentEvents = new List<Event>();
 
         }
 

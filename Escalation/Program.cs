@@ -61,7 +61,7 @@ namespace Escalation
             foreach (Nation nation in World.Nations)
             {
                 nation.initInternalStatistics(
-                    (int)Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),
+                    Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble(),
                     Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
                 nation.initEconomicStats(0, 0, Random.Next(0, 100000));
             }
@@ -95,10 +95,12 @@ namespace Escalation
                 
                 //FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
                 
+                
 
                 //DAY LOOP OVER HERE :
                 foreach (Nation currentNation in World.Nations)
                 {
+
                     if (i % 10 == 0)
                     {
                         managerFront.ManageIdeologies(currentNation.Code);
@@ -134,6 +136,7 @@ namespace Escalation
                 relationManager.ManageTension();
                 World.AddDay();
                 */
+
                 managerFront.EndDay();
 
             }

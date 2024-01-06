@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Escalation.World
@@ -15,23 +16,23 @@ namespace Escalation.World
 
     public class Event
     {
-        private double probability;
-        public double Probability { get; set; }
 
-        private EventType Type;
-
-        private string name;
-        public string Name { get; set; }
-
-        private string description;
-        public string Description { get; set; }
+        [JsonIgnore]
+        public EventType Type { get; set; }
 
 
-        public Event(double probability, EventType Type , string name, string description)
+        private readonly string description;
+       
+        public string Description
         {
-           this.probability = probability;
+            get => description;
+            set {  }
+        }
+
+
+        public Event(string description)
+        {
            this.Type = Type;
-           this.name = name;
            this.description = description;
         }
 

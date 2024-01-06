@@ -12,20 +12,7 @@ namespace Escalation.Manager
     {
         private List<Event> Events;
 
-        public EventManager(Earth World) : base(World)
-        {
-            Events = new List<Event>
-            {
-                new Event(0.1, EventType.Demographic, "Population Growth", "The population of the nation has grown."),
-                new Event(0.1, EventType.Demographic, "Population Decline", "The population of the nation has declined."),
-                new Event(0.1, EventType.Demographic, "Population Boom", "The population of the nation has boomed."),
-                new Event(0.1, EventType.Demographic, "Population Bust", "The population of the nation has busted."),
-                new Event(0.1, EventType.Demographic, "Population Stagnation", "The population of the nation has stagnated."),                
-                new Event(0.1, EventType.Demographic, "Population Explosion", "The population of the nation has exploded."),
-                new Event(0.1, EventType.Demographic, "Population Implosion", "The population of the nation has imploded."),
-                new Event(0.1, EventType.Demographic, "Population Growth", "The population of the nation has grown."),
-            };
-        }
+       
         /*
         public void ManageEvents(Ecode code)
         {
@@ -57,5 +44,8 @@ namespace Escalation.Manager
 
             return null;
         }*/
+        public EventManager(Earth World) : base(World)
+        {
+        }
     }
 }

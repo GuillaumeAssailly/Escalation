@@ -534,9 +534,9 @@ namespace Escalation.World
         public void UpdateTreasury()
         {
             //TODO : Update this 
-            incomes = ((decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population))/700000;
+            incomes = ((decimal)((AgriculturalPower + IndustrialPower + TertiaryPower) * (double)Population))/100000;
             expenses = ((decimal)healthRate * Population * 5 + (decimal)educationRate * Population * 1 +
-                        (decimal)foodRate * Population * 1)/10000 + (decimal)Military/10000;
+                        (decimal)foodRate * Population * 1)/10000 + Military*1000;
 
             decimal netBalance = incomes - expenses - debtInterest;
 

@@ -275,7 +275,7 @@ namespace EscalationAPP
                         //Console.WriteLine(currentNation.Code + " : " + currentNation.getIdeologies().Last().Key + " with " + currentNation.getIdeologies().Last().Value);
                         currentNation.takeAction();
                     }
-
+                    World.CurrentEvents.Clear();
                     RelationManager.ManageAlliances();
                     RelationManager.GoToWar();
                     RelationManager.ManageWars();

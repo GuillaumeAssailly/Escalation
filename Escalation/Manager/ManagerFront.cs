@@ -60,6 +60,7 @@ namespace Escalation.Manager
 
         public void EndDay()
         {
+            World.CurrentEvents.Clear();
             relationManager.GoToWar();
             relationManager.ManageAlliances();
             relationManager.ManageWars();

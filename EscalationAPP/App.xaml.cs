@@ -31,11 +31,10 @@ namespace EscalationAPP
         public App()
         {
             World = Earth.getWorld();
-            Random = new Random();
-
+            Random.SetSeed(14564412);
             /////////////////////////////
 
-       
+
             //Creating Managers : 
             ideologyManager = new IdeologyManager(World);
             populationManager = new PopulationManager(World);
