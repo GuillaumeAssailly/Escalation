@@ -35,17 +35,17 @@ namespace Escalation.World
     //Enum for Ecodes
     public enum Ecode
     {
-        AFG, SAH, RSA, ALB, ALG, AND, ANG, ASA, ARG, AUS, PAL, AUT, BAH, BAN,
+        AFG, SAH, RSA, ALB, ALG, ANG, ASA, ARG, AUS, PAL, AUT, BAH, BAN,
         BEL, BEI, BEN, BHO, BIR, BOL, BOT, BRA, BRU, BUL, BUR, BUD, CAM, CAO,
         CAN, CHL, CHI, CHY, COL, NCO, SCO, COS, CIV, CUB, DAN, DDR, DJI, EGY,
         EAU, EQA, ESP, ESW,  ETU, ETH, FID, FIN, FRA, GAB, GAM, GDR, GHA,
-        GRE, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, IMA, ISA, IND,
+        GRE, GUA, GUI, GEQ, GBI, GUY, FGY, HAI, HOD, HON, ISA, IND,
         IDO, IRK, IRA, IRL, ISL, ISR, ITA, JAM, JAP, JOR, KEN, KOW, LAO, LES,
-        LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MON, MOG, MOZ,
+        LIB, LIA, LIY, LUX, MAD, MAS, MAW, MAL, MAR, MAU, MEX, MOG, MOZ,
         NEP, NIC, NGR, NIG, NOR, NCA, NZE, OMA, OGD, PAK, PAN, PNG, PAR, PAB,
         PER, PHI, POL, PRI, POR, QAT, RCE, RDE, RDO, RDC, ROM, ROY, RUS, RVI,
-        RWA, SAL, SEN, SLE, SOM,SOU, SRI, SUE, SUI, SUR, SVA, SYR,
-        TAW, TAN, TCH, TCQ, TAA, THA, TOR, TOG, TET, TUN,TUR, URU, VAN, VAT,
+        RWA, SAL, SEN, SLE, SOM,SOU, SRI, SUE, SUI, SUR, SYR,
+        TAW, TAN, TCH, TCQ, THA, TOR, TOG, TET, TUN,TUR, URU, VAT,
         VEN, VIE, YEA, YEM, YOU, ZAM, ZIM,
         
     }
@@ -657,7 +657,7 @@ namespace Escalation.World
         [JsonPropertyName("PDR")]
         public double PopulationDeathRate { get; set; }
 
-        [JsonPropertyName("PD")]
+        [JsonIgnore]
         public double PopulationDensity { get; set; }
 
         [JsonIgnore]
