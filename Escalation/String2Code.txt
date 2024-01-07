@@ -3,7 +3,6 @@ Sahara occidental    SAH
 Afrique du Sud    RSA
 Albanie    ALB
 Algérie    ALG
-Andorre    AND
 Angola    ANG
 Arabie saoudite    ASA
 Argentine    ARG
@@ -63,8 +62,6 @@ Guyanne    FGY
 Haïti    HAI
 Honduras    HOD
 Hongrie    HON
-Iles Malaouines    IMA
-[16:19]
 Îles Salomon    ISA
 Inde    IND
 Indonésie    IDO
@@ -92,7 +89,6 @@ Mali    MAL
 Maroc    MAR
 Mauritanie    MAU
 Mexique    MEX
-Monaco    MON
 Mongolie    MOG
 Mozambique    MOZ
 Népal    NEP
@@ -133,13 +129,11 @@ Sri Lanka    SRI
 Suède    SUE
 Suisse    SUI
 Suriname    SUR
-Iles Svalbard    SVA
 Syrie    SYR
 Taïwan    TAW
 Tanzanie    TAN
 Tchad    TCH
 Tchéquoslovaquie    TCQ
-Terres Australes Antarctiques    TAA
 Thaïlande    THA
 Timor oriental    TOR
 Togo    TOG
@@ -147,7 +141,6 @@ Trinité-et-Tobago    TET
 Tunisie    TUN
 Turquie    TUR
 Uruguay    URU
-Vanuatu    VAN
 Vatican    VAT
 Venezuela    VEN
 Viêt Nam    VIE

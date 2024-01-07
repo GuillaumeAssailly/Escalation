@@ -12,7 +12,7 @@ namespace Escalation.World
     public class Earth
     {
         //Parameters :
-        const int nbNations = 158;
+        const int nbNations = 151;
 
 
         private static Earth _instance;

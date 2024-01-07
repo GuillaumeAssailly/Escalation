@@ -11,6 +11,7 @@ using Random = Escalation.Utils.Random;
 using System.Threading;
 using System.Text.Json;
 using System.Globalization;
+using System.Configuration;
 
 namespace Escalation
 {
@@ -27,12 +28,19 @@ namespace Escalation
         public static UInt32 Mat2_64 = 0xffd0fff4;
         public static UInt64 TMat_64 = 0x58d02ffeffbfffbc;
 
-     
+        //Config values : 
+        private static readonly ulong seed = System.Configuration.ConfigurationManager.AppSettings["Seed"] == null ? Seed_64 : Convert.ToUInt64(System.Configuration.ConfigurationManager.AppSettings["Seed"]);
+        private static readonly string historyPath = System.Configuration.ConfigurationManager.AppSettings["Output"] == null ? "History" : System.Configuration.ConfigurationManager.AppSettings["Output"];
+        private static readonly int maxDays = System.Configuration.ConfigurationManager.AppSettings["MaxDays"] == null ? 30000 : Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["MaxDays"]);
+
 
         static void Main(string[] args)
         {
             World = Earth.getWorld();
-            Random.SetSeed(Seed_64);
+
+          
+
+            Random.SetSeed(seed);
 
             /////////////////////////////
 
@@ -79,19 +87,19 @@ namespace Escalation
             /////////////////////////////
             /// - Files -  //////////////
             ///
-            FileWriter.DeleteDir("History");
+            FileWriter.DeleteDir(historyPath);
           
-            Directory.CreateDirectory("History");
+            Directory.CreateDirectory(historyPath);
             
 
             /////////////////////////////
             ///  - TESTS -  /////////////
             /////////////////////////////  
-            for (int i = 0; i < 30000; i++)
+            for (int i = 0; i < maxDays; i++)
             {
                 Memento memento = new Memento(World);
                 earthSaver.SaveState(memento);
-                earthSaver.SaveLastAndRemove("History\\" + World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json");
+                earthSaver.SaveLastAndRemove(historyPath+"\\" + World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json");
                 
                 //FileWriter.AppendLine("History\\"+World.CurrentDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".json", JsonSerializer.Serialize(World));
                 

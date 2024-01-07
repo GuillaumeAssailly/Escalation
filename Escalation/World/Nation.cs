@@ -657,7 +657,7 @@ namespace Escalation.World
         [JsonPropertyName("PDR")]
         public double PopulationDeathRate { get; set; }
 
-        [JsonIgnore]
+        [JsonPropertyName("PD")]
         public double PopulationDensity { get; set; }
 
         [JsonIgnore]
